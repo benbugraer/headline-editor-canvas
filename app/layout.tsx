@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
+import { Jost } from "next/font/google";
+import TopBar from "@/components/TopBar/TopBar";
+import clsx from "clsx";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const jost = Jost({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Headline Editor Canvas",
@@ -26,9 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={clsx("antialiased bg-primary text-primary", jost.className)}
       >
-        {children}
+        <TopBar />
+        <Sidebar />
+        <div className="mx-auto px-6 pb-24 pt-16 md:px-6 md:pb-44 md:pt-20">
+          {children}
+        </div>
       </body>
     </html>
   );
