@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Jost } from "next/font/google";
-import TopBar from "@/components/TopBar/TopBar";
 import clsx from "clsx";
+import TopBar from "@/components/TopBar/TopBar";
 import Sidebar from "@/components/Sidebar/Sidebar";
 
 const jost = Jost({ subsets: ["latin"] });
@@ -19,13 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={clsx("antialiased bg-primary text-primary", jost.className)}
-      >
-        <TopBar />
-        <Sidebar />
-        <div className="mx-auto px-6 pb-24 pt-16 md:px-6 md:pb-44 md:pt-20">
-          {children}
+      <body className={clsx("antialiased ", jost.className)}>
+        <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
+          <Sidebar />
+          <TopBar>
+            <main className="flex flex-col gap-4 p-4 lg:gap-6">{children}</main>
+          </TopBar>
         </div>
       </body>
     </html>

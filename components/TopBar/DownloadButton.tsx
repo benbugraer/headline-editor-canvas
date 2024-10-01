@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -47,14 +46,11 @@ const DownloadButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button>
+        <Button className="bg-primaryBlue focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150 ">
           <Download className="mr-2 h-4 w-4" /> Download
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-tertiary">
-        <DropdownMenuLabel>Download Options</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
+      <DropdownMenuContent className="w-56 bg-tertiary mr-8">
         <div className="px-2 py-1.5">
           <label className="text-sm font-medium mb-1 block">File Type</label>
           <Select
@@ -105,7 +101,7 @@ const DownloadButton = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleDownload}
-          className="bg-primaryBlue text-white flex items-center justify-center rounded-md border border-primary cursor-pointer hover:bg-primary hover:text-link ease-linear duration-300"
+          className="bg-primaryBlue text-white flex items-center justify-center rounded-md border border-primary cursor-pointer hover:bg-secondary hover:text-link ease-linear duration-300"
         >
           Download {selectedFileType}
         </DropdownMenuItem>

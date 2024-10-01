@@ -26,7 +26,7 @@ const config = {
       },
       backgroundColor: {
         contrast: "var(--contrast-color)",
-        primary: "var(--gray-1)",
+        primary: "var(--gray-12)",
         secondary: "var(--gray-2)",
         tertiary: "var(--gray-5)",
         primaryBlue: "var(--blue-11)",
