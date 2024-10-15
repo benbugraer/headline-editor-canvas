@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -33,14 +32,13 @@ const NavigationItems = ({
   <DockIcon key={label}>
     <Tooltip>
       <TooltipTrigger asChild>
-        <div
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon" }),
-            "size-12 rounded-full"
-          )}
+        <Button
+          size="icon"
+          variant="ghost"
+          className="hover:bg-primary hover:text-white rounded-full"
         >
           <Icon className="size-5" />
-        </div>
+        </Button>
       </TooltipTrigger>
       <TooltipContent>
         <p>{label}</p>
@@ -52,7 +50,7 @@ const NavigationItems = ({
 export default function CanvasNavigation() {
   return (
     <TooltipProvider>
-      <Dock direction="middle">
+      <Dock direction="middle" className="bg-tertiary">
         {items.map((item) => (
           <NavigationItems key={item.label} {...item} />
         ))}

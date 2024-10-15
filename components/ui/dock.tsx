@@ -13,7 +13,7 @@ export interface DockProps extends VariantProps<typeof dockVariants> {
 }
 
 const dockVariants = cva(
-  "w-[4.063rem] justify-center items-center my-32 mx-2 h-max p-4 flex flex-col gap-2 rounded-md border border-primary supports-backdrop-blur:bg-white/10 supports-backdrop-blur:dark:bg-black/10 backdrop-blur-xl border-primary "
+  "h-[4.063rem] justify-center items-center my-6 h-max p-2 flex gap-2 rounded-full border border-primary bg-white/10 dark:bg-black/10  border-primary"
 );
 
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(
@@ -56,7 +56,7 @@ const DockIcon = ({ size, className, children, ...props }: DockIconProps) => {
     <motion.div
       ref={ref}
       className={cn(
-        "flex-col text-center aspect-auto cursor-pointer items-center justify-center rounded-full",
+        "flex-col text-center aspect-auto cursor-pointer items-center justify-center",
         className
       )}
       {...props}
