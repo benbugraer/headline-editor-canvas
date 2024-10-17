@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { BlockPicker, ColorResult } from "react-color";
-import { fabric } from "fabric";
+import * as fabric from "fabric"; // v6
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -50,8 +50,8 @@ export default function Settings({ canvas }: SettingsProps) {
   );
 
   const handleSelection = useCallback(
-    (event: fabric.IEvent) => {
-      const selected = (event as fabric.IEvent<fabric.IObjectSelectionEvent>)
+    (event: fabric.TEvent) => {
+      const selected = (event as fabric.TEvent<fabric.TObjectSelectionEvent>)
         .selected?.[0];
       handleObjectSelection(selected);
     },
@@ -69,14 +69,13 @@ export default function Settings({ canvas }: SettingsProps) {
 
   useEffect(() => {
     if (canvas) {
-      canvas.on("selection:created", handleSelection);
       canvas.on("selection:updated", handleSelection);
       canvas.on("selection:cleared", () => {
         setSelectedObject(null);
         clearSettings();
       });
-      canvas.on("object:modified", (event: fabric.IEvent) => {
-        handleObjectSelection(event.target as fabric.Object);
+      canvas.on("object:modified", (event) => {
+        handleObjectSelection(event.target);
       });
     }
 
