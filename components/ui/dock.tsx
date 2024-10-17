@@ -19,8 +19,11 @@ const dockVariants = cva(
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(
   ({ className, children, direction = "bottom", ...props }, ref) => {
     const renderChildren = () => {
-      return React.Children.map(children, (child: any) => {
-        return React.cloneElement(child, {});
+      return React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {});
+        }
+        return child;
       });
     };
 
@@ -43,13 +46,12 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
 Dock.displayName = "Dock";
 
 export interface DockIconProps {
-  size?: number;
   className?: string;
   children?: React.ReactNode;
   props?: PropsWithChildren;
 }
 
-const DockIcon = ({ size, className, children, ...props }: DockIconProps) => {
+const DockIcon = ({ className, children, ...props }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   return (
