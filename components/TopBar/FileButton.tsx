@@ -16,7 +16,7 @@ export default function FileButton() {
       <DropdownMenuTrigger className="flex gap-1 items-center focus:outline-none">
         <MdFolder className="w-6 h-6" /> Dosya
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="ml-4 bg-tertiary">
+      <DropdownMenuContent className="ml-4 bg-secondary">
         <DropdownMenuItem>+ Create new design</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="flex gap-1">

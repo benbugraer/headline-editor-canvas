@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Download } from "lucide-react";
+import { FaDownload } from "react-icons/fa";
 
 type FileType =
   | "PDF"
@@ -47,10 +47,10 @@ const DownloadButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="bg-primaryBlue focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150 ">
-          <Download className="mr-2 h-4 w-4" /> Download
+          <FaDownload className="mr-2 h-4 w-4" /> Download
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-tertiary mr-8">
+      <DropdownMenuContent className="w-56 bg-secondary mr-8">
         <div className="px-2 py-1.5">
           <label className="text-sm font-medium mb-1 block">File Type</label>
           <Select
