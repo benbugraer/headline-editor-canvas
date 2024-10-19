@@ -34,6 +34,7 @@ const config = {
       borderColor: {
         primary: "var(--gray-6)",
         secondary: "var(--gray-3)",
+        tertiary: "var(--gray-7)",
       },
       divideColor: {
         primary: "var(--gray-6)",

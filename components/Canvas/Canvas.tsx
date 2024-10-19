@@ -5,10 +5,12 @@ import * as fabric from "fabric";
 import Settings from "./CanvasSettings";
 import Sidebar from "../Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
+import { handleObjectMoving, clearGuidelines } from "./SnappingHelpers";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+  const [guidelines, setGuidelines] = useState([]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -20,6 +22,13 @@ export default function CanvasApp() {
 
       initCanvas.renderAll();
       setCanvas(initCanvas);
+
+      initCanvas.on("object:moving", (event) =>
+        handleObjectMoving(initCanvas, event.target, guidelines, setGuidelines)
+      );
+      initCanvas.on("object:modified", () => {
+        clearGuidelines(initCanvas, guidelines, setGuidelines);
+      });
 
       return () => {
         initCanvas.dispose();
@@ -35,7 +44,7 @@ export default function CanvasApp() {
           <div className="flex-grow flex flex-col">
             <Settings canvas={canvas} />
             <div className="flex-grow flex justify-center items-center overflow-auto p-4 mt-28">
-              <canvas ref={canvasRef} />
+              <canvas ref={canvasRef} className=" border-2 border-tertiary" />
             </div>
           </div>
         </TopBar>
