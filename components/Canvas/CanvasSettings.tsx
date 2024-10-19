@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { BlockPicker, ColorResult } from "react-color";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { SketchPicker, ColorResult } from "react-color";
 import * as fabric from "fabric"; // v6
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { FaUndo, FaRedo } from "react-icons/fa";
+import { FaBold } from "react-icons/fa6";
+import { Button } from "../ui/button";
+import clsx from "clsx";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -20,6 +28,8 @@ export default function Settings({ canvas }: SettingsProps) {
   const [color, setColor] = useState<string>("#000");
   const [fontSize, setFontSize] = useState<number>(20);
   const [isBold, setIsBold] = useState<boolean>(false);
+  const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
 
   const handleObjectSelection = useCallback(
     (object: fabric.Object | undefined) => {
@@ -44,15 +54,18 @@ export default function Settings({ canvas }: SettingsProps) {
         setColor(text.fill as string);
         setFontSize(text.fontSize as number);
         setIsBold(text.fontWeight === "bold");
+      } else if (object.type === "image") {
+        const img = object as fabric.Image;
+        setWidth(Math.round(img.width! * img.scaleX!).toString());
+        setHeight(Math.round(img.height! * img.scaleY!).toString());
       }
     },
     []
   );
 
   const handleSelection = useCallback(
-    (event: fabric.TEvent) => {
-      const selected = (event as fabric.TEvent<fabric.TObjectSelectionEvent>)
-        .selected?.[0];
+    (event: fabric.IEvent) => {
+      const selected = (event as fabric.IEvent<fabric.IEvent>).selected?.[0];
       handleObjectSelection(selected);
     },
     [handleObjectSelection]
@@ -70,6 +83,7 @@ export default function Settings({ canvas }: SettingsProps) {
   useEffect(() => {
     if (canvas) {
       canvas.on("selection:updated", handleSelection);
+      canvas.on("selection:created", handleSelection);
       canvas.on("selection:cleared", () => {
         setSelectedObject(null);
         clearSettings();
@@ -98,11 +112,11 @@ export default function Settings({ canvas }: SettingsProps) {
 
       if (
         selectedObject &&
-        selectedObject.type === "rect" &&
+        (selectedObject.type === "rect" || selectedObject.type === "image") &&
         !isNaN(intValue) &&
         intValue >= 0
       ) {
-        (selectedObject as fabric.Rect).set({
+        selectedObject.set({
           width: intValue / selectedObject.scaleX!,
         });
         canvas?.renderAll();
@@ -120,11 +134,11 @@ export default function Settings({ canvas }: SettingsProps) {
 
       if (
         selectedObject &&
-        selectedObject.type === "rect" &&
+        (selectedObject.type === "rect" || selectedObject.type === "image") &&
         !isNaN(intValue) &&
         intValue >= 0
       ) {
-        (selectedObject as fabric.Rect).set({
+        selectedObject.set({
           height: intValue / selectedObject.scaleY!,
         });
         canvas?.renderAll();
@@ -193,51 +207,160 @@ export default function Settings({ canvas }: SettingsProps) {
     [selectedObject, canvas]
   );
 
+  const toggleColorPicker = useCallback(() => {
+    setShowColorPicker((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(event.target as Node)
+      ) {
+        setShowColorPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleUndo = useCallback(() => {
+    if (canvas) {
+      canvas.undo();
+    }
+  }, [canvas]);
+
+  const handleRedo = useCallback(() => {
+    if (canvas) {
+      canvas.redo();
+    }
+  }, [canvas]);
+
   return (
-    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 gap-2 flex flex-col bg-neutral-container p-6 rounded text-left empty:p-0">
-      {selectedObject && selectedObject.type === "rect" && (
-        <>
-          <Label htmlFor="width">Width</Label>
-          <Input id="width" value={width} onChange={handleWidthChange} />
-          <Label htmlFor="height">Height</Label>
-          <Input id="height" value={height} onChange={handleHeightChange} />
-          <Label>Color</Label>
-          <BlockPicker color={color} onChangeComplete={handleColorChange} />
-        </>
-      )}
+    <div className="w-full bg-tertiary text-primary p-2 flex items-center space-x-4 border-b border-primary">
+      <div className="flex items-center space-x-2">
+        <button onClick={handleUndo} className="p-2 hover:bg-gray-200 rounded">
+          <FaUndo />
+        </button>
+        <button onClick={handleRedo} className="p-2 hover:bg-gray-200 rounded">
+          <FaRedo />
+        </button>
+      </div>
 
-      {selectedObject && selectedObject.type === "circle" && (
+      {selectedObject && (
         <>
-          <Label htmlFor="diameter">Diameter</Label>
-          <Input
-            id="diameter"
-            value={diameter}
-            onChange={handleDiameterChange}
-          />
-          <Label>Color</Label>
-          <BlockPicker color={color} onChangeComplete={handleColorChange} />
-        </>
-      )}
+          {(selectedObject.type === "rect" ||
+            selectedObject.type === "image") && (
+            <>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="width">W:</Label>
+                <Input
+                  id="width"
+                  value={width}
+                  onChange={handleWidthChange}
+                  className="w-20"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="height">H:</Label>
+                <Input
+                  id="height"
+                  value={height}
+                  onChange={handleHeightChange}
+                  className="w-20"
+                />
+              </div>
+            </>
+          )}
 
-      {selectedObject && selectedObject.type === "i-text" && (
-        <>
-          <Label>Color</Label>
-          <BlockPicker color={color} onChangeComplete={handleColorChange} />
-          <Label>Font Size</Label>
-          <Slider
-            value={[fontSize]}
-            onValueChange={handleFontSizeChange}
-            min={8}
-            max={72}
-            step={1}
-          />
+          {selectedObject.type === "circle" && (
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="diameter">Diameter:</Label>
+              <Input
+                id="diameter"
+                value={diameter}
+                onChange={handleDiameterChange}
+                className="w-20"
+              />
+            </div>
+          )}
+
+          {selectedObject.type === "i-text" && (
+            <>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="fontSize">Font Size:</Label>
+                <Input
+                  id="fontSize"
+                  value={fontSize === 0 ? "" : fontSize} // 0 olduğunda boş string göster
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    // Kullanıcı girişi boş ise font size'i sıfırlama
+                    if (value === "") {
+                      setFontSize(0);
+                      return;
+                    }
+
+                    // Girilen değeri tam bir sayıya çevirme
+                    const intValue = parseInt(value, 10);
+                    if (!isNaN(intValue)) {
+                      setFontSize(intValue);
+
+                      if (selectedObject && selectedObject.type === "i-text") {
+                        (selectedObject as fabric.IText).set({
+                          fontSize: intValue,
+                        });
+                        canvas?.renderAll();
+                      }
+                    }
+                  }}
+                  className="w-20"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  id="bold-mode"
+                  variant="ghost"
+                  size="icon"
+                  className={clsx(
+                    "bg-transparent hover:bg-none",
+                    (selectedObject as fabric.IText).fontWeight === "bold" &&
+                      "bg-secondary"
+                  )}
+                  onClick={() => {
+                    if (selectedObject && selectedObject.type === "i-text") {
+                      const isCurrentlyBold =
+                        (selectedObject as fabric.IText).fontWeight === "bold";
+                      (selectedObject as fabric.IText).set({
+                        fontWeight: isCurrentlyBold ? "normal" : "bold",
+                      });
+                      setIsBold(!isCurrentlyBold); // Durumu güncelle
+                      canvas?.renderAll();
+                    }
+                  }}
+                >
+                  <FaBold />
+                </Button>
+              </div>
+            </>
+          )}
+
           <div className="flex items-center space-x-2">
-            <Switch
-              id="bold-mode"
-              checked={isBold}
-              onCheckedChange={handleBoldChange}
-            />
-            <Label htmlFor="bold-mode">Bold</Label>
+            <Label>Color:</Label>
+            <Popover>
+              <PopoverTrigger>
+                <div
+                  className="w-6 h-6 rounded-sm cursor-pointer border border-gray-300"
+                  style={{ backgroundColor: color }}
+                />
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-full">
+                <SketchPicker color={color} onChange={handleColorChange} />
+              </PopoverContent>
+            </Popover>
           </div>
         </>
       )}

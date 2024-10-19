@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as fabric from "fabric";
-import CanvasNavigation from "../Sidebar/CanvasNavigation";
 import Settings from "./CanvasSettings";
+import Sidebar from "../Sidebar/Sidebar";
+import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,14 +28,18 @@ export default function CanvasApp() {
   }, []);
 
   return (
-    <div className="flex text-center items-center justify-center flex-col  bg-secondary min-h-fit rounded-xl h-full">
-      <CanvasNavigation canvas={canvas} />
-
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <canvas ref={canvasRef} />
+    <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
+      <Sidebar canvas={canvas} />
+      <div className="flex flex-col h-screen">
+        <TopBar>
+          <div className="flex-grow flex flex-col">
+            <Settings canvas={canvas} />
+            <div className="flex-grow flex justify-center items-center overflow-auto p-4 mt-28">
+              <canvas ref={canvasRef} />
+            </div>
+          </div>
+        </TopBar>
       </div>
-
-      <Settings canvas={canvas} />
     </div>
   );
 }
