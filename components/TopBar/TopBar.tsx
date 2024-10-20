@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import DownloadButton from "./DownloadButton";
-// import FileButton from "./FileButton";
 
 export default function TopBar({ children }: { children: ReactNode }) {
   return (

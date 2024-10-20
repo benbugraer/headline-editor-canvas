@@ -1,40 +1,26 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import * as fabric from "fabric";
+import React, { useRef, useState } from "react";
+import { Canvas } from "fabric";
+import { GuidelineType } from "./types/canvas.types";
+import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
+import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings";
 import Sidebar from "../Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
-import { handleObjectMoving, clearGuidelines } from "./SnappingHelpers";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
-  const [guidelines, setGuidelines] = useState([]);
+  const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const [guidelines, setGuidelines] = useState<GuidelineType[]>([]);
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      const initCanvas = new fabric.Canvas(canvasRef.current, {
-        width: 700,
-        height: 700,
-        backgroundColor: "#fff",
-      });
-
-      initCanvas.renderAll();
-      setCanvas(initCanvas);
-
-      initCanvas.on("object:moving", (event) =>
-        handleObjectMoving(initCanvas, event.target, guidelines, setGuidelines)
-      );
-      initCanvas.on("object:modified", () => {
-        clearGuidelines(initCanvas, guidelines, setGuidelines);
-      });
-
-      return () => {
-        initCanvas.dispose();
-      };
-    }
-  }, []);
+  useCanvasInitialization(
+    canvasRef,
+    CANVAS_DEFAULT_CONFIG,
+    guidelines,
+    setGuidelines,
+    setCanvas
+  );
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">

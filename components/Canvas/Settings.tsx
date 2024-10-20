@@ -22,7 +22,7 @@ import {
 import { FaBold } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import clsx from "clsx";
-import CanvasSettings from "./CanvasSettings";
+// import CanvasSettings from "./CanvasSettings";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -191,32 +191,6 @@ export default function Settings({ canvas }: SettingsProps) {
     [selectedObject, canvas]
   );
 
-  // const handleFontSizeChange = useCallback(
-  //   (value: number[]) => {
-  //     setFontSize(value[0]);
-
-  //     if (selectedObject && selectedObject.type === "i-text") {
-  //       (selectedObject as fabric.IText).set({ fontSize: value[0] });
-  //       canvas?.renderAll();
-  //     }
-  //   },
-  //   [selectedObject, canvas]
-  // );
-
-  // const handleBoldChange = useCallback(
-  //   (checked: boolean) => {
-  //     setIsBold(checked);
-
-  //     if (selectedObject && selectedObject.type === "i-text") {
-  //       (selectedObject as fabric.IText).set({
-  //         fontWeight: checked ? "bold" : "normal",
-  //       });
-  //       canvas?.renderAll();
-  //     }
-  //   },
-  //   [selectedObject, canvas]
-  // );
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -233,28 +207,15 @@ export default function Settings({ canvas }: SettingsProps) {
     };
   }, []);
 
-  const handleUndo = useCallback(() => {
-    if (canvas) {
-      canvas.undo();
-    }
-  }, [canvas]);
-
-  const handleRedo = useCallback(() => {
-    if (canvas) {
-      canvas.redo();
-    }
-  }, [canvas]);
-
   return (
     <div className="w-full  text-primary p-2 flex items-center space-x-4 border-b border-primary">
       <div className="flex items-center space-x-2">
-        <button onClick={handleUndo} className="p-2 hover:bg-gray-200 rounded">
+        <button className="p-2 hover:bg-gray-200 rounded">
           <FaUndo />
         </button>
-        <button onClick={handleRedo} className="p-2 hover:bg-gray-200 rounded">
+        <button className="p-2 hover:bg-gray-200 rounded">
           <FaRedo />
         </button>
-        <CanvasSettings canvas={canvas} />
       </div>
 
       {selectedObject && (
