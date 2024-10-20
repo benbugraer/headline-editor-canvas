@@ -26,7 +26,7 @@ export default function CanvasApp() {
     <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
       <Sidebar canvas={canvas} />
       <div className="flex flex-col h-screen">
-        <TopBar>
+        <TopBar canvas={canvas}>
           <div className="flex-grow flex flex-col">
             <Settings canvas={canvas} />
             <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4 mt-28">

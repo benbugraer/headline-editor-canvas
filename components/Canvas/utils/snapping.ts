@@ -1,4 +1,4 @@
-import { Canvas, Object as FabricObject, Line as FabricLine } from "fabric";
+import { Canvas, FabricObject, Line as FabricLine } from "fabric";
 import { GuidelineType } from "../types/canvas.types";
 import { SNAPPING_CONFIG, GUIDELINE_STYLES } from "./constants";
 
