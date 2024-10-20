@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as fabric from "fabric";
-import Settings from "./CanvasSettings";
+import Settings from "./Settings";
 import Sidebar from "../Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
 import { handleObjectMoving, clearGuidelines } from "./SnappingHelpers";
@@ -43,8 +43,8 @@ export default function CanvasApp() {
         <TopBar>
           <div className="flex-grow flex flex-col">
             <Settings canvas={canvas} />
-            <div className="flex-grow flex justify-center items-center overflow-auto p-4 mt-28">
-              <canvas ref={canvasRef} className=" border-2 border-tertiary" />
+            <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4 mt-28">
+              <canvas ref={canvasRef} className="border border-tertiary" />
             </div>
           </div>
         </TopBar>

@@ -162,7 +162,11 @@ export const createHorizontalGuideline = (
   });
 };
 
-export const clearGuidelines = (canvas: Canvas): void => {
+export const clearGuidelines = (
+  canvas: Canvas,
+  guidelines: never[],
+  setGuidelines: unknown
+): void => {
   const objects = canvas
     .getObjects()
     .filter(
