@@ -9,8 +9,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  FaUndo,
-  FaRedo,
   FaStrikethrough,
   FaAlignLeft,
   FaAlignCenter,
@@ -22,7 +20,6 @@ import {
 import { FaBold } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import clsx from "clsx";
-// import CanvasSettings from "./CanvasSettings";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -37,7 +34,13 @@ export default function Settings({ canvas }: SettingsProps) {
   const [diameter, setDiameter] = useState<string>("");
   const [color, setColor] = useState<string>("#000");
   const [fontSize, setFontSize] = useState<number>(20);
-  const [isBold, setIsBold] = useState<boolean>(false);
+  const [textFormatting, setTextFormatting] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+    strikethrough: false,
+    textAlign: "left" as fabric.TextAlign,
+  });
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const colorPickerRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +66,13 @@ export default function Settings({ canvas }: SettingsProps) {
         const text = object as fabric.IText;
         setColor(text.fill as string);
         setFontSize(text.fontSize as number);
-        setIsBold(text.fontWeight === "bold");
+        setTextFormatting({
+          bold: text.fontWeight === "bold",
+          italic: text.fontStyle === "italic",
+          underline: text.underline || false,
+          strikethrough: text.linethrough || false,
+          textAlign: text.textAlign || "left",
+        });
       } else if (object.type === "image") {
         const img = object as fabric.Image;
         setWidth(Math.round(img.width! * img.scaleX!).toString());
@@ -87,7 +96,13 @@ export default function Settings({ canvas }: SettingsProps) {
     setColor("");
     setDiameter("");
     setFontSize(20);
-    setIsBold(false);
+    setTextFormatting({
+      bold: false,
+      italic: false,
+      underline: false,
+      strikethrough: false,
+      textAlign: "left",
+    });
   }, []);
 
   useEffect(() => {
@@ -191,6 +206,40 @@ export default function Settings({ canvas }: SettingsProps) {
     [selectedObject, canvas]
   );
 
+  const updateTextFormatting = (
+    property: keyof typeof textFormatting,
+    value: any
+  ) => {
+    if (selectedObject && selectedObject.type === "i-text") {
+      const text = selectedObject as fabric.IText;
+
+      switch (property) {
+        case "bold":
+          text.set({ fontWeight: value ? "bold" : "normal" });
+          break;
+        case "italic":
+          text.set({ fontStyle: value ? "italic" : "normal" });
+          break;
+        case "underline":
+          text.set({ underline: value });
+          break;
+        case "strikethrough":
+          text.set({ linethrough: value });
+          break;
+        case "textAlign":
+          text.set({ textAlign: value });
+          break;
+      }
+
+      setTextFormatting((prev) => ({
+        ...prev,
+        [property]: value,
+      }));
+
+      canvas?.renderAll();
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -208,18 +257,9 @@ export default function Settings({ canvas }: SettingsProps) {
   }, []);
 
   return (
-    <div className="w-full  text-primary p-2 flex items-center space-x-4 border-b border-primary">
-      <div className="flex items-center space-x-2">
-        <button className="p-2 hover:bg-gray-200 rounded">
-          <FaUndo />
-        </button>
-        <button className="p-2 hover:bg-gray-200 rounded">
-          <FaRedo />
-        </button>
-      </div>
-
+    <>
       {selectedObject && (
-        <>
+        <div className="w-full text-primary p-2 flex items-center space-x-4 border-b border-primary">
           {(selectedObject.type === "rect" ||
             selectedObject.type === "image") && (
             <>
@@ -262,21 +302,16 @@ export default function Settings({ canvas }: SettingsProps) {
                 <Label htmlFor="fontSize">Font Size:</Label>
                 <Input
                   id="fontSize"
-                  value={fontSize === 0 ? "" : fontSize} // 0 olduğunda boş string göster
+                  value={fontSize === 0 ? "" : fontSize}
                   onChange={(e) => {
                     const value = e.target.value;
-
-                    // Kullanıcı girişi boş ise font size'i sıfırlama
                     if (value === "") {
                       setFontSize(0);
                       return;
                     }
-
-                    // Girilen değeri tam bir sayıya çevirme
                     const intValue = parseInt(value, 10);
                     if (!isNaN(intValue)) {
                       setFontSize(intValue);
-
                       if (selectedObject && selectedObject.type === "i-text") {
                         (selectedObject as fabric.IText).set({
                           fontSize: intValue,
@@ -288,141 +323,94 @@ export default function Settings({ canvas }: SettingsProps) {
                   className="w-20"
                 />
               </div>
-              <>
-                <div className="flex items-center space-x-2">
-                  {/* Bold Button */}
+              <div className="flex items-center space-x-2">
+                {/* Bold Button */}
+                <Button
+                  id="bold-mode"
+                  variant="ghost"
+                  size="icon"
+                  className={clsx(
+                    "bg-transparent hover:bg-none",
+                    textFormatting.bold && "bg-tertiary"
+                  )}
+                  onClick={() =>
+                    updateTextFormatting("bold", !textFormatting.bold)
+                  }
+                >
+                  <FaBold />
+                </Button>
+
+                {/* Italic Button */}
+                <Button
+                  id="italic-mode"
+                  variant="ghost"
+                  size="icon"
+                  className={clsx(
+                    "bg-transparent hover:bg-none",
+                    textFormatting.italic && "bg-tertiary"
+                  )}
+                  onClick={() =>
+                    updateTextFormatting("italic", !textFormatting.italic)
+                  }
+                >
+                  <FaItalic />
+                </Button>
+
+                {/* Underline Button */}
+                <Button
+                  id="underline-mode"
+                  variant="ghost"
+                  size="icon"
+                  className={clsx(
+                    "bg-transparent hover:bg-none",
+                    textFormatting.underline && "bg-tertiary"
+                  )}
+                  onClick={() =>
+                    updateTextFormatting("underline", !textFormatting.underline)
+                  }
+                >
+                  <FaUnderline />
+                </Button>
+
+                {/* Strikethrough Button */}
+                <Button
+                  id="strikethrough-mode"
+                  variant="ghost"
+                  size="icon"
+                  className={clsx(
+                    "bg-transparent hover:bg-none",
+                    textFormatting.strikethrough && "bg-tertiary"
+                  )}
+                  onClick={() =>
+                    updateTextFormatting(
+                      "strikethrough",
+                      !textFormatting.strikethrough
+                    )
+                  }
+                >
+                  <FaStrikethrough />
+                </Button>
+
+                {/* Text Alignment Buttons */}
+                {["left", "center", "right", "justify"].map((align) => (
                   <Button
-                    id="bold-mode"
+                    key={align}
+                    id={`${align}-align-mode`}
                     variant="ghost"
                     size="icon"
                     className={clsx(
                       "bg-transparent hover:bg-none",
-                      (selectedObject as fabric.IText).fontWeight === "bold" &&
-                        "bg-secondary"
+                      textFormatting.textAlign === align && "bg-tertiary"
                     )}
-                    onClick={() => {
-                      if (selectedObject && selectedObject.type === "i-text") {
-                        const isCurrentlyBold =
-                          (selectedObject as fabric.IText).fontWeight ===
-                          "bold";
-                        (selectedObject as fabric.IText).set({
-                          fontWeight: isCurrentlyBold ? "normal" : "bold",
-                        });
-                        setIsBold(!isCurrentlyBold);
-                        canvas?.renderAll();
-                      }
-                    }}
+                    onClick={() => updateTextFormatting("textAlign", align)}
                   >
-                    <FaBold />
+                    {align === "left" && <FaAlignLeft />}
+                    {align === "center" && <FaAlignCenter />}
+                    {align === "right" && <FaAlignRight />}
+                    {align === "justify" && <FaAlignJustify />}
                   </Button>
-
-                  {/* Italic Button */}
-                  <Button
-                    id="italic-mode"
-                    variant="ghost"
-                    size="icon"
-                    className={clsx(
-                      "bg-transparent hover:bg-none",
-                      (selectedObject as fabric.IText).fontStyle === "italic" &&
-                        "bg-secondary"
-                    )}
-                    onClick={() => {
-                      if (selectedObject && selectedObject.type === "i-text") {
-                        const isCurrentlyItalic =
-                          (selectedObject as fabric.IText).fontStyle ===
-                          "italic";
-                        (selectedObject as fabric.IText).set({
-                          fontStyle: isCurrentlyItalic ? "normal" : "italic",
-                        });
-                        canvas?.renderAll();
-                      }
-                    }}
-                  >
-                    <FaItalic />
-                  </Button>
-
-                  {/* Underline Button */}
-                  <Button
-                    id="underline-mode"
-                    variant="ghost"
-                    size="icon"
-                    className={clsx(
-                      "bg-transparent hover:bg-none",
-                      (selectedObject as fabric.IText).underline &&
-                        "bg-secondary"
-                    )}
-                    onClick={() => {
-                      if (selectedObject && selectedObject.type === "i-text") {
-                        const isCurrentlyUnderlined = (
-                          selectedObject as fabric.IText
-                        ).underline;
-                        (selectedObject as fabric.IText).set({
-                          underline: !isCurrentlyUnderlined,
-                        });
-                        canvas?.renderAll();
-                      }
-                    }}
-                  >
-                    <FaUnderline />
-                  </Button>
-
-                  {/* Strikethrough (Front Line) Button */}
-                  <Button
-                    id="strikethrough-mode"
-                    variant="ghost"
-                    size="icon"
-                    className={clsx(
-                      "bg-transparent hover:bg-none",
-                      (selectedObject as fabric.IText).linethrough &&
-                        "bg-secondary"
-                    )}
-                    onClick={() => {
-                      if (selectedObject && selectedObject.type === "i-text") {
-                        const isCurrentlyStrikethrough = (
-                          selectedObject as fabric.IText
-                        ).linethrough;
-                        (selectedObject as fabric.IText).set({
-                          linethrough: !isCurrentlyStrikethrough,
-                        });
-                        canvas?.renderAll();
-                      }
-                    }}
-                  >
-                    <FaStrikethrough />
-                  </Button>
-
-                  {/* Text Alignment Buttons */}
-                  {["left", "center", "right", "justify"].map((align) => (
-                    <Button
-                      key={align}
-                      id={`${align}-align-mode`}
-                      variant="ghost"
-                      size="icon"
-                      className={clsx(
-                        "bg-transparent hover:bg-none",
-                        (selectedObject as fabric.IText).textAlign === align &&
-                          "bg-secondary"
-                      )}
-                      onClick={() => {
-                        if (
-                          selectedObject &&
-                          selectedObject.type === "i-text"
-                        ) {
-                          (selectedObject as fabric.IText).set({
-                            textAlign: align as fabric.TextAlign,
-                          });
-                          canvas?.renderAll();
-                        }
-                      }}
-                    >
-                      {align === "left" && <FaAlignLeft />}
-                      {align === "center" && <FaAlignCenter />}
-                      {align === "right" && <FaAlignRight />}
-                      {align === "justify" && <FaAlignJustify />}
-                    </Button>
-                  ))}
-                </div>
-              </>
+                ))}
+              </div>
             </>
           )}
 
@@ -440,8 +428,8 @@ export default function Settings({ canvas }: SettingsProps) {
               </PopoverContent>
             </Popover>
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
