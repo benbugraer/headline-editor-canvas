@@ -1,4 +1,4 @@
-# Canvas Editor Projesi
+# Canvas Editor Project
 
 ## Türkçe
 
@@ -57,10 +57,6 @@ You can view the application by opening [http://localhost:3000](http://localhost
 - Resim yükleme
 - Yazı düzenleme
 - Dikdörtgen, Çember, Yazı, Resim
-
-## Lisans
-
-[MIT](https://choosealicense.com/licenses/mit/)
 
 ## Features
 
