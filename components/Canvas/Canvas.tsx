@@ -7,7 +7,7 @@ import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
 import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings";
 import Sidebar from "../Sidebar/Sidebar";
-import TopBar from "../TopBar/TopBar";
+// import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -25,15 +25,15 @@ export default function CanvasApp() {
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
       <Sidebar canvas={canvas} />
-      <div className="flex flex-col h-screen">
-        <TopBar canvas={canvas}>
-          <div className="flex-grow flex flex-col">
-            <Settings canvas={canvas} />
-            <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4 mt-28">
-              <canvas ref={canvasRef} className="border border-tertiary" />
-            </div>
+      <div className="flex flex-col h-10 lg:h-14 gap-4 border-b border-primary px-3">
+        {/* <TopBar canvas={canvas}> */}
+        <div className="flex-grow flex flex-col">
+          <Settings canvas={canvas} />
+          <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4 mt-28">
+            <canvas ref={canvasRef} className="border border-tertiary" />
           </div>
-        </TopBar>
+        </div>
+        {/* </TopBar> */}
       </div>
     </div>
   );

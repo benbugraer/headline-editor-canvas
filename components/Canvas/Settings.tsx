@@ -20,6 +20,7 @@ import {
 import { FaBold } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import clsx from "clsx";
+import DownloadButton from "../TopBar/DownloadButton";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -257,179 +258,187 @@ export default function Settings({ canvas }: SettingsProps) {
   }, []);
 
   return (
-    <>
-      {selectedObject && (
-        <div className="w-full text-primary p-2 flex items-center space-x-4 border-b border-primary">
-          {(selectedObject.type === "rect" ||
-            selectedObject.type === "image") && (
-            <>
+    <div className="w-full h-[60px] overflow-hidden">
+      <div
+        className={clsx(
+          "w-full min-h-[60px] transition-transform duration-200 ease-in-out",
+          !selectedObject && "-translate-y-full"
+        )}
+      >
+        {selectedObject && (
+          <div className="w-full text-primary p-2 flex items-center space-x-4">
+            {(selectedObject.type === "rect" ||
+              selectedObject.type === "image") && (
+              <>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="width">W:</Label>
+                  <Input
+                    id="width"
+                    value={width}
+                    onChange={handleWidthChange}
+                    className="w-20"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="height">H:</Label>
+                  <Input
+                    id="height"
+                    value={height}
+                    onChange={handleHeightChange}
+                    className="w-20"
+                  />
+                </div>
+              </>
+            )}
+
+            {selectedObject.type === "circle" && (
               <div className="flex items-center space-x-2">
-                <Label htmlFor="width">W:</Label>
+                <Label htmlFor="diameter">Diameter:</Label>
                 <Input
-                  id="width"
-                  value={width}
-                  onChange={handleWidthChange}
+                  id="diameter"
+                  value={diameter}
+                  onChange={handleDiameterChange}
                   className="w-20"
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="height">H:</Label>
-                <Input
-                  id="height"
-                  value={height}
-                  onChange={handleHeightChange}
-                  className="w-20"
-                />
-              </div>
-            </>
-          )}
+            )}
 
-          {selectedObject.type === "circle" && (
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="diameter">Diameter:</Label>
-              <Input
-                id="diameter"
-                value={diameter}
-                onChange={handleDiameterChange}
-                className="w-20"
-              />
-            </div>
-          )}
-
-          {selectedObject.type === "i-text" && (
-            <>
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="fontSize">Font Size:</Label>
-                <Input
-                  id="fontSize"
-                  value={fontSize === 0 ? "" : fontSize}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "") {
-                      setFontSize(0);
-                      return;
-                    }
-                    const intValue = parseInt(value, 10);
-                    if (!isNaN(intValue)) {
-                      setFontSize(intValue);
-                      if (selectedObject && selectedObject.type === "i-text") {
-                        (selectedObject as fabric.IText).set({
-                          fontSize: intValue,
-                        });
-                        canvas?.renderAll();
+            {selectedObject.type === "i-text" && (
+              <>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="fontSize">Font Size:</Label>
+                  <Input
+                    id="fontSize"
+                    value={fontSize === 0 ? "" : fontSize}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        setFontSize(0);
+                        return;
                       }
-                    }
-                  }}
-                  className="w-20"
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                {/* Bold Button */}
-                <Button
-                  id="bold-mode"
-                  variant="ghost"
-                  size="icon"
-                  className={clsx(
-                    "bg-transparent hover:bg-none",
-                    textFormatting.bold && "bg-tertiary"
-                  )}
-                  onClick={() =>
-                    updateTextFormatting("bold", !textFormatting.bold)
-                  }
-                >
-                  <FaBold />
-                </Button>
-
-                {/* Italic Button */}
-                <Button
-                  id="italic-mode"
-                  variant="ghost"
-                  size="icon"
-                  className={clsx(
-                    "bg-transparent hover:bg-none",
-                    textFormatting.italic && "bg-tertiary"
-                  )}
-                  onClick={() =>
-                    updateTextFormatting("italic", !textFormatting.italic)
-                  }
-                >
-                  <FaItalic />
-                </Button>
-
-                {/* Underline Button */}
-                <Button
-                  id="underline-mode"
-                  variant="ghost"
-                  size="icon"
-                  className={clsx(
-                    "bg-transparent hover:bg-none",
-                    textFormatting.underline && "bg-tertiary"
-                  )}
-                  onClick={() =>
-                    updateTextFormatting("underline", !textFormatting.underline)
-                  }
-                >
-                  <FaUnderline />
-                </Button>
-
-                {/* Strikethrough Button */}
-                <Button
-                  id="strikethrough-mode"
-                  variant="ghost"
-                  size="icon"
-                  className={clsx(
-                    "bg-transparent hover:bg-none",
-                    textFormatting.strikethrough && "bg-tertiary"
-                  )}
-                  onClick={() =>
-                    updateTextFormatting(
-                      "strikethrough",
-                      !textFormatting.strikethrough
-                    )
-                  }
-                >
-                  <FaStrikethrough />
-                </Button>
-
-                {/* Text Alignment Buttons */}
-                {["left", "center", "right", "justify"].map((align) => (
+                      const intValue = parseInt(value, 10);
+                      if (!isNaN(intValue)) {
+                        setFontSize(intValue);
+                        if (
+                          selectedObject &&
+                          selectedObject.type === "i-text"
+                        ) {
+                          (selectedObject as fabric.IText).set({
+                            fontSize: intValue,
+                          });
+                          canvas?.renderAll();
+                        }
+                      }
+                    }}
+                    className="w-20"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
                   <Button
-                    key={align}
-                    id={`${align}-align-mode`}
+                    id="bold-mode"
                     variant="ghost"
                     size="icon"
                     className={clsx(
                       "bg-transparent hover:bg-none",
-                      textFormatting.textAlign === align && "bg-tertiary"
+                      textFormatting.bold && "bg-tertiary"
                     )}
-                    onClick={() => updateTextFormatting("textAlign", align)}
+                    onClick={() =>
+                      updateTextFormatting("bold", !textFormatting.bold)
+                    }
                   >
-                    {align === "left" && <FaAlignLeft />}
-                    {align === "center" && <FaAlignCenter />}
-                    {align === "right" && <FaAlignRight />}
-                    {align === "justify" && <FaAlignJustify />}
+                    <FaBold />
                   </Button>
-                ))}
-              </div>
-            </>
-          )}
 
-          <div className="flex items-center space-x-2">
-            <Label>Color:</Label>
-            <Popover>
-              <PopoverTrigger>
-                <div
-                  className="w-6 h-6 rounded-sm cursor-pointer border border-gray-300"
-                  style={{ backgroundColor: color }}
-                />
-              </PopoverTrigger>
-              <PopoverContent className="p-0 w-full">
-                <SketchPicker color={color} onChange={handleColorChange} />
-              </PopoverContent>
-            </Popover>
+                  <Button
+                    id="italic-mode"
+                    variant="ghost"
+                    size="icon"
+                    className={clsx(
+                      "bg-transparent hover:bg-none",
+                      textFormatting.italic && "bg-tertiary"
+                    )}
+                    onClick={() =>
+                      updateTextFormatting("italic", !textFormatting.italic)
+                    }
+                  >
+                    <FaItalic />
+                  </Button>
+
+                  <Button
+                    id="underline-mode"
+                    variant="ghost"
+                    size="icon"
+                    className={clsx(
+                      "bg-transparent hover:bg-none",
+                      textFormatting.underline && "bg-tertiary"
+                    )}
+                    onClick={() =>
+                      updateTextFormatting(
+                        "underline",
+                        !textFormatting.underline
+                      )
+                    }
+                  >
+                    <FaUnderline />
+                  </Button>
+
+                  <Button
+                    id="strikethrough-mode"
+                    variant="ghost"
+                    size="icon"
+                    className={clsx(
+                      "bg-transparent hover:bg-none",
+                      textFormatting.strikethrough && "bg-tertiary"
+                    )}
+                    onClick={() =>
+                      updateTextFormatting(
+                        "strikethrough",
+                        !textFormatting.strikethrough
+                      )
+                    }
+                  >
+                    <FaStrikethrough />
+                  </Button>
+
+                  {["left", "center", "right", "justify"].map((align) => (
+                    <Button
+                      key={align}
+                      id={`${align}-align-mode`}
+                      variant="ghost"
+                      size="icon"
+                      className={clsx(
+                        "bg-transparent hover:bg-none",
+                        textFormatting.textAlign === align && "bg-tertiary"
+                      )}
+                      onClick={() => updateTextFormatting("textAlign", align)}
+                    >
+                      {align === "left" && <FaAlignLeft />}
+                      {align === "center" && <FaAlignCenter />}
+                      {align === "right" && <FaAlignRight />}
+                      {align === "justify" && <FaAlignJustify />}
+                    </Button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="flex items-center space-x-2">
+              <Label>Color:</Label>
+              <Popover>
+                <PopoverTrigger>
+                  <div
+                    className="w-6 h-6 rounded-sm cursor-pointer border border-gray-300"
+                    style={{ backgroundColor: color }}
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-full">
+                  <SketchPicker color={color} onChange={handleColorChange} />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 }
