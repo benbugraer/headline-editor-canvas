@@ -19,3 +19,13 @@ export type CanvasEventHandlers = {
   onObjectMoving: (canvas: Canvas, target: FabricObject | undefined) => void;
   onObjectModified: () => void;
 };
+
+export type TextAlignType = "left" | "center" | "right" | "justify";
+
+export interface TextFormatting {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strikethrough: boolean;
+  textAlign: TextAlignType;
+}

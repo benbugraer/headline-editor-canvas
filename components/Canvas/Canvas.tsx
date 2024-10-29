@@ -7,7 +7,6 @@ import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
 import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings";
 import Sidebar from "../Sidebar/Sidebar";
-// import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

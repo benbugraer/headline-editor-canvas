@@ -58,10 +58,6 @@ You can view the application by opening [http://localhost:3000](http://localhost
 - Yazı düzenleme
 - Dikdörtgen, Çember, Yazı, Resim
 
-## Lisans
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
 ## Features
 
 - Interactive canvas editing
