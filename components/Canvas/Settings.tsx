@@ -40,8 +40,8 @@ export default function Settings({ canvas }: SettingsProps) {
   useEffect(() => {
     if (!canvas) return;
 
-    const handleSelection = (event: fabric.IEvent) => {
-      const selected = (event as any).selected?.[0];
+    const handleSelection = (event: fabric.TEvent) => {
+      const selected = event.selected?.[0];
       if (selected) {
         handleObjectSelection(selected);
       } else {
@@ -64,41 +64,43 @@ export default function Settings({ canvas }: SettingsProps) {
     };
   }, [canvas, handleObjectSelection, clearSettings]);
 
-  if (!selectedObject) return null;
-
   return (
     <div className="w-full h-[60px] overflow-hidden">
-      <div className="w-full min-w-[60px] transition-all duration-300 text-primary p-2 flex items-center space-x-4">
-        <DimensionInputs
-          objectType={selectedObject.type}
-          width={width}
-          height={height}
-          diameter={diameter}
-          onWidthChange={handleWidthChange}
-          onHeightChange={handleHeightChange}
-          onDiameterChange={handleDiameterChange}
-        />
+      {selectedObject ? (
+        <div className="min-w-[60px] border-b border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+          <DimensionInputs
+            objectType={selectedObject.type}
+            width={width}
+            height={height}
+            diameter={diameter}
+            onWidthChange={handleWidthChange}
+            onHeightChange={handleHeightChange}
+            onDiameterChange={handleDiameterChange}
+          />
 
-        {selectedObject.type === "i-text" && (
-          <>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="fontSize">Font Size:</Label>
-              <Input
-                id="fontSize"
-                value={fontSize === 0 ? "" : fontSize}
-                onChange={handleFontSizeChange}
-                className="w-20"
+          {selectedObject.type === "i-text" && (
+            <>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="fontSize">Font Size:</Label>
+                <Input
+                  id="fontSize"
+                  value={fontSize === 0 ? "" : fontSize}
+                  onChange={handleFontSizeChange}
+                  className="w-20"
+                />
+              </div>
+              <TextFormattingControls
+                textFormatting={textFormatting}
+                updateTextFormatting={updateTextFormatting}
               />
-            </div>
-            <TextFormattingControls
-              textFormatting={textFormatting}
-              updateTextFormatting={updateTextFormatting}
-            />
-          </>
-        )}
+            </>
+          )}
 
-        <ColorPicker color={color} onChange={handleColorChange} />
-      </div>
+          <ColorPicker color={color} onChange={handleColorChange} />
+        </div>
+      ) : (
+        <div className="h-full border-b border-transparent"></div>
+      )}
     </div>
   );
 }

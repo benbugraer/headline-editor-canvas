@@ -1,6 +1,6 @@
 import React from "react";
 import * as fabric from "fabric";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import {
   Tooltip,
   TooltipContent,
