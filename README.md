@@ -1,4 +1,4 @@
-# Canvas Editor Projesi
+# Canvas Editor Project
 
 ## Türkçe
 
