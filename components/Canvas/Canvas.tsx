@@ -6,7 +6,7 @@ import { GuidelineType } from "./types/canvas.types";
 import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
 import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings";
-import Sidebar from "../Sidebar";
+import Sidebar from "./Sidebar";
 import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {
