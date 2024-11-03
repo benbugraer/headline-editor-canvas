@@ -9,9 +9,11 @@ import { ColorPicker } from "./ColorPicker";
 import { TextFormattingControls } from "./TextFormattingControls";
 import { FontFamilySelect, fontFamilies } from "./FontFamilySelect"; // fontFamilies'i import ediyoruz
 import { LayerControls } from "./LayerControls";
+import { layerManagement } from "./utils/LayerManagement";
+import { Canvas, Object as FabricObject } from "fabric/fabric-impl";
 
 interface SettingsProps {
-  canvas: fabric.Canvas | null;
+  canvas: Canvas | null;
 }
 
 export default function Settings({ canvas }: SettingsProps) {
@@ -44,8 +46,8 @@ export default function Settings({ canvas }: SettingsProps) {
   useEffect(() => {
     if (!canvas) return;
 
-    const handleSelection = (event: fabric.TEvent) => {
-      const selected = event.selected?.[0];
+    const handleSelection = (event: any) => {
+      const selected = event.selected?.[0] as FabricObject;
       if (selected) {
         handleObjectSelection(selected);
       } else {
@@ -56,8 +58,8 @@ export default function Settings({ canvas }: SettingsProps) {
     canvas.on("selection:created", handleSelection);
     canvas.on("selection:updated", handleSelection);
     canvas.on("selection:cleared", clearSettings);
-    canvas.on("object:modified", (event) =>
-      handleObjectSelection(event.target!)
+    canvas.on("object:modified", (event: any) =>
+      handleObjectSelection(event.target as FabricObject)
     );
 
     return () => {
@@ -67,6 +69,14 @@ export default function Settings({ canvas }: SettingsProps) {
       canvas.off("object:modified");
     };
   }, [canvas, handleObjectSelection, clearSettings]);
+
+  const handleAlignChange = useCallback(
+    (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
+      if (!canvas || !selectedObject) return;
+      layerManagement.alignObject(canvas, selectedObject, align);
+    },
+    [canvas, selectedObject]
+  );
 
   return (
     <div className="w-full h-[60px] overflow-hidden">
@@ -110,7 +120,7 @@ export default function Settings({ canvas }: SettingsProps) {
           )}
 
           <ColorPicker color={color} onChange={handleColorChange} />
-          <LayerControls />
+          <LayerControls onAlignChange={handleAlignChange} />
         </div>
       ) : (
         <div className="h-full border-b border-transparent"></div>
