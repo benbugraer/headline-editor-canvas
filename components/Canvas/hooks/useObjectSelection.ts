@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import * as fabric from "fabric"; // v6
 import { ColorResult } from "react-color";
 
@@ -11,6 +11,7 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
   const [diameter, setDiameter] = useState<string>("");
   const [color, setColor] = useState<string>("#000");
   const [fontSize, setFontSize] = useState<number>(20);
+  const [fontFamily, setFontFamily] = useState<string>("Arial");
 
   const handleObjectSelection = useCallback((object: fabric.Object | null) => {
     setSelectedObject(object);
@@ -135,6 +136,26 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     [selectedObject, canvas]
   );
 
+  const handleFontFamilyChange = useCallback(
+    (newFontFamily: string) => {
+      if (!selectedObject || !canvas) return;
+
+      if (selectedObject.type === "i-text") {
+        (selectedObject as fabric.IText).set("fontFamily", newFontFamily);
+        canvas.requestRenderAll();
+        setFontFamily(newFontFamily);
+      }
+    },
+    [selectedObject, canvas]
+  );
+
+  useEffect(() => {
+    if (selectedObject && selectedObject.type === "i-text") {
+      const textObject = selectedObject as fabric.IText;
+      setFontFamily(textObject.fontFamily || "Arial");
+    }
+  }, [selectedObject]);
+
   return {
     selectedObject,
     width,
@@ -142,11 +163,13 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     diameter,
     color,
     fontSize,
+    fontFamily,
     handleObjectSelection,
     handleWidthChange,
     handleHeightChange,
     handleDiameterChange,
     handleColorChange,
     handleFontSizeChange,
+    handleFontFamilyChange,
   };
 };

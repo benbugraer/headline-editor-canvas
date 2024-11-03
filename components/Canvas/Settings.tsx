@@ -7,6 +7,7 @@ import { useTextFormatting } from "./hooks/useTextFormatting";
 import { DimensionInputs } from "./DimensionInputs";
 import { ColorPicker } from "./ColorPicker";
 import { TextFormattingControls } from "./TextFormattingControls";
+import { FontFamilySelect, fontFamilies } from "./FontFamilySelect"; // fontFamilies'i import ediyoruz
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -20,12 +21,14 @@ export default function Settings({ canvas }: SettingsProps) {
     diameter,
     color,
     fontSize,
+    fontFamily,
     handleObjectSelection,
     handleWidthChange,
     handleHeightChange,
     handleDiameterChange,
     handleColorChange,
     handleFontSizeChange,
+    handleFontFamilyChange,
   } = useObjectSelection(canvas);
 
   const { textFormatting, updateTextFormatting } = useTextFormatting(
@@ -89,6 +92,15 @@ export default function Settings({ canvas }: SettingsProps) {
                   className="w-20"
                 />
               </div>
+              <FontFamilySelect
+                value={fontFamily}
+                onValueChange={(newFont) => {
+                  const selectedFontFamily = fontFamilies.find(
+                    (font) => font.name === newFont
+                  )?.family;
+                  handleFontFamilyChange(selectedFontFamily || newFont);
+                }}
+              />
               <TextFormattingControls
                 textFormatting={textFormatting}
                 updateTextFormatting={updateTextFormatting}
