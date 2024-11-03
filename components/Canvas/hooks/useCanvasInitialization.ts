@@ -1,5 +1,5 @@
 import { useEffect, RefObject } from "react";
-import { Canvas } from "fabric";
+import { Canvas, Image as FabricImage } from "fabric"; // Image'i de import ediyoruz
 import { CanvasConfigType, GuidelineType } from "../types/canvas.types";
 import { handleObjectMoving, clearGuidelines } from "../utils/snapping";
 
@@ -27,8 +27,66 @@ export const useCanvasInitialization = (
       clearGuidelines(initCanvas, guidelines, setGuidelines);
     });
 
+    // Kopyala-yapıştır işlevi için event listener
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+
+      const clipboardItems = event.clipboardData?.items;
+      if (!clipboardItems) return;
+
+      for (let i = 0; i < clipboardItems.length; i++) {
+        const item = clipboardItems[i];
+
+        if (item.type.indexOf("image") !== -1) {
+          const blob = item.getAsFile();
+          if (!blob) continue;
+
+          const img = new Image();
+          const blobUrl = URL.createObjectURL(blob);
+
+          img.onload = () => {
+            // FabricImage kullanıyoruz (fabric.Image yerine)
+            const fabricImage = new FabricImage(img, {
+              left: initCanvas.width! / 2,
+              top: initCanvas.height! / 2,
+              originX: "center",
+              originY: "center",
+            });
+
+            // Boyutlandırma
+            const scale = Math.min(
+              (initCanvas.width! * 0.8) / img.width,
+              (initCanvas.height! * 0.8) / img.height,
+              1
+            );
+            fabricImage.scale(scale);
+
+            // Canvas'a ekle
+            initCanvas.add(fabricImage);
+            initCanvas.setActiveObject(fabricImage);
+            initCanvas.renderAll();
+
+            // Belleği temizle
+            URL.revokeObjectURL(blobUrl);
+          };
+
+          img.onerror = () => {
+            console.error("Error loading image");
+            URL.revokeObjectURL(blobUrl);
+          };
+
+          img.src = blobUrl;
+          break;
+        }
+      }
+    };
+
+    // Event listener'ı ekle
+    window.addEventListener("paste", handlePaste);
+
     return () => {
       initCanvas.dispose();
+      window.removeEventListener("paste", handlePaste);
     };
   }, []);
 };
