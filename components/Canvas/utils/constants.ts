@@ -33,8 +33,8 @@ export const GUIDELINE_STYLES = {
   opacity: 0.8,
 } as const;
 
-export const CANVAS_WIDTH = 1200;
-export const CANVAS_HEIGHT = 675;
+export const CANVAS_WIDTH = 979;
+export const CANVAS_HEIGHT = 550;
 
 export const LAYER_ACTIONS = [
   { action: "up" as const, icon: LuChevronUp, label: "Up" },

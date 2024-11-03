@@ -7,7 +7,8 @@ import { useTextFormatting } from "./hooks/useTextFormatting";
 import { DimensionInputs } from "./DimensionInputs";
 import { ColorPicker } from "./ColorPicker";
 import { TextFormattingControls } from "./TextFormattingControls";
-import { FontFamilySelect, fontFamilies } from "./FontFamilySelect"; // fontFamilies'i import ediyoruz
+import { FontFamilySelect } from "./FontFamilySelect";
+import { fontFamilies } from "./lib/fonts";
 import { LayerControls } from "./LayerControls";
 import { layerManagement } from "./utils/LayerManagement";
 import { Canvas, Object as FabricObject } from "fabric/fabric-impl";

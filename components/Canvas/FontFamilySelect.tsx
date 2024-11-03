@@ -6,134 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Roboto,
-  Open_Sans,
-  Lato,
-  Montserrat,
-  Raleway,
-  Ubuntu,
-  Playfair_Display,
-  Merriweather,
-  Source_Sans_3,
-  Poppins,
-} from "next/font/google";
-
-// Font configurations
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const ubuntu = Ubuntu({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-// Font families array with both system and Google fonts
-export const fontFamilies = [
-  {
-    name: "Arial",
-    family: "Arial, sans-serif",
-  },
-  {
-    name: "Times New Roman",
-    family: "Times New Roman, serif",
-  },
-  {
-    name: "Helvetica",
-    family: "Helvetica, sans-serif",
-  },
-  {
-    name: "Georgia",
-    family: "Georgia, serif",
-  },
-  {
-    name: "Roboto",
-    family: roboto.style.fontFamily,
-  },
-  {
-    name: "Open Sans",
-    family: openSans.style.fontFamily,
-  },
-  {
-    name: "Lato",
-    family: lato.style.fontFamily,
-  },
-  {
-    name: "Montserrat",
-    family: montserrat.style.fontFamily,
-  },
-  {
-    name: "Raleway",
-    family: raleway.style.fontFamily,
-  },
-  {
-    name: "Ubuntu",
-    family: ubuntu.style.fontFamily,
-  },
-  {
-    name: "Playfair Display",
-    family: playfairDisplay.style.fontFamily,
-  },
-  {
-    name: "Merriweather",
-    family: merriweather.style.fontFamily,
-  },
-  {
-    name: "Source Sans",
-    family: sourceSans.style.fontFamily,
-  },
-  {
-    name: "Poppins",
-    family: poppins.style.fontFamily,
-  },
-];
+import { fontFamilies, type FontFamily } from "./lib/fonts";
 
 interface FontFamilySelectProps {
   value: string;
@@ -144,21 +17,21 @@ export function FontFamilySelect({
   value,
   onValueChange,
 }: FontFamilySelectProps) {
-  const currentFontName =
-    fontFamilies.find((font) => font.family === value || font.name === value)
-      ?.name || value;
+  const getCurrentFont = React.useCallback(
+    (value: string): FontFamily | undefined =>
+      fontFamilies.find((font) => font.family === value || font.name === value),
+    []
+  );
+
+  const currentFont = getCurrentFont(value);
+
   return (
-    <Select value={currentFontName} onValueChange={onValueChange}>
+    <Select value={currentFont?.name ?? value} onValueChange={onValueChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue>
-          {currentFontName ? (
-            <span
-              style={{
-                fontFamily: fontFamilies.find((f) => f.name === currentFontName)
-                  ?.family,
-              }}
-            >
-              {currentFontName}
+          {currentFont ? (
+            <span style={{ fontFamily: currentFont.family }}>
+              {currentFont.name}
             </span>
           ) : (
             "Select font"
