@@ -8,6 +8,7 @@ import { DimensionInputs } from "./DimensionInputs";
 import { ColorPicker } from "./ColorPicker";
 import { TextFormattingControls } from "./TextFormattingControls";
 import { FontFamilySelect, fontFamilies } from "./FontFamilySelect"; // fontFamilies'i import ediyoruz
+import { LayerControls } from "./LayerControls";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -109,6 +110,7 @@ export default function Settings({ canvas }: SettingsProps) {
           )}
 
           <ColorPicker color={color} onChange={handleColorChange} />
+          <LayerControls />
         </div>
       ) : (
         <div className="h-full border-b border-transparent"></div>

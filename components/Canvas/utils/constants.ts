@@ -1,3 +1,19 @@
+import {
+  LuChevronDown,
+  LuChevronsDown,
+  LuChevronUp,
+  LuChevronsUp,
+} from "react-icons/lu";
+
+import {
+  CiAlignLeft,
+  CiAlignRight,
+  CiAlignTop,
+  CiAlignBottom,
+  CiAlignCenterH,
+  CiAlignCenterV,
+} from "react-icons/ci";
+
 export const CANVAS_DEFAULT_CONFIG = {
   width: 1200,
   height: 675,
@@ -19,3 +35,19 @@ export const GUIDELINE_STYLES = {
 
 export const CANVAS_WIDTH = 1200;
 export const CANVAS_HEIGHT = 675;
+
+export const LAYER_ACTIONS = [
+  { action: "up" as const, icon: LuChevronUp, label: "Up" },
+  { action: "down" as const, icon: LuChevronDown, label: "Down" },
+  { action: "top" as const, icon: LuChevronsUp, label: "To forward" },
+  { action: "bottom" as const, icon: LuChevronsDown, label: "To bottom" },
+] as const;
+
+export const ALIGN_ACTIONS = [
+  { align: "left" as const, icon: CiAlignLeft },
+  { align: "center" as const, icon: CiAlignCenterH },
+  { align: "right" as const, icon: CiAlignRight },
+  { align: "top" as const, icon: CiAlignTop },
+  { align: "middle" as const, icon: CiAlignCenterV },
+  { align: "bottom" as const, icon: CiAlignBottom },
+] as const;
