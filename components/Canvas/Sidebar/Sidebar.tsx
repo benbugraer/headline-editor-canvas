@@ -1,8 +1,8 @@
 import React from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Canvas as FabricCanvas } from "fabric";
-import { TOOLBAR_ITEMS } from "./types/canvas.types";
-import { useCanvasShapes } from "./hooks/useCanvasShapes";
+import { TOOLBAR_ITEMS } from "../types/canvas.types";
+import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { ToolbarButton } from "./ToolbarButton";
 
 interface SidebarProps {

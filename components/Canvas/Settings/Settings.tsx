@@ -2,15 +2,15 @@ import React, { useEffect, useCallback } from "react";
 import * as fabric from "fabric"; // v6
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useObjectSelection } from "./hooks/useObjectSelection";
-import { useTextFormatting } from "./hooks/useTextFormatting";
-import { DimensionInputs } from "./DimensionInputs";
-import { ColorPicker } from "./ColorPicker";
-import { TextFormattingControls } from "./TextFormattingControls";
-import { FontFamilySelect } from "./FontFamilySelect";
-import { fontFamilies } from "./lib/fonts";
-import { LayerControls } from "./LayerControls";
-import { layerManagement } from "./utils/LayerManagement";
+import { useObjectSelection } from "../hooks/useObjectSelection";
+import { useTextFormatting } from "../hooks/useTextFormatting";
+import { DimensionInputs } from "../Features/DimensionInputs";
+import { ColorPicker } from "../Features/ColorPicker";
+import { TextFormattingControls } from "../Features/TextFormattingControls";
+import { FontFamilySelect } from "../Features/FontFamilySelect";
+import { fontFamilies } from "../lib/fonts";
+import { LayerControls } from "../Features/LayerControls";
+import { layerManagement } from "../utils/LayerManagement";
 import { Canvas, Object as FabricObject } from "fabric/fabric-impl";
 
 interface SettingsProps {

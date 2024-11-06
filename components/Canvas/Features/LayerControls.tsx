@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Layers } from "lucide-react";
-import { LAYER_ACTIONS, ALIGN_ACTIONS } from "./utils/constants";
+import { LAYER_ACTIONS, ALIGN_ACTIONS } from "../utils/constants";
 
 interface LayerControlsProps {
   onLayerChange: (action: "up" | "down" | "top" | "bottom") => void;

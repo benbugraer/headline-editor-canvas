@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 
 interface CanvasSettingsProps {
   canvas?: {

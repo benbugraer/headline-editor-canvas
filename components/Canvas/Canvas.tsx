@@ -5,8 +5,8 @@ import { Canvas } from "fabric";
 import { GuidelineType } from "./types/canvas.types";
 import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
 import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
-import Settings from "./Settings";
-import Sidebar from "./Sidebar";
+import Settings from "./Settings/Settings";
+import Sidebar from "./Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {

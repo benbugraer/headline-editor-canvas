@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fontFamilies, type FontFamily } from "./lib/fonts";
+import { fontFamilies, type FontFamily } from "../lib/fonts";
 
 interface FontFamilySelectProps {
   value: string;
