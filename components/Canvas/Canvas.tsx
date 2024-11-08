@@ -6,7 +6,7 @@ import { GuidelineType } from "./types/canvas.types";
 import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
 import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings/Settings";
-import Sidebar from "./Sidebar/Sidebar";
+import CanvasSidebar from "./CanvasSidebar/CanvasSidebar";
 import TopBar from "../TopBar/TopBar";
 
 export default function CanvasApp() {
@@ -23,8 +23,8 @@ export default function CanvasApp() {
   );
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
-      <Sidebar canvas={canvas} />
+    <div className="grid min-h-screen w-full lg:grid-cols-[1.938rem_1fr]">
+      <CanvasSidebar canvas={canvas} />
       <TopBar canvas={canvas}>
         <Settings canvas={canvas} />
         <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4">
