@@ -4,7 +4,8 @@ import { Canvas as FabricCanvas } from "fabric";
 import { TOOLBAR_ITEMS } from "../types/canvas.types";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { ToolbarButton } from "./ToolbarButton";
-
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import { IconPicker } from "../Features/IconPicker";
 interface SidebarProps {
   canvas: FabricCanvas | null;
 }
@@ -16,6 +17,7 @@ export default function Sidebar({ canvas }: SidebarProps) {
     handleAddCircle,
     handleAddText,
     handleImageUpload,
+    handleAddIcon,
   } = useCanvasShapes(canvas);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +55,28 @@ export default function Sidebar({ canvas }: SidebarProps) {
           />
           <nav className="space-y-2">
             {TOOLBAR_ITEMS.map((item) => (
-              <ToolbarButton
-                key={item.label}
-                label={item.label}
-                icon={item.icon}
-                onClick={getClickHandler(item.label)}
-              />
+              <React.Fragment key={item.label}>
+                {item.label === "Add Icon" ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div>
+                        <ToolbarButton
+                          label={item.label}
+                          icon={item.icon}
+                          onClick={() => {}}
+                        />
+                      </div>
+                    </PopoverTrigger>
+                    <IconPicker onIconSelect={handleAddIcon} />
+                  </Popover>
+                ) : (
+                  <ToolbarButton
+                    label={item.label}
+                    icon={item.icon}
+                    onClick={getClickHandler(item.label)}
+                  />
+                )}
+              </React.Fragment>
             ))}
           </nav>
         </TooltipProvider>

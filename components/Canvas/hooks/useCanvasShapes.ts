@@ -1,5 +1,8 @@
 import { Canvas as FabricCanvas } from "fabric";
 import * as fabric from "fabric";
+import { useCallback } from "react";
+import type { TEvent } from "fabric/fabric-impl";
+import { downloadIcon } from "@/services/iconFinder";
 
 export function useCanvasShapes(canvas: FabricCanvas | null) {
   const handleAddRectangle = () => {
@@ -36,7 +39,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
       fontSize: 20,
       fill: "#000000",
     });
-    text.on("mousedown", (e: fabric.IEvent) => {
+    text.on("mousedown", (e: TEvent) => {
       if (e.button !== 2) return;
       text.enterEditing();
       text.selectAll();
@@ -64,10 +67,30 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
     reader.readAsDataURL(file);
   };
 
+  const handleAddIcon = useCallback(
+    (iconPath: string, color: string) => {
+      if (!canvas) return;
+
+      const path = new fabric.Path(iconPath, {
+        left: 200,
+        top: 200,
+        fill: color,
+        scaleX: 0.05,
+        scaleY: 0.05,
+      });
+
+      canvas.add(path);
+      canvas.setActiveObject(path);
+      canvas.renderAll();
+    },
+    [canvas]
+  );
+
   return {
     handleAddRectangle,
     handleAddCircle,
     handleAddText,
     handleImageUpload,
+    handleAddIcon,
   };
 }

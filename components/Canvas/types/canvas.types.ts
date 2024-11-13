@@ -1,7 +1,12 @@
 import { Canvas, Object as FabricObject, Line } from "fabric";
-import { RxText } from "react-icons/rx";
-import { MdOutlineRectangle, MdOutlineCircle } from "react-icons/md";
-import { RiImageAddFill } from "react-icons/ri";
+import {
+  BiRectangle,
+  BiCircle,
+  BiText,
+  BiImageAdd,
+  BiPlus,
+} from "react-icons/bi";
+import { MdOutlineLibraryAdd } from "react-icons/md";
 
 export type GuidelineType = {
   id: string; // GuidelineId enum değerlerinden biri
@@ -36,18 +41,22 @@ export interface TextFormatting {
 export const TOOLBAR_ITEMS = [
   {
     label: "Rectangle",
-    icon: MdOutlineRectangle,
+    icon: BiRectangle,
   },
   {
     label: "Circle",
-    icon: MdOutlineCircle,
+    icon: BiCircle,
   },
   {
     label: "Text",
-    icon: RxText,
+    icon: BiText,
   },
   {
     label: "Add Image",
-    icon: RiImageAddFill,
+    icon: BiImageAdd,
+  },
+  {
+    label: "Add Icon",
+    icon: MdOutlineLibraryAdd,
   },
 ] as const;

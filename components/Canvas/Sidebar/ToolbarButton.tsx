@@ -1,9 +1,10 @@
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { IconType } from "react-icons";
 
 interface ToolbarButtonProps {
   label: string;
-  icon: React.ElementType;
+  icon: IconType;
   onClick: () => void;
 }
 

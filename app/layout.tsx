@@ -16,9 +16,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`h-screen bg-white ${jost.className}`}>
-        <main className="flex h-full">{children}</main>
-      </body>
+      <head></head>
+      <body>{children}</body>
     </html>
   );
 }
