@@ -82,7 +82,7 @@ export default function Settings({ canvas }: SettingsProps) {
   return (
     <div className="w-full h-[60px] overflow-hidden">
       {selectedObject ? (
-        <div className="min-w-[60px] border-b border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+        <div className="min-w-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
           <DimensionInputs
             objectType={selectedObject.type}
             width={width}

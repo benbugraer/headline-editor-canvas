@@ -11,7 +11,7 @@ import {
   FaAlignJustify,
 } from "react-icons/fa";
 import clsx from "clsx";
-import { TextFormatting, TextAlignType } from "./types/canvas.types";
+import { TextFormatting, TextAlignType } from "../types/canvas.types";
 
 interface TextFormattingControlsProps {
   textFormatting: TextFormatting;

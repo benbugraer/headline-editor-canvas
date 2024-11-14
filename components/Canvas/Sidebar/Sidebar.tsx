@@ -43,7 +43,7 @@ export default function Sidebar({ canvas }: SidebarProps) {
   };
 
   return (
-    <aside className="hidden lg:flex h-screen w-55 flex-col border-r">
+    <aside className="w-40 flex flex-col border-r bg-secondary">
       <div className="flex-1 overflow-y-auto p-4">
         <TooltipProvider>
           <input

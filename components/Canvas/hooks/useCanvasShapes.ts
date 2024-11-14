@@ -1,8 +1,7 @@
 import { Canvas as FabricCanvas } from "fabric";
 import * as fabric from "fabric";
 import { useCallback } from "react";
-import type { TEvent } from "fabric/fabric-impl";
-import { downloadIcon } from "@/services/iconFinder";
+import type { IEvent } from "fabric";
 
 export function useCanvasShapes(canvas: FabricCanvas | null) {
   const handleAddRectangle = () => {
@@ -39,7 +38,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
       fontSize: 20,
       fill: "#000000",
     });
-    text.on("mousedown", (e: TEvent) => {
+    text.on("mousedown", (e: IEvent) => {
       if (e.button !== 2) return;
       text.enterEditing();
       text.selectAll();

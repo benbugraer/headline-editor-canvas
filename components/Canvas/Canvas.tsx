@@ -23,14 +23,15 @@ export default function CanvasApp() {
   );
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[10.938rem_1fr]">
+    <div className="min-h-screen flex">
       <Sidebar canvas={canvas} />
-      <TopBar canvas={canvas}>
+      <div className="flex-grow flex flex-col">
+        <TopBar canvas={canvas} />
         <Settings canvas={canvas} />
-        <div className="flex-grow flex flex-col justify-center items-center overflow-auto p-4">
+        <div className="flex-grow flex justify-center items-center overflow-auto p-4">
           <canvas ref={canvasRef} className="border border-tertiary" />
         </div>
-      </TopBar>
+      </div>
     </div>
   );
 }

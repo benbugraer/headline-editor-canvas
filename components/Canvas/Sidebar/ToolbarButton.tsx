@@ -21,7 +21,7 @@ export function ToolbarButton({
           className="w-full justify-start gap-3 hover:bg-primary hover:text-white"
           onClick={onClick}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-7 w-7" />
           <span>{label}</span>
         </Button>
       </TooltipTrigger>
