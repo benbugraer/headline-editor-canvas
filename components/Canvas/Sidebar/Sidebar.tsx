@@ -3,9 +3,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Canvas as FabricCanvas } from "fabric";
 import { TOOLBAR_ITEMS } from "../types/canvas.types";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
-import { ToolbarButton } from "./ToolbarButton";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { IconPicker } from "../Features/IconPicker";
+import { Button } from "../../ui/button";
+
 interface SidebarProps {
   canvas: FabricCanvas | null;
 }
@@ -43,7 +44,7 @@ export default function Sidebar({ canvas }: SidebarProps) {
   };
 
   return (
-    <aside className="w-40 flex flex-col border-r bg-secondary">
+    <div className="w-40 flex flex-col border-r bg-secondary">
       <div className="flex-1 overflow-y-auto p-4">
         <TooltipProvider>
           <input
@@ -60,27 +61,33 @@ export default function Sidebar({ canvas }: SidebarProps) {
                   <Popover>
                     <PopoverTrigger asChild>
                       <div>
-                        <ToolbarButton
-                          label={item.label}
-                          icon={item.icon}
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 hover:bg-primary hover:text-white"
                           onClick={() => {}}
-                        />
+                        >
+                          <item.icon className="h-7 w-7" />
+                          <span>{item.label}</span>
+                        </Button>
                       </div>
                     </PopoverTrigger>
                     <IconPicker onIconSelect={handleAddIcon} />
                   </Popover>
                 ) : (
-                  <ToolbarButton
-                    label={item.label}
-                    icon={item.icon}
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 hover:bg-primary hover:text-white"
                     onClick={getClickHandler(item.label)}
-                  />
+                  >
+                    <item.icon className="h-7 w-7" />
+                    <span>{item.label}</span>
+                  </Button>
                 )}
               </React.Fragment>
             ))}
           </nav>
         </TooltipProvider>
       </div>
-    </aside>
+    </div>
   );
 }
