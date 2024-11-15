@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Canvas as FabricCanvas } from "fabric";
 import * as fabric from "fabric";
 import { useCallback } from "react";
-import type { IEvent } from "fabric";
+import { IEvent } from "fabric/fabric-impl";
 
 export function useCanvasShapes(canvas: FabricCanvas | null) {
   const handleAddRectangle = () => {
@@ -38,8 +39,8 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
       fontSize: 20,
       fill: "#000000",
     });
-    text.on("mousedown", (e: IEvent) => {
-      if (e.button !== 2) return;
+    text.on("mousedown", (e: fabric.TPointerEventInfo<PointerEvent>) => {
+      if (e.e.button !== 2) return;
       text.enterEditing();
       text.selectAll();
       canvas.renderAll();

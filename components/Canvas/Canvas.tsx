@@ -13,10 +13,12 @@ export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelineType[]>([]);
+  const [canvasWidth] = useState<number>(868); // Default width
+  const [canvasHeight] = useState<number>(488); // Default height
 
   useCanvasInitialization(
     canvasRef,
-    CANVAS_DEFAULT_CONFIG,
+    { ...CANVAS_DEFAULT_CONFIG, width: canvasWidth, height: canvasHeight },
     guidelines,
     setGuidelines,
     setCanvas
@@ -29,7 +31,12 @@ export default function CanvasApp() {
         <TopBar canvas={canvas} />
         <Settings canvas={canvas} />
         <div className="flex-grow flex justify-center items-center overflow-auto p-4">
-          <canvas ref={canvasRef} className="border border-tertiary" />
+          <canvas
+            ref={canvasRef}
+            className="border border-tertiary"
+            width={canvasWidth}
+            height={canvasHeight}
+          />
         </div>
       </div>
     </div>

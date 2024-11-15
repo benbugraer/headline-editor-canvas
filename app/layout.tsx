@@ -1,23 +1,25 @@
 import type { Metadata } from "next";
+import { Raleway } from "next/font/google";
 import "./globals.css";
-import { Jost } from "next/font/google";
+import clsx from "clsx";
 
-const jost = Jost({ subsets: ["latin"] });
+const raleway = Raleway({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Headline Editor Canvas",
-  description: "Welcome to Headline Editor Canvas",
+  title: "CanvasBel",
+  description: "Welcome to CanvasBel",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
-      <head></head>
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={clsx("antialiased w-full", raleway.className)}>
+        <div>{children}</div>
+      </body>
     </html>
   );
 }

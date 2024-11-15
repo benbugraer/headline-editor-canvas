@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from "react";
-import * as fabric from "fabric"; // v6
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useObjectSelection } from "../hooks/useObjectSelection";
@@ -9,12 +8,20 @@ import { ColorPicker } from "../Features/ColorPicker";
 import { TextFormattingControls } from "../Features/TextFormattingControls";
 import { FontFamilySelect } from "../Features/FontFamilySelect";
 import { fontFamilies } from "../lib/fonts";
-import { LayerControls } from "../Features/LayerControls";
-import { layerManagement } from "../utils/LayerManagement";
-import { Canvas, Object as FabricObject } from "fabric/fabric-impl";
+// import { LayerControls } from "../Features/LayerControls";
+// import { layerManagement } from "../utils/LayerManagement";
+import {
+  Object as FabricObject,
+  FabricObjectProps,
+  ObjectEvents,
+  SerializedObjectProps,
+  TEvent,
+  TPointerEvent,
+} from "fabric";
+import * as fabric from "fabric"; // v6
 
 interface SettingsProps {
-  canvas: Canvas | null;
+  canvas: fabric.Canvas | null;
 }
 
 export default function Settings({ canvas }: SettingsProps) {
@@ -47,8 +54,21 @@ export default function Settings({ canvas }: SettingsProps) {
   useEffect(() => {
     if (!canvas) return;
 
-    const handleSelection = (event: any) => {
-      const selected = event.selected?.[0] as FabricObject;
+    const handleSelection = (
+      event: Partial<TEvent<TPointerEvent>> & {
+        selected: FabricObject<
+          Partial<FabricObjectProps>,
+          SerializedObjectProps,
+          ObjectEvents
+        >[];
+        deselected?: FabricObject<
+          Partial<FabricObjectProps>,
+          SerializedObjectProps,
+          ObjectEvents
+        >[];
+      }
+    ) => {
+      const selected = event.selected?.[0] as unknown as FabricObject;
       if (selected) {
         handleObjectSelection(selected);
       } else {
@@ -59,6 +79,7 @@ export default function Settings({ canvas }: SettingsProps) {
     canvas.on("selection:created", handleSelection);
     canvas.on("selection:updated", handleSelection);
     canvas.on("selection:cleared", clearSettings);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     canvas.on("object:modified", (event: any) =>
       handleObjectSelection(event.target as FabricObject)
     );
@@ -71,13 +92,19 @@ export default function Settings({ canvas }: SettingsProps) {
     };
   }, [canvas, handleObjectSelection, clearSettings]);
 
-  const handleAlignChange = useCallback(
-    (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
-      if (!canvas || !selectedObject) return;
-      layerManagement.alignObject(canvas, selectedObject, align);
-    },
-    [canvas, selectedObject]
-  );
+  // const handleAlignChange = useCallback(
+  //   (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
+  //     if (!canvas || !selectedObject) return;
+  //     if (typeof selectedObject !== "string") {
+  //       layerManagement.alignObject(
+  //         canvas,
+  //         selectedObject as unknown as fabric.Object,
+  //         align
+  //       );
+  //     }
+  //   },
+  //   [canvas, selectedObject]
+  // );
 
   return (
     <div className="w-full h-[60px] overflow-hidden">
@@ -121,7 +148,12 @@ export default function Settings({ canvas }: SettingsProps) {
           )}
 
           <ColorPicker color={color} onChange={handleColorChange} />
-          <LayerControls onAlignChange={handleAlignChange} />
+          {/* <LayerControls
+            onAlignChange={handleAlignChange}
+            onLayerChange={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+          /> */}
         </div>
       ) : (
         <div className="h-full border-b border-transparent"></div>

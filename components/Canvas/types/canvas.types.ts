@@ -1,11 +1,5 @@
 import { Canvas, Object as FabricObject, Line } from "fabric";
-import {
-  BiRectangle,
-  BiCircle,
-  BiText,
-  BiImageAdd,
-  BiPlus,
-} from "react-icons/bi";
+import { BiRectangle, BiCircle, BiText, BiImageAdd } from "react-icons/bi";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 
 export type GuidelineType = {
