@@ -3,8 +3,11 @@ import { BiRectangle, BiCircle, BiText, BiImageAdd } from "react-icons/bi";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 
 export type GuidelineType = {
+  length: number;
+  position: number;
+  isHorizontal: boolean;
   id: string; // GuidelineId enum değerlerinden biri
-  line: Line;
+  line?: Line;
 };
 
 export type CanvasConfigType = {

@@ -15,8 +15,8 @@ import {
 } from "react-icons/ci";
 
 export const CANVAS_DEFAULT_CONFIG = {
-  width: 1200,
-  height: 675,
+  width: 868,
+  height: 488,
   backgroundColor: "#fff",
 } as const;
 
@@ -32,9 +32,6 @@ export const GUIDELINE_STYLES = {
   strokeDashArray: [5, 5],
   opacity: 0.8,
 } as const;
-
-export const CANVAS_WIDTH = 979;
-export const CANVAS_HEIGHT = 550;
 
 export const LAYER_ACTIONS = [
   { action: "up" as const, icon: LuChevronUp, label: "Up" },
