@@ -84,7 +84,7 @@ export default function Settings({ canvas }: SettingsProps) {
     ) => {
       const selected = event.selected;
       if (selected && selected.length > 0) {
-        handleObjectSelection(selected);
+        handleObjectSelection(selected[0]);
       } else {
         clearSettings();
       }
