@@ -18,11 +18,11 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 }) => {
   return (
     <div className="flex items-center space-x-2">
-      <Label>Color:</Label>
+      <Label>Renk:</Label>
       <Popover>
         <PopoverTrigger>
           <div
-            className="w-6 h-6 rounded-full cursor-pointer border border-gray-300"
+            className="w-6 h-6 rounded-sm cursor-pointer border border-gray-300"
             style={{ backgroundColor: color }}
           />
         </PopoverTrigger>

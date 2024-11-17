@@ -8,6 +8,9 @@ import { ColorPicker } from "../Features/ColorPicker";
 import { TextFormattingControls } from "../Features/TextFormattingControls";
 import { FontFamilySelect } from "../Features/FontFamilySelect";
 import { fontFamilies } from "../lib/fonts";
+import { FiTrash2 } from "react-icons/fi";
+import { Button } from "@/components/ui/button"; // Add this import
+
 // import { LayerControls } from "../Features/LayerControls";
 // import { layerManagement } from "../utils/LayerManagement";
 import {
@@ -51,6 +54,17 @@ export default function Settings({ canvas }: SettingsProps) {
     handleObjectSelection(null);
   }, [handleObjectSelection]);
 
+  const handleDeleteObject = useCallback(() => {
+    if (canvas && selectedObject) {
+      if (Array.isArray(selectedObject)) {
+        selectedObject.forEach((obj) => canvas.remove(obj));
+      } else {
+        canvas.remove(selectedObject);
+      }
+      clearSettings();
+    }
+  }, [canvas, selectedObject, clearSettings]);
+
   useEffect(() => {
     if (!canvas) return;
 
@@ -68,8 +82,8 @@ export default function Settings({ canvas }: SettingsProps) {
         >[];
       }
     ) => {
-      const selected = event.selected?.[0] as unknown as FabricObject;
-      if (selected) {
+      const selected = event.selected;
+      if (selected && selected.length > 0) {
         handleObjectSelection(selected);
       } else {
         clearSettings();
@@ -110,6 +124,8 @@ export default function Settings({ canvas }: SettingsProps) {
     <div className="w-full h-[60px] overflow-hidden">
       {selectedObject ? (
         <div className="min-w-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+          <ColorPicker color={color} onChange={handleColorChange} />
+
           <DimensionInputs
             objectType={selectedObject.type}
             width={width}
@@ -147,7 +163,15 @@ export default function Settings({ canvas }: SettingsProps) {
             </>
           )}
 
-          <ColorPicker color={color} onChange={handleColorChange} />
+          <Button
+            onClick={handleDeleteObject}
+            disabled={!selectedObject}
+            className="p-2"
+            variant="outline"
+            size="icon"
+          >
+            <FiTrash2 className="h-5 w-5" />
+          </Button>
           {/* <LayerControls
             onAlignChange={handleAlignChange}
             onLayerChange={function (): void {

@@ -6,7 +6,7 @@ import clsx from "clsx";
 const raleway = Raleway({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CanvasBel",
+  title: "Headline Canvas Editor",
   description: "Welcome to CanvasBel",
 };
 
