@@ -15,9 +15,13 @@ import { Canvas } from "fabric";
 
 interface DownloadButtonProps {
   canvas: Canvas | null;
+  fileName: string;
 }
 
-const DownloadButton: React.FC<DownloadButtonProps> = ({ canvas }) => {
+const DownloadButton: React.FC<DownloadButtonProps> = ({
+  canvas,
+  fileName,
+}) => {
   const [quality, setQuality] = useState(90); // Varsayılan kaliteyi 90'a yükselttim
   const [multiplier, setMultiplier] = useState(2); // Çözünürlük çarpanı ekledim
 
@@ -36,7 +40,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ canvas }) => {
     // Create a temporary link to trigger download
     const link = document.createElement("a");
     link.href = dataURL;
-    link.download = "canvas-export.jpg";
+    link.download = `${fileName}.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -45,7 +49,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ canvas }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primaryBlue focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150">
+        <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150">
           <FaDownload className="mr-2 h-4 w-4" /> Download JPG
         </Button>
       </DropdownMenuTrigger>
