@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useObjectSelection } from "../hooks/useObjectSelection";
@@ -9,19 +9,9 @@ import { TextFormattingControls } from "../Features/TextFormattingControls";
 import { FontFamilySelect } from "../Features/FontFamilySelect";
 import { fontFamilies } from "../lib/fonts";
 import { FiTrash2 } from "react-icons/fi";
-import { Button } from "@/components/ui/button"; // Add this import
-
-// import { LayerControls } from "../Features/LayerControls";
-// import { layerManagement } from "../utils/LayerManagement";
-import {
-  Object as FabricObject,
-  FabricObjectProps,
-  ObjectEvents,
-  SerializedObjectProps,
-  TEvent,
-  TPointerEvent,
-} from "fabric";
-import * as fabric from "fabric"; // v6
+import { Button } from "@/components/ui/button";
+import { useCanvasEvents } from "../hooks/useCanvasEvents"; // New custom hook
+import * as fabric from "fabric";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -65,60 +55,7 @@ export default function Settings({ canvas }: SettingsProps) {
     }
   }, [canvas, selectedObject, clearSettings]);
 
-  useEffect(() => {
-    if (!canvas) return;
-
-    const handleSelection = (
-      event: Partial<TEvent<TPointerEvent>> & {
-        selected: FabricObject<
-          Partial<FabricObjectProps>,
-          SerializedObjectProps,
-          ObjectEvents
-        >[];
-        deselected?: FabricObject<
-          Partial<FabricObjectProps>,
-          SerializedObjectProps,
-          ObjectEvents
-        >[];
-      }
-    ) => {
-      const selected = event.selected;
-      if (selected && selected.length > 0) {
-        handleObjectSelection(selected[0]);
-      } else {
-        clearSettings();
-      }
-    };
-
-    canvas.on("selection:created", handleSelection);
-    canvas.on("selection:updated", handleSelection);
-    canvas.on("selection:cleared", clearSettings);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    canvas.on("object:modified", (event: any) =>
-      handleObjectSelection(event.target as FabricObject)
-    );
-
-    return () => {
-      canvas.off("selection:created", handleSelection);
-      canvas.off("selection:updated", handleSelection);
-      canvas.off("selection:cleared", clearSettings);
-      canvas.off("object:modified");
-    };
-  }, [canvas, handleObjectSelection, clearSettings]);
-
-  // const handleAlignChange = useCallback(
-  //   (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
-  //     if (!canvas || !selectedObject) return;
-  //     if (typeof selectedObject !== "string") {
-  //       layerManagement.alignObject(
-  //         canvas,
-  //         selectedObject as unknown as fabric.Object,
-  //         align
-  //       );
-  //     }
-  //   },
-  //   [canvas, selectedObject]
-  // );
+  useCanvasEvents(canvas, handleObjectSelection, clearSettings); // Use custom hook
 
   return (
     <div className="w-full h-[60px] overflow-hidden">
@@ -172,12 +109,6 @@ export default function Settings({ canvas }: SettingsProps) {
           >
             <FiTrash2 className="h-5 w-5" />
           </Button>
-          {/* <LayerControls
-            onAlignChange={handleAlignChange}
-            onLayerChange={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-          /> */}
         </div>
       ) : (
         <div className="h-full border-b border-transparent"></div>
