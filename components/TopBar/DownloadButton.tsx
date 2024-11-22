@@ -37,7 +37,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       multiplier: multiplier, // Daha yüksek çözünürlük için multiplier kullanıyoruz
     });
 
-    // Create a temporary link to trigger download
     const link = document.createElement("a");
     link.href = dataURL;
     link.download = `${fileName}.jpg`;
@@ -50,7 +49,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150">
-          <FaDownload className="mr-2 h-4 w-4" /> Download JPG
+          <FaDownload className="mr-2 h-4 w-4" /> Görseli Kaydet
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-secondary">

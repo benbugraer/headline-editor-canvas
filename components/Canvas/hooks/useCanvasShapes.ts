@@ -32,7 +32,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
 
   const handleAddText = () => {
     if (!canvas) return;
-    const text = new fabric.IText("Text", {
+    const text = new fabric.IText("Yeni Metin", {
       left: 100,
       top: 100,
       fontFamily: "Arial",

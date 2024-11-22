@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useObjectSelection } from "../hooks/useObjectSelection";
@@ -10,7 +10,7 @@ import { FontFamilySelect } from "../Features/FontFamilySelect";
 import { fontFamilies } from "../lib/fonts";
 import { FiTrash2 } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
-import { useCanvasEvents } from "../hooks/useCanvasEvents"; // New custom hook
+import { useCanvasEvents } from "../hooks/useCanvasEvents";
 import * as fabric from "fabric";
 
 interface SettingsProps {
@@ -45,17 +45,38 @@ export default function Settings({ canvas }: SettingsProps) {
   }, [handleObjectSelection]);
 
   const handleDeleteObject = useCallback(() => {
-    if (canvas && selectedObject) {
-      if (Array.isArray(selectedObject)) {
-        selectedObject.forEach((obj) => canvas.remove(obj));
-      } else {
-        canvas.remove(selectedObject);
-      }
-      clearSettings();
+    if (!canvas) return;
+
+    const activeObjects = canvas.getActiveObjects();
+
+    if (activeObjects.length > 0) {
+      canvas.discardActiveObject();
+      activeObjects.forEach((obj) => {
+        canvas.remove(obj);
+      });
+    } else if (selectedObject) {
+      canvas.remove(selectedObject);
     }
+
+    canvas.requestRenderAll();
+    clearSettings();
   }, [canvas, selectedObject, clearSettings]);
 
-  useCanvasEvents(canvas, handleObjectSelection, clearSettings); // Use custom hook
+  useCanvasEvents(canvas, handleObjectSelection, clearSettings);
+
+  // Klavye olayını dinlemek için useEffect ekliyoruz
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Delete" || event.key === "Backspace") {
+        handleDeleteObject();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleDeleteObject]);
 
   return (
     <div className="w-full h-[60px] overflow-hidden">
@@ -76,7 +97,7 @@ export default function Settings({ canvas }: SettingsProps) {
           {selectedObject.type === "i-text" && (
             <>
               <div className="flex items-center space-x-2">
-                <Label htmlFor="fontSize">Font Size:</Label>
+                <Label htmlFor="fontSize">Yazı Boyutu:</Label>
                 <Input
                   id="fontSize"
                   value={fontSize === 0 ? "" : fontSize}
@@ -104,7 +125,7 @@ export default function Settings({ canvas }: SettingsProps) {
             onClick={handleDeleteObject}
             disabled={!selectedObject}
             className="p-2"
-            variant="outline"
+            variant="destructive"
             size="icon"
           >
             <FiTrash2 className="h-5 w-5" />
