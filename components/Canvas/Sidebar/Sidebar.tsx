@@ -1,11 +1,9 @@
 import React from "react";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { SIDEBAR_ITEMS } from "../types/canvas.types";
 import { Canvas as FabricCanvas } from "fabric";
-import { TOOLBAR_ITEMS } from "../types/canvas.types";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { IconPicker } from "../Features/IconPicker";
-import { Button } from "../../ui/button";
 
 interface SidebarProps {
   canvas: FabricCanvas | null;
@@ -44,49 +42,49 @@ export default function Sidebar({ canvas }: SidebarProps) {
   };
 
   return (
-    <div className="w-40 flex flex-col border-r bg-secondary">
+    <div className="w-28 flex flex-col border-r bg-gray-50 shadow-lg">
       <div className="flex-1 overflow-y-auto p-4">
-        <TooltipProvider>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-            accept="image/*"
-          />
-          <nav className="space-y-2">
-            {TOOLBAR_ITEMS.map((item) => (
-              <React.Fragment key={item.label}>
-                {item.label === "İkon Ekle" ? (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <div>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-3 hover:bg-primary hover:text-white"
-                          onClick={() => {}}
-                        >
-                          <item.icon className="h-7 w-7" />
-                          <span>{item.label}</span>
-                        </Button>
-                      </div>
-                    </PopoverTrigger>
-                    <IconPicker onIconSelect={handleAddIcon} />
-                  </Popover>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3 hover:bg-primary hover:text-white"
-                    onClick={getClickHandler(item.label)}
-                  >
-                    <item.icon className="h-7 w-7" />
-                    <span>{item.label}</span>
-                  </Button>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-        </TooltipProvider>
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleFileChange}
+          accept="image/*"
+        />
+        <nav className="space-y-2">
+          {SIDEBAR_ITEMS.map((item) => (
+            <div key={item.label}>
+              {item.label === "İkon Ekle" ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div>
+                      <button
+                        className="w-full flex flex-col items-center p-2 gap-1 transition-all ease-linear hover:bg-tertiary duration-150 hover:rounded-sm"
+                        onClick={() => {}}
+                      >
+                        <item.icon className="h-5 w-5 text-primary" />
+                        <span className="text-xs font-normal text-primary">
+                          {item.label}
+                        </span>
+                      </button>
+                    </div>
+                  </PopoverTrigger>
+                  <IconPicker onIconSelect={handleAddIcon} />
+                </Popover>
+              ) : (
+                <button
+                  className="w-full flex flex-col items-center p-2 gap-1 transition-all ease-linear hover:bg-tertiary duration-200 hover:rounded-sm"
+                  onClick={getClickHandler(item.label)}
+                >
+                  <item.icon className="h-5 w-5 text-primary" />
+                  <span className="text-xs font-normal text-primary">
+                    {item.label}
+                  </span>
+                </button>
+              )}
+            </div>
+          ))}
+        </nav>
       </div>
     </div>
   );

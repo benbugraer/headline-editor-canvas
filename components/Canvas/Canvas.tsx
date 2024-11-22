@@ -29,7 +29,7 @@ export default function CanvasApp() {
         <TopBar canvas={canvas} />
         <Settings canvas={canvas} />
         <div className="flex-grow flex justify-center items-center overflow-auto p-4">
-          <canvas ref={canvasRef} className="border border-tertiary" />
+          <canvas ref={canvasRef} className="border-2 border-primary" />
         </div>
       </div>
     </div>

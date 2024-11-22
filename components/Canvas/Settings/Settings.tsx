@@ -135,11 +135,11 @@ export default function Settings({ canvas }: SettingsProps) {
           <Button
             onClick={handleDeleteObject}
             disabled={!selectedObject}
-            className="p-2"
+            className="p-2 rounded-md"
             variant="destructive"
             size="icon"
           >
-            <FiTrash2 className="h-5 w-5" />
+            <FiTrash2 />
           </Button>
         </div>
       ) : (

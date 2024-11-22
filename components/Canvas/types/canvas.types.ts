@@ -1,6 +1,9 @@
 import { Canvas, Object as FabricObject, Line } from "fabric";
-import { BiRectangle, BiCircle, BiText, BiImageAdd } from "react-icons/bi";
-import { MdOutlineLibraryAdd } from "react-icons/md";
+import { PiRectangleBold } from "react-icons/pi";
+import { VscCircleLarge } from "react-icons/vsc";
+import { PiTextTFill } from "react-icons/pi";
+import { BsFillImageFill } from "react-icons/bs";
+import { FaFontAwesome } from "react-icons/fa";
 
 export type GuidelineType = {
   length: number;
@@ -35,25 +38,27 @@ export interface TextFormatting {
   textAlign: TextAlignType;
 }
 
-export const TOOLBAR_ITEMS = [
+export const SIDEBAR_ITEMS = [
   {
     label: "Dikdörtgen",
-    icon: BiRectangle,
+    icon: PiRectangleBold,
+    action: "rectangle",
   },
   {
     label: "Daire",
-    icon: BiCircle,
+    icon: VscCircleLarge,
+    action: "circle",
   },
   {
     label: "Metin",
-    icon: BiText,
+    icon: PiTextTFill,
   },
   {
     label: "Görsel Ekle",
-    icon: BiImageAdd,
+    icon: BsFillImageFill,
   },
   {
     label: "İkon Ekle",
-    icon: MdOutlineLibraryAdd,
+    icon: FaFontAwesome,
   },
 ] as const;
