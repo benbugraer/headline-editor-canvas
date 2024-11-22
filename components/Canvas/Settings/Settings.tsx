@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useObjectSelection } from "../hooks/useObjectSelection";
@@ -12,6 +12,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { useCanvasEvents } from "../hooks/useCanvasEvents";
 import * as fabric from "fabric";
+import { ColorResult } from "react-color";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -40,6 +41,8 @@ export default function Settings({ canvas }: SettingsProps) {
     selectedObject
   );
 
+  const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
+
   const clearSettings = useCallback(() => {
     handleObjectSelection(null);
   }, [handleObjectSelection]);
@@ -64,7 +67,6 @@ export default function Settings({ canvas }: SettingsProps) {
 
   useCanvasEvents(canvas, handleObjectSelection, clearSettings);
 
-  // Klavye olayını dinlemek için useEffect ekliyoruz
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Delete" || event.key === "Backspace") {
@@ -77,6 +79,15 @@ export default function Settings({ canvas }: SettingsProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleDeleteObject]);
+
+  const handleBackgroundColorChange = (colorResult: ColorResult) => {
+    const color = colorResult.hex;
+    setBackgroundColor(color);
+    if (canvas) {
+      canvas.set("backgroundColor", color); // Doğru yöntem
+      canvas.renderAll(); // Değişiklikleri uygula
+    }
+  };
 
   return (
     <div className="w-full h-[60px] overflow-hidden">
@@ -132,7 +143,14 @@ export default function Settings({ canvas }: SettingsProps) {
           </Button>
         </div>
       ) : (
-        <div className="h-full border-b border-transparent"></div>
+        <div className="min-w-[60px] h-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <ColorPicker
+              color={backgroundColor}
+              onChange={handleBackgroundColorChange}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
