@@ -48,13 +48,13 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150">
-          <FaDownload className="mr-2 h-4 w-4" /> Görseli Kaydet
+        <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150 gap-2">
+          <FaDownload className="h-4 w-4" /> Görseli Kaydet
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-secondary">
         <div className="px-2 py-1.5">
-          <label className="text-sm font-medium">Quality: {quality}%</label>
+          <label className="text-sm font-medium">Kalite: {quality}%</label>
           <Slider
             className="mt-2"
             min={1}
@@ -67,7 +67,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
 
         <div className="px-2 py-1.5">
           <label className="text-sm font-medium">
-            Resolution Scale: {multiplier}x
+            Çözünürlük: {multiplier}x
           </label>
           <Slider
             className="mt-2"
@@ -84,7 +84,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
           onClick={handleDownload}
           className="bg-primaryBlue text-white flex items-center justify-center rounded-md border border-primary cursor-pointer hover:bg-secondary hover:text-link ease-linear duration-300"
         >
-          Download JPG
+          Kaydet
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

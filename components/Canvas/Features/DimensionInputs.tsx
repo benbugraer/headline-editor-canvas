@@ -49,7 +49,7 @@ export const DimensionInputs: React.FC<DimensionInputsProps> = ({
   if (objectType === "circle") {
     return (
       <div className="flex items-center space-x-2">
-        <Label htmlFor="diameter">Diameter:</Label>
+        <Label htmlFor="diameter">Çap:</Label>
         <Input
           id="diameter"
           value={diameter}

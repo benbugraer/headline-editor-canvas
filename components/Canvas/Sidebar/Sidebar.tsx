@@ -30,13 +30,13 @@ export default function Sidebar({ canvas }: SidebarProps) {
 
   const getClickHandler = (label: string) => {
     switch (label) {
-      case "Rectangle":
+      case "Dikdörtgen":
         return handleAddRectangle;
-      case "Circle":
+      case "Daire":
         return handleAddCircle;
-      case "Text":
+      case "Metin":
         return handleAddText;
-      case "Add Image":
+      case "Görsel Ekle":
         return () => fileInputRef.current?.click();
       default:
         return () => {};
@@ -57,7 +57,7 @@ export default function Sidebar({ canvas }: SidebarProps) {
           <nav className="space-y-2">
             {TOOLBAR_ITEMS.map((item) => (
               <React.Fragment key={item.label}>
-                {item.label === "Add Icon" ? (
+                {item.label === "İkon Ekle" ? (
                   <Popover>
                     <PopoverTrigger asChild>
                       <div>

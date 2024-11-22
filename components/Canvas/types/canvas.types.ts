@@ -37,23 +37,23 @@ export interface TextFormatting {
 
 export const TOOLBAR_ITEMS = [
   {
-    label: "Rectangle",
+    label: "Dikdörtgen",
     icon: BiRectangle,
   },
   {
-    label: "Circle",
+    label: "Daire",
     icon: BiCircle,
   },
   {
-    label: "Text",
+    label: "Metin",
     icon: BiText,
   },
   {
-    label: "Add Image",
+    label: "Görsel Ekle",
     icon: BiImageAdd,
   },
   {
-    label: "Add Icon",
+    label: "İkon Ekle",
     icon: MdOutlineLibraryAdd,
   },
 ] as const;
