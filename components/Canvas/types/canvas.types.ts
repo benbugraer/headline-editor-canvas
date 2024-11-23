@@ -2,8 +2,8 @@ import { Canvas, Object as FabricObject, Line } from "fabric";
 import { PiRectangleBold } from "react-icons/pi";
 import { VscCircleLarge } from "react-icons/vsc";
 import { PiTextTFill } from "react-icons/pi";
-import { BsFillImageFill } from "react-icons/bs";
 import { FaFontAwesome } from "react-icons/fa";
+import { IoImageSharp } from "react-icons/io5";
 
 export type GuidelineType = {
   length: number;
@@ -55,7 +55,7 @@ export const SIDEBAR_ITEMS = [
   },
   {
     label: "Görsel Ekle",
-    icon: BsFillImageFill,
+    icon: IoImageSharp,
   },
   {
     label: "İkon Ekle",

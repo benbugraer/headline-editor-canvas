@@ -19,7 +19,7 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
   };
 
   return (
-    <PopoverContent className="w-[320px] mt-48" side="right">
+    <PopoverContent className="w-[320px] mt-[16.8rem]" side="right">
       <div className="space-y-2">
         <div className="flex gap-2">
           <Input
