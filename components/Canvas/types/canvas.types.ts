@@ -4,6 +4,7 @@ import { VscCircleLarge } from "react-icons/vsc";
 import { PiTextTFill } from "react-icons/pi";
 import { FaFontAwesome } from "react-icons/fa";
 import { IoImageSharp } from "react-icons/io5";
+import { TbLayoutGridFilled } from "react-icons/tb";
 
 export type GuidelineType = {
   length: number;
@@ -60,5 +61,9 @@ export const SIDEBAR_ITEMS = [
   {
     label: "İkon Ekle",
     icon: FaFontAwesome,
+  },
+  {
+    label: "Manşet Seç",
+    icon: TbLayoutGridFilled,
   },
 ] as const;

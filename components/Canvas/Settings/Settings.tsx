@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { useCanvasEvents } from "../hooks/useCanvasEvents";
 import * as fabric from "fabric";
 import { ColorResult } from "react-color";
+import { layerManagement } from "../utils/LayerManagement";
+import { LayerControls } from "../Features/LayerControls";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -88,6 +90,34 @@ export default function Settings({ canvas }: SettingsProps) {
       canvas.renderAll(); // Değişiklikleri uygula
     }
   };
+  const handleAlignChange = useCallback(
+    (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
+      if (!canvas || !selectedObject) return;
+      layerManagement.alignObject(canvas, selectedObject, align);
+    },
+    [canvas, selectedObject]
+  );
+  const handleLayerChange = useCallback(
+    (action: "up" | "down" | "top" | "bottom") => {
+      if (!canvas || !selectedObject) return;
+
+      switch (action) {
+        case "up":
+          layerManagement.moveObjectUp(canvas, selectedObject);
+          break;
+        case "down":
+          layerManagement.moveObjectDown(canvas, selectedObject);
+          break;
+        case "top":
+          layerManagement.moveObjectToTop(canvas, selectedObject);
+          break;
+        case "bottom":
+          layerManagement.moveObjectToBottom(canvas, selectedObject);
+          break;
+      }
+    },
+    [canvas, selectedObject]
+  );
 
   return (
     <div className="w-full overflow-hidden">
@@ -141,6 +171,10 @@ export default function Settings({ canvas }: SettingsProps) {
           >
             <FiTrash2 />
           </Button>
+          <LayerControls
+            onAlignChange={handleAlignChange}
+            onLayerChange={handleLayerChange}
+          />
         </div>
       ) : (
         <div className="min-w-[60px] h-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
