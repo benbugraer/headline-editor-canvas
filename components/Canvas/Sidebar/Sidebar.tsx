@@ -4,6 +4,7 @@ import { Canvas as FabricCanvas } from "fabric";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { IconPicker } from "../Features/IconPicker";
+import { HeadlineSelector } from "../Features/HeadlineSelector";
 
 interface SidebarProps {
   canvas: FabricCanvas | null;
@@ -70,6 +71,20 @@ export default function Sidebar({ canvas }: SidebarProps) {
                     </div>
                   </PopoverTrigger>
                   <IconPicker onIconSelect={handleAddIcon} />
+                </Popover>
+              ) : item.label === "Manşet Seç" ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div>
+                      <button className="w-full flex flex-col items-center p-2 gap-1 transition-all ease-linear hover:bg-tertiary duration-150 hover:rounded-sm">
+                        <item.icon className="h-5 w-5 text-primary" />
+                        <span className="text-xs font-normal text-primary">
+                          {item.label}
+                        </span>
+                      </button>
+                    </div>
+                  </PopoverTrigger>
+                  <HeadlineSelector canvas={canvas} />
                 </Popover>
               ) : (
                 <button

@@ -14,9 +14,27 @@ import {
   CiAlignCenterV,
 } from "react-icons/ci";
 
+export const HEADLINE_SIZES = {
+  square: {
+    label: "Kare Manşet",
+    width: 547,
+    height: 574,
+  },
+  wide: {
+    label: "Geniş Manşet",
+    width: 979,
+    height: 550,
+  },
+  default: {
+    label: "Varsayılan",
+    width: 868,
+    height: 488,
+  },
+} as const;
+
 export const CANVAS_DEFAULT_CONFIG = {
-  width: 868,
-  height: 488,
+  width: HEADLINE_SIZES.default.width,
+  height: HEADLINE_SIZES.default.height,
   backgroundColor: "#fff",
 } as const;
 
