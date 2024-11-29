@@ -26,7 +26,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             style={{ backgroundColor: color }}
           />
         </PopoverTrigger>
-        <PopoverContent className="p-0 w-full">
+        <PopoverContent className="p-0 w-fit ml-[5.8rem] mt-3" side="bottom">
           <SketchPicker color={color} onChange={onChange} />
         </PopoverContent>
       </Popover>

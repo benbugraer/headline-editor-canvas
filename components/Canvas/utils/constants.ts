@@ -26,7 +26,7 @@ export const HEADLINE_SIZES = {
     height: 550,
   },
   default: {
-    label: "Varsayılan",
+    label: "Varsayılan(20'lik Manşet)",
     width: 868,
     height: 488,
   },

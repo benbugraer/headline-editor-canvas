@@ -48,7 +48,7 @@ export function LayerControls({
       <PopoverContent className="w-64">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Layering</h4>
+            <h4 className="font-medium leading-none">Katmanlar</h4>
             <div className="grid grid-cols-2 gap-2">
               {LAYER_ACTIONS.map(({ action, icon, label }) => (
                 <LayerButton
@@ -62,7 +62,7 @@ export function LayerControls({
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Position</h4>
+            <h4 className="font-medium leading-none">Pozisyon</h4>
             <div className="grid grid-cols-3 gap-2">
               {ALIGN_ACTIONS.map(({ align, icon }) => (
                 <LayerButton
