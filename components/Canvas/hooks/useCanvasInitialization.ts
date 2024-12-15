@@ -27,7 +27,6 @@ export const useCanvasInitialization = (
       clearGuidelines(initCanvas, guidelines, setGuidelines);
     });
 
-    // Kopyala-yapıştır işlevi için event listener
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
@@ -45,7 +44,6 @@ export const useCanvasInitialization = (
           const blobUrl = URL.createObjectURL(blob);
 
           img.onload = () => {
-            // FabricImage kullanıyoruz (fabric.Image yerine)
             const fabricImage = new FabricImage(img, {
               left: initCanvas.width! / 2,
               top: initCanvas.height! / 2,
@@ -53,7 +51,6 @@ export const useCanvasInitialization = (
               originY: "center",
             });
 
-            // Boyutlandırma
             const scale = Math.min(
               (initCanvas.width! * 0.8) / img.width,
               (initCanvas.height! * 0.8) / img.height,
@@ -61,12 +58,10 @@ export const useCanvasInitialization = (
             );
             fabricImage.scale(scale);
 
-            // Canvas'a ekle
             initCanvas.add(fabricImage);
             initCanvas.setActiveObject(fabricImage);
             initCanvas.renderAll();
 
-            // Belleği temizle
             URL.revokeObjectURL(blobUrl);
           };
 
@@ -81,7 +76,6 @@ export const useCanvasInitialization = (
       }
     };
 
-    // Event listener'ı ekle
     window.addEventListener("paste", handlePaste);
 
     return () => {

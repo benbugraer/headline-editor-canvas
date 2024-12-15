@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Canvas } from "fabric";
 import { GuidelineType } from "./types/canvas.types";
 import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";

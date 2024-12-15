@@ -71,7 +71,7 @@ export default function Settings({ canvas }: SettingsProps) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Delete" || event.key === "Backspace") {
+      if (event.key === "Delete") {
         handleDeleteObject();
       }
     };
