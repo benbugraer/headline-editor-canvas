@@ -22,8 +22,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   canvas,
   fileName,
 }) => {
-  const [quality, setQuality] = useState(90); // Varsayılan kaliteyi 90'a yükselttim
-  const [multiplier, setMultiplier] = useState(2); // Çözünürlük çarpanı ekledim
+  const [quality, setQuality] = useState(90);
+  const [multiplier, setMultiplier] = useState(2);
 
   const handleDownload = () => {
     if (!canvas) {
@@ -34,7 +34,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     const dataURL = canvas.toDataURL({
       format: "jpeg",
       quality: quality / 100,
-      multiplier: multiplier, // Daha yüksek çözünürlük için multiplier kullanıyoruz
+      multiplier: multiplier,
     });
 
     const link = document.createElement("a");
@@ -48,7 +48,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-150 gap-2">
+        <Button className="bg-primaryBlue rounded-md focus:outline-none text-white hover:bg-tertiary hover:text-primary ease-linear duration-200 gap-2">
           <FaDownload className="h-4 w-4" /> Görseli Kaydet
         </Button>
       </DropdownMenuTrigger>
@@ -80,11 +80,14 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         </div>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleDownload}
-          className="bg-primaryBlue text-white flex items-center justify-center rounded-md border border-primary cursor-pointer hover:bg-secondary hover:text-link ease-linear duration-300"
-        >
-          Kaydet
+        <DropdownMenuItem>
+          <Button
+            className="w-full inline-block bg-primaryBlue text-white hover:bg-tertiary hover:text-primary ease-linear duration-200"
+            variant="outline"
+            onClick={handleDownload}
+          >
+            Kaydet
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
