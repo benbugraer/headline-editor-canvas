@@ -16,6 +16,7 @@ import { ColorResult } from "react-color";
 import { layerManagement } from "../utils/LayerManagement";
 import { LayerControls } from "../Features/LayerControls";
 import TransparencyControl from "../Features/TransparencyControl";
+import EffectsDrawer from "../Features/Effects";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -181,6 +182,13 @@ export default function Settings({ canvas }: SettingsProps) {
           <TransparencyControl
             opacity={opacity}
             onOpacityChange={handleOpacityChange}
+          />
+          <EffectsDrawer
+            selectedObject={selectedObject}
+            canvas={canvas}
+            onObjectUpdate={() => {
+              canvas?.renderAll();
+            }}
           />
         </div>
       ) : (
