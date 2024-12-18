@@ -12,11 +12,14 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
   const [color, setColor] = useState<string>("#000");
   const [fontSize, setFontSize] = useState<number>(20);
   const [fontFamily, setFontFamily] = useState<string>("Arial");
+  const [opacity, setOpacity] = useState<number>(100);
 
   const handleObjectSelection = useCallback((object: fabric.Object | null) => {
     setSelectedObject(object);
 
     if (object) {
+      // Mevcut opacity değerini 0-100 aralığına dönüştür
+      setOpacity(object.opacity ? object.opacity * 100 : 100);
       if (object.type === "rect" || object.type === "image") {
         setWidth(Math.round(object.width! * object.scaleX!).toString());
         setHeight(Math.round(object.height! * object.scaleY!).toString());
@@ -40,8 +43,23 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
       setDiameter("");
       setColor("#000");
       setFontSize(20);
+      setOpacity(100);
     }
   }, []);
+
+  const handleOpacityChange = useCallback(
+    (value: number) => {
+      if (selectedObject) {
+        // Opacity değerini 0-1 aralığına dönüştür
+        const opacityValue = value / 100;
+
+        setOpacity(value);
+        selectedObject.set("opacity", opacityValue);
+        canvas?.renderAll();
+      }
+    },
+    [selectedObject, canvas]
+  );
 
   const handleWidthChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,6 +180,7 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     height,
     diameter,
     color,
+    opacity,
     fontSize,
     fontFamily,
     handleObjectSelection,
@@ -171,5 +190,6 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     handleColorChange,
     handleFontSizeChange,
     handleFontFamilyChange,
+    handleOpacityChange,
   };
 };

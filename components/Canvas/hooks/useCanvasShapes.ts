@@ -2,7 +2,6 @@
 import { Canvas as FabricCanvas } from "fabric";
 import * as fabric from "fabric";
 import { useCallback } from "react";
-import { IEvent } from "fabric/fabric-impl";
 
 export function useCanvasShapes(canvas: FabricCanvas | null) {
   const handleAddRectangle = () => {
@@ -24,7 +23,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
       top: 150,
       left: 150,
       radius: 50,
-      fill: "#d84d42",
+      fill: "#ff5757",
     });
     canvas.add(circle);
     canvas.renderAll();
