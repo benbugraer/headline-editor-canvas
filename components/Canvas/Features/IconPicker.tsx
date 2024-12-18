@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { searchIcons } from "@/services/iconService";
@@ -19,9 +18,9 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
   };
 
   return (
-    <PopoverContent className="w-[320px] mt-[16.8rem] ml-3" side="right">
+    <div className="">
       <div className="space-y-2">
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-4">
           <Input
             placeholder="İkon Ara"
             value={searchQuery}
@@ -32,12 +31,11 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
           />
         </div>
 
-        <div className="grid grid-cols-4 gap-2 max-h-[400px] overflow-y-auto">
+        <div className="grid grid-cols-4 gap-2  overflow-y-auto">
           {icons.map((icon) => (
             <Button
               key={icon.id}
-              variant="outline"
-              className="h-12 w-12 p-0 hover:bg-gray-100"
+              className="h-12 w-12 p-0 bg-tertiary text-primary hover:bg-white duration-150 ease-linear"
               onClick={() => {
                 const path = icon.icon.icon[4] as string;
                 onIconSelect(path, "#000000");
@@ -48,6 +46,6 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
           ))}
         </div>
       </div>
-    </PopoverContent>
+    </div>
   );
 }

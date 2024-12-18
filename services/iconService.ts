@@ -26,10 +26,10 @@ export const searchIcons = (query: string): IconResult[] => {
   ];
 
   if (!query) {
-    return allIcons.slice(0, 28); // İlk 28 ikonu göster
+    return allIcons.slice(0, 45); // İlk 28 ikonu göster
   }
 
   return allIcons
     .filter((item) => item.id.toLowerCase().includes(query.toLowerCase()))
-    .slice(0, 28);
+    .slice(0, 45);
 };

@@ -1,12 +1,12 @@
-import { PopoverContent } from "@/components/ui/popover";
 import { HEADLINE_SIZES } from "../utils/constants";
 import { Canvas } from "fabric";
 
 interface HeadlineSelectorProps {
   canvas: Canvas | null;
+  onSelect: () => void;
 }
 
-export function HeadlineSelector({ canvas }: HeadlineSelectorProps) {
+export function HeadlineSelector({ canvas, onSelect }: HeadlineSelectorProps) {
   const handleSizeSelect = (width: number, height: number) => {
     if (!canvas) return;
     canvas.setWidth(width);
@@ -15,12 +15,13 @@ export function HeadlineSelector({ canvas }: HeadlineSelectorProps) {
   };
 
   return (
-    <PopoverContent className="w-60 mt-[8rem] ml-3" side="right">
-      <div className="space-y-2">
+    <div className="">
+      <div>
         {Object.values(HEADLINE_SIZES).map((size) => (
           <button
             key={size.label}
-            className="w-full p-2 text-left hover:bg-tertiary rounded-sm transition-colors"
+            className="w-full p-3 text-left hover:bg-tertiary rounded-sm transition-colors"
+            onSelect={onSelect}
             onClick={() => handleSizeSelect(size.width, size.height)}
           >
             <div className="text-sm font-medium">{size.label}</div>
@@ -30,6 +31,6 @@ export function HeadlineSelector({ canvas }: HeadlineSelectorProps) {
           </button>
         ))}
       </div>
-    </PopoverContent>
+    </div>
   );
 }
