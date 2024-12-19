@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useState } from "react";
 
 import {
@@ -43,7 +45,6 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
   const [background, setBackground] = useState({
     enabled: false,
     color: "#ffffff",
-    radius: 0,
     padding: 0,
   });
 
@@ -51,6 +52,11 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
     enabled: false,
     width: 0,
     color: "#000000",
+  });
+
+  const [shapeRadius, setShapeRadius] = useState({
+    enabled: false,
+    radius: 0,
   });
 
   useEffect(() => {
@@ -77,14 +83,12 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
         setBackground({
           enabled: !!textObject.textBackgroundColor,
           color: textObject.textBackgroundColor || "#ffffff",
-          radius: 0,
           padding: textObject.padding || 0,
         });
       } else {
         setBackground({
           enabled: !!selectedObject.backgroundColor,
           color: selectedObject.backgroundColor || "#ffffff",
-          radius: (selectedObject as fabric.Rect).rx || 0,
           padding: 0,
         });
       }
@@ -96,6 +100,28 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
           enabled: (textObject.strokeWidth ?? 0) > 0,
           width: textObject.strokeWidth || 0,
           color: (textObject.stroke as string) || "#000000",
+        });
+      }
+
+      // Shape Radius için circle kontrolü eklendi
+      if (
+        selectedObject.type === "rect" ||
+        selectedObject.type === "image" ||
+        selectedObject.type === "circle"
+      ) {
+        let currentRadius = 0;
+
+        if (selectedObject.type === "circle") {
+          const circle = selectedObject as fabric.Circle;
+          currentRadius = circle.radius || 0;
+        } else {
+          const rect = selectedObject as fabric.Rect;
+          currentRadius = rect.rx || 0;
+        }
+
+        setShapeRadius({
+          enabled: currentRadius > 0,
+          radius: currentRadius,
         });
       }
     }
@@ -187,22 +213,42 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
             backgroundColor: background.color,
             padding: background.padding,
           });
-          if (
-            selectedObject.type === "rect" ||
-            selectedObject.type === "image" ||
-            selectedObject.type === "circle"
-          ) {
-            (selectedObject as fabric.Object).set({
-              rx: background.radius,
-              ry: background.radius,
-            });
-          }
         }
       }
       canvas.renderAll();
       onObjectUpdate?.();
     }
   }, [selectedObject, canvas, background, onObjectUpdate]);
+
+  const handleRadiusChange = (value: number) => {
+    const clampedValue = Math.min(100, Math.max(0, value));
+
+    // First update the object
+    if (selectedObject && canvas) {
+      if (selectedObject.type === "circle") {
+        (selectedObject as fabric.Circle).set({
+          radius: clampedValue,
+        });
+      } else if (
+        selectedObject.type === "rect" ||
+        selectedObject.type === "image"
+      ) {
+        (selectedObject as fabric.Rect).set({
+          rx: clampedValue,
+          ry: clampedValue,
+        });
+      }
+      // Immediate canvas update
+      canvas.requestRenderAll();
+      onObjectUpdate?.();
+    }
+
+    // Then update the state
+    setShapeRadius((prev) => ({
+      ...prev,
+      radius: clampedValue,
+    }));
+  };
 
   if (!selectedObject || !canvas) return null;
 
@@ -394,6 +440,57 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
             </div>
           )}
 
+          {/* Shape Radius Control - circle kontrolü eklendi */}
+          {(selectedObject.type === "rect" ||
+            selectedObject.type === "image" ||
+            selectedObject.type === "circle") && (
+            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <Label className="text-gray-700 font-medium">
+                  {selectedObject.type === "circle"
+                    ? "Daire Boyutu"
+                    : "Köşe Yuvarlaklığı"}
+                </Label>
+                <Switch
+                  checked={shapeRadius.enabled}
+                  onCheckedChange={(checked) => {
+                    setShapeRadius((prev) => ({ ...prev, enabled: checked }));
+                    if (!checked) {
+                      handleRadiusChange(0);
+                    }
+                  }}
+                  className="data-[state=checked]:bg-blue-500"
+                />
+              </div>
+
+              {shapeRadius.enabled && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <Slider
+                        value={[shapeRadius.radius]}
+                        onValueChange={(val) => handleRadiusChange(val[0])}
+                        max={100}
+                        step={1}
+                      />
+                    </div>
+                    <input
+                      type="number"
+                      value={shapeRadius.radius}
+                      onChange={(e) => {
+                        const value = Number(e.target.value) || 0;
+                        handleRadiusChange(value);
+                      }}
+                      className="w-16 h-8 border border-gray-300 rounded px-2 text-sm"
+                      min="0"
+                      max="100"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Background Color */}
           <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -449,21 +546,6 @@ export const EffectsDrawer: React.FC<EffectsDrawerProps> = ({
                       }));
                       setTimeout(applyBackground, 0);
                     }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-gray-600 text-sm">
-                    Köşe Yuvarlaklığı
-                  </Label>
-                  <Slider
-                    value={[background.radius]}
-                    onValueChange={(val) => {
-                      setBackground((prev) => ({ ...prev, radius: val[0] }));
-                      setTimeout(applyBackground, 0);
-                    }}
-                    max={50}
-                    step={1}
                   />
                 </div>
 

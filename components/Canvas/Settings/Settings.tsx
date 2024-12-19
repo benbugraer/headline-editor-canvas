@@ -166,15 +166,6 @@ export default function Settings({ canvas }: SettingsProps) {
             </>
           )}
 
-          <Button
-            onClick={handleDeleteObject}
-            disabled={!selectedObject}
-            className="p-2 rounded-md"
-            variant="destructive"
-            size="icon"
-          >
-            <FiTrash2 />
-          </Button>
           <LayerControls
             onAlignChange={handleAlignChange}
             onLayerChange={handleLayerChange}
@@ -190,6 +181,15 @@ export default function Settings({ canvas }: SettingsProps) {
               canvas?.renderAll();
             }}
           />
+          <Button
+            onClick={handleDeleteObject}
+            disabled={!selectedObject}
+            className="p-2 rounded-md"
+            variant="destructive"
+            size="icon"
+          >
+            <FiTrash2 />
+          </Button>
         </div>
       ) : (
         <div className="min-w-[60px] h-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
