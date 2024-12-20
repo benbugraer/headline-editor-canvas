@@ -107,32 +107,33 @@ export const useCanvasObject = (
             strokeWidth: 0,
             strokeUniform: false,
             paintFirst: "fill",
-            shadow: null,
           });
+          // Shadow ayarlarını değiştirmiyoruz, mevcut shadow korunacak
         } else {
           // Ana stroke ayarları
           textObject.set({
             stroke: newStroke.color,
-            strokeWidth: newStroke.width * 2, // Dışa vuran efekt için genişliği iki katına çıkarıyoruz
-            strokeUniform: true, // Stroke genişliğini uniform tutuyoruz
-            paintFirst: "stroke", // Stroke'u önce çiziyoruz
-            strokeLineJoin: "round", // Yumuşak köşeler
-            strokeLineCap: "round", // Yumuşak uçlar
+            strokeWidth: newStroke.width * 2,
+            strokeUniform: true,
+            paintFirst: "stroke",
+            strokeLineJoin: "round",
+            strokeLineCap: "round",
           });
 
-          // Stroke kalınlığı belirli bir değerin üzerindeyse
-          // text ile stroke arasında daha iyi ayrım için hafif bir gölge ekliyoruz
+          // Sadece stroke width > 2 ise ve stroke aktifse shadow ekle
           if (newStroke.width > 2) {
-            textObject.set({
-              shadow: new fabric.Shadow({
-                color: newStroke.color,
-                blur: newStroke.width / 2,
-                offsetX: 0,
-                offsetY: 0,
-              }),
-            });
-          } else {
-            textObject.set({ shadow: null });
+            const currentShadow = textObject.shadow as fabric.Shadow;
+            // Eğer mevcut bir shadow varsa, onu koruyalım
+            if (!currentShadow) {
+              textObject.set({
+                shadow: new fabric.Shadow({
+                  color: newStroke.color,
+                  blur: newStroke.width / 2,
+                  offsetX: 0,
+                  offsetY: 0,
+                }),
+              });
+            }
           }
         }
 
