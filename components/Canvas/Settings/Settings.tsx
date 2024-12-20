@@ -17,6 +17,7 @@ import { layerManagement } from "../utils/LayerManagement";
 import { LayerControls } from "../Features/LayerControls";
 // import TransparencyControl from "../Features/TransparencyControl";
 import EffectsDrawer from "../Features/Effects";
+import { TextSpacingControls } from "../Features/TextSpacingControls";
 
 interface SettingsProps {
   canvas: fabric.Canvas | null;
@@ -40,6 +41,10 @@ export default function Settings({ canvas }: SettingsProps) {
     handleFontSizeChange,
     handleFontFamilyChange,
     // handleOpacityChange,
+    lineHeight,
+    letterSpacing,
+    handleLineHeightChange,
+    handleLetterSpacingChange,
   } = useObjectSelection(canvas);
 
   const { textFormatting, updateTextFormatting } = useTextFormatting(
@@ -162,6 +167,12 @@ export default function Settings({ canvas }: SettingsProps) {
               <TextFormattingControls
                 textFormatting={textFormatting}
                 updateTextFormatting={updateTextFormatting}
+              />
+              <TextSpacingControls
+                lineHeight={lineHeight}
+                letterSpacing={letterSpacing}
+                onLineHeightChange={handleLineHeightChange}
+                onLetterSpacingChange={handleLetterSpacingChange}
               />
             </>
           )}

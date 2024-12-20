@@ -13,6 +13,8 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
   const [fontSize, setFontSize] = useState<number>(20);
   const [fontFamily, setFontFamily] = useState<string>("Arial");
   const [opacity, setOpacity] = useState<number>(100);
+  const [lineHeight, setLineHeight] = useState<number>(1.2);
+  const [letterSpacing, setLetterSpacing] = useState<number>(0);
 
   const handleObjectSelection = useCallback((object: fabric.Object | null) => {
     setSelectedObject(object);
@@ -167,10 +169,38 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     [selectedObject, canvas]
   );
 
+  const handleLineHeightChange = useCallback(
+    (value: number) => {
+      if (!selectedObject || !canvas) return;
+
+      if (selectedObject.type === "i-text") {
+        (selectedObject as fabric.IText).set("lineHeight", value);
+        setLineHeight(value);
+        canvas.renderAll();
+      }
+    },
+    [canvas, selectedObject]
+  );
+
+  const handleLetterSpacingChange = useCallback(
+    (value: number) => {
+      if (!selectedObject || !canvas) return;
+
+      if (selectedObject.type === "i-text") {
+        (selectedObject as fabric.IText).set("charSpacing", value);
+        setLetterSpacing(value);
+        canvas.renderAll();
+      }
+    },
+    [canvas, selectedObject]
+  );
+
   useEffect(() => {
     if (selectedObject && selectedObject.type === "i-text") {
       const textObject = selectedObject as fabric.IText;
       setFontFamily(textObject.fontFamily || "Arial");
+      setLineHeight(textObject.lineHeight || 1.2);
+      setLetterSpacing(textObject.charSpacing || 0);
     }
   }, [selectedObject]);
 
@@ -183,6 +213,8 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     opacity,
     fontSize,
     fontFamily,
+    lineHeight,
+    letterSpacing,
     handleObjectSelection,
     handleWidthChange,
     handleHeightChange,
@@ -191,5 +223,7 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
     handleFontSizeChange,
     handleFontFamilyChange,
     handleOpacityChange,
+    handleLineHeightChange,
+    handleLetterSpacingChange,
   };
 };
