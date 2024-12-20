@@ -45,7 +45,7 @@ export function LayerControls({
           <Layers className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64">
+      <PopoverContent className="w-64" sideOffset={5}>
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Katmanlar</h4>
@@ -55,7 +55,12 @@ export function LayerControls({
                   key={action}
                   icon={icon}
                   label={label}
-                  onClick={() => onLayerChange(action)}
+                  onClick={() => {
+                    onLayerChange(action);
+                    requestAnimationFrame(() => {
+                      document.dispatchEvent(new Event("layerChanged"));
+                    });
+                  }}
                 />
               ))}
             </div>
@@ -68,7 +73,12 @@ export function LayerControls({
                 <LayerButton
                   key={align}
                   icon={icon}
-                  onClick={() => onAlignChange(align)}
+                  onClick={() => {
+                    onAlignChange(align);
+                    requestAnimationFrame(() => {
+                      document.dispatchEvent(new Event("layerChanged"));
+                    });
+                  }}
                 />
               ))}
             </div>
