@@ -7,7 +7,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import { LuTextCursor } from "react-icons/lu";
+import { FaTextHeight } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 interface TextSpacingControlsProps {
   lineHeight: number;
@@ -34,15 +35,15 @@ export function TextSpacingControls({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="p-2 hover:bg-accent rounded-md">
-          <LuTextCursor className="h-4 w-4" />
-        </button>
+        <Button variant="outline" size="icon">
+          <FaTextHeight className="h-4 w-4" />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Line Height</Label>
+              <Label>Satır Aralığı</Label>
               <span className="text-sm text-muted-foreground">
                 {lineHeight.toFixed(1)}
               </span>
@@ -57,7 +58,7 @@ export function TextSpacingControls({
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Letter Spacing</Label>
+              <Label>Harf Aralığı</Label>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
