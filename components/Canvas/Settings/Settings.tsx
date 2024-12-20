@@ -15,7 +15,7 @@ import * as fabric from "fabric";
 import { ColorResult } from "react-color";
 import { layerManagement } from "../utils/LayerManagement";
 import { LayerControls } from "../Features/LayerControls";
-import TransparencyControl from "../Features/TransparencyControl";
+// import TransparencyControl from "../Features/TransparencyControl";
 import EffectsDrawer from "../Features/Effects";
 
 interface SettingsProps {
@@ -29,7 +29,7 @@ export default function Settings({ canvas }: SettingsProps) {
     height,
     diameter,
     color,
-    opacity,
+    // opacity,
     fontSize,
     fontFamily,
     handleObjectSelection,
@@ -39,7 +39,7 @@ export default function Settings({ canvas }: SettingsProps) {
     handleColorChange,
     handleFontSizeChange,
     handleFontFamilyChange,
-    handleOpacityChange,
+    // handleOpacityChange,
   } = useObjectSelection(canvas);
 
   const { textFormatting, updateTextFormatting } = useTextFormatting(
@@ -170,10 +170,10 @@ export default function Settings({ canvas }: SettingsProps) {
             onAlignChange={handleAlignChange}
             onLayerChange={handleLayerChange}
           />
-          <TransparencyControl
+          {/* <TransparencyControl
             opacity={opacity}
             onOpacityChange={handleOpacityChange}
-          />
+          /> */}
           <EffectsDrawer
             selectedObject={selectedObject}
             canvas={canvas}
