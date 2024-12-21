@@ -1,3 +1,4 @@
+import React from "react";
 import { IconType } from "react-icons";
 
 interface SidebarButtonProps {
@@ -6,13 +7,13 @@ interface SidebarButtonProps {
   onClick?: () => void;
 }
 
-export const SidebarButton = ({
+export const SidebarButton: React.FC<SidebarButtonProps> = ({
   icon: Icon,
   label,
   onClick,
-}: SidebarButtonProps) => (
+}) => (
   <button
-    className="w-full flex flex-col items-center p-2 gap-1 transition-all ease-linear hover:bg-tertiary duration-200 hover:rounded-sm"
+    className="w-full flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-lg transition-colors"
     onClick={onClick}
   >
     <Icon className="h-5 w-5 text-primary" />

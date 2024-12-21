@@ -26,7 +26,7 @@ export const searchIcons = (query: string): IconResult[] => {
   ];
 
   if (!query) {
-    return allIcons.slice(0, 45); // İlk 28 ikonu göster
+    return allIcons.slice(0, 52); // İlk 28 ikonu göster
   }
 
   return allIcons

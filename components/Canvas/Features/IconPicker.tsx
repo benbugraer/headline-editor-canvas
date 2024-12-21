@@ -19,8 +19,8 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
 
   return (
     <div className="">
-      <div className="space-y-2">
-        <div className="flex gap-2 mb-4">
+      <div className="space-y-2 items-center justify-center text-center">
+        <div className="flex gap-2 mb-4 w-11/12 ">
           <Input
             placeholder="İkon Ara"
             value={searchQuery}
@@ -31,7 +31,7 @@ export function IconPicker({ onIconSelect }: IconPickerProps) {
           />
         </div>
 
-        <div className="grid grid-cols-4 gap-2  overflow-y-auto">
+        <div className="grid grid-cols-4 gap-2 overflow-y-auto">
           {icons.map((icon) => (
             <Button
               key={icon.id}

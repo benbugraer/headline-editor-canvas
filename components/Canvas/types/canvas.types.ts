@@ -5,6 +5,7 @@ import { PiTextTFill } from "react-icons/pi";
 import { FaFontAwesome } from "react-icons/fa";
 import { IoImageSharp } from "react-icons/io5";
 import { TbLayoutGridFilled } from "react-icons/tb";
+import { IconType } from "react-icons";
 
 export type GuidelineType = {
   length: number;
@@ -67,3 +68,8 @@ export const SIDEBAR_ITEMS = [
     icon: TbLayoutGridFilled,
   },
 ] as const;
+
+export interface SidebarItem {
+  icon: IconType;
+  label: string;
+}

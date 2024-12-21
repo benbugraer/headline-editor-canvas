@@ -36,7 +36,6 @@ export const ShadowControl = memo(
           </div>
 
           <div className="space-y-2">
-            <Label className="text-gray-600 text-sm">Renk</Label>
             <ColorPicker
               color={shadow.color}
               onChange={(color) => onChange({ color: color.hex })}
