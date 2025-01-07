@@ -11,6 +11,12 @@ enum GuidelineId {
   HorizontalTop = "guideline-horizontal-top",
   HorizontalBottom = "guideline-horizontal-bottom",
   HorizontalCenter = "guideline-horizontal-center",
+  ObjectVerticalCenter = "guideline-object-vertical-center",
+  ObjectHorizontalCenter = "guideline-object-horizontal-center",
+  ObjectLeft = "guideline-object-left",
+  ObjectRight = "guideline-object-right",
+  ObjectTop = "guideline-object-top",
+  ObjectBottom = "guideline-object-bottom",
 }
 
 // FabricLine sınıfını genişletiyoruz ve data alanını ekliyoruz
@@ -30,19 +36,71 @@ class CustomFabricLine extends FabricLine {
   }
 }
 
-const calculateObjectBounds = (obj: FabricObject) => {
+interface ObjectBounds {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  centerX: number;
+  centerY: number;
+  width: number;
+  height: number;
+}
+
+const calculateObjectBounds = (obj: FabricObject): ObjectBounds => {
   const left = obj.left ?? 0;
   const top = obj.top ?? 0;
   const scaleX = obj.scaleX ?? 1;
   const scaleY = obj.scaleY ?? 1;
-  const width = (obj.width ?? 0) * scaleX;
-  const height = (obj.height ?? 0) * scaleY;
+  const width = (obj.width ?? 0) * Math.abs(scaleX);
+  const height = (obj.height ?? 0) * Math.abs(scaleY);
+  const angle = obj.angle ?? 0;
+
+  // Handle rotation
+  if (angle === 0) {
+    return {
+      left,
+      top,
+      right: left + width,
+      bottom: top + height,
+      centerX: left + width / 2,
+      centerY: top + height / 2,
+      width,
+      height,
+    };
+  }
+
+  // Calculate rotated bounds
+  const rad = (angle * Math.PI) / 180;
+  const sin = Math.sin(rad);
+  const cos = Math.cos(rad);
+
+  const points = [
+    { x: left, y: top },
+    { x: left + width, y: top },
+    { x: left + width, y: top + height },
+    { x: left, y: top + height },
+  ];
+
+  const rotatedPoints = points.map((p) => {
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+    const dx = p.x - centerX;
+    const dy = p.y - centerY;
+    return {
+      x: centerX + dx * cos - dy * sin,
+      y: centerY + dx * sin + dy * cos,
+    };
+  });
+
+  const xs = rotatedPoints.map((p) => p.x);
+  const ys = rotatedPoints.map((p) => p.y);
 
   return {
-    left,
-    top,
-    right: left + width,
-    bottom: top + height,
+    left: Math.min(...xs),
+    right: Math.max(...xs),
+    top: Math.min(...ys),
+    bottom: Math.max(...ys),
     centerX: left + width / 2,
     centerY: top + height / 2,
     width,
@@ -58,14 +116,10 @@ const createGuideline = (
   return new CustomFabricLine(points, {
     ...GUIDELINE_STYLES,
     data: { id: guidelineId },
-    strokeDashArray: [5, 5] as number[],
-    selectable: false,
-    evented: false,
   });
 };
 
 const guidelineExists = (canvas: Canvas, guidelineId: GuidelineId): boolean => {
-  if (!canvas) return false;
   return canvas
     .getObjects()
     .some(
@@ -78,9 +132,6 @@ export const clearGuidelines = (
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void
 ): void => {
-  if (!canvas) return;
-
-  // Tüm guideline objelerini bul
   const guidelineObjects = canvas
     .getObjects()
     .filter((obj): obj is CustomFabricLine => {
@@ -91,142 +142,286 @@ export const clearGuidelines = (
       );
     });
 
-  // Bulunan guideline'ları canvas'tan kaldır
-  guidelineObjects.forEach((obj) => {
-    canvas.remove(obj);
-  });
-
-  // State'i temizle
+  guidelineObjects.forEach((obj) => canvas.remove(obj));
   setGuidelines([]);
-
-  // Canvas'ı güncelle
   canvas.requestRenderAll();
+};
+
+const checkAlignment = (
+  value1: number,
+  value2: number,
+  threshold: number
+): boolean => {
+  return Math.abs(value1 - value2) < threshold;
+};
+
+const createAlignmentGuideline = (
+  canvas: Canvas,
+  position: number,
+  isHorizontal: boolean,
+  guidelineId: GuidelineId,
+  newGuidelines: GuidelineType[]
+): void => {
+  if (!guidelineExists(canvas, guidelineId)) {
+    const canvasWidth = canvas.width ?? 0;
+    const canvasHeight = canvas.height ?? 0;
+    const points: [number, number, number, number] = isHorizontal
+      ? [0, position, canvasWidth, position]
+      : [position, 0, position, canvasHeight];
+
+    const line = createGuideline(points, guidelineId, canvas);
+    newGuidelines.push({
+      id: guidelineId,
+      line,
+      length: isHorizontal ? canvasWidth : canvasHeight,
+      position,
+      isHorizontal,
+    });
+    canvas.add(line);
+  }
 };
 
 export const handleObjectMoving = (
   canvas: Canvas,
-  obj: FabricObject | undefined,
+  movingObject: FabricObject,
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void
 ): void => {
-  if (!canvas || !obj) return;
+  if (!canvas || !movingObject) return;
 
   const canvasWidth = canvas.width ?? 0;
   const canvasHeight = canvas.height ?? 0;
-  const bounds = calculateObjectBounds(obj);
+  const movingBounds = calculateObjectBounds(movingObject);
   const newGuidelines: GuidelineType[] = [];
-  let snapped = false;
+  let hasSnapped = false;
 
-  // Snapping noktalarını tanımla
-  const snapPoints = [
-    {
-      condition: Math.abs(bounds.left) < SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ left: 0 }),
-      guideline: () =>
-        createGuideline(
-          [0, 0, 0, canvasHeight],
-          GuidelineId.VerticalLeft,
-          canvas
+  // Canvas edge snapping
+  const snapToCanvasEdges = () => {
+    const { snappingDistance } = SNAPPING_CONFIG;
+    const snapPoints = [
+      {
+        condition: checkAlignment(movingBounds.left, 0, snappingDistance),
+        snap: { left: 0 },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            0,
+            false,
+            GuidelineId.VerticalLeft,
+            newGuidelines
+          ),
+      },
+      {
+        condition: checkAlignment(
+          movingBounds.right,
+          canvasWidth,
+          snappingDistance
         ),
-      id: GuidelineId.VerticalLeft,
-      isHorizontal: false,
-    },
-    {
-      condition: Math.abs(bounds.top) < SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ top: 0 }),
-      guideline: () =>
-        createGuideline(
-          [0, 0, canvasWidth, 0],
-          GuidelineId.HorizontalTop,
-          canvas
+        snap: { left: canvasWidth - movingBounds.width },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            canvasWidth,
+            false,
+            GuidelineId.VerticalRight,
+            newGuidelines
+          ),
+      },
+      {
+        condition: checkAlignment(movingBounds.top, 0, snappingDistance),
+        snap: { top: 0 },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            0,
+            true,
+            GuidelineId.HorizontalTop,
+            newGuidelines
+          ),
+      },
+      {
+        condition: checkAlignment(
+          movingBounds.bottom,
+          canvasHeight,
+          snappingDistance
         ),
-      id: GuidelineId.HorizontalTop,
-      isHorizontal: true,
-    },
-    {
-      condition:
-        Math.abs(bounds.right - canvasWidth) < SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ left: canvasWidth - bounds.width }),
-      guideline: () =>
-        createGuideline(
-          [canvasWidth, 0, canvasWidth, canvasHeight],
-          GuidelineId.VerticalRight,
-          canvas
+        snap: { top: canvasHeight - movingBounds.height },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            canvasHeight,
+            true,
+            GuidelineId.HorizontalBottom,
+            newGuidelines
+          ),
+      },
+      {
+        condition: checkAlignment(
+          movingBounds.centerX,
+          canvasWidth / 2,
+          snappingDistance
         ),
-      id: GuidelineId.VerticalRight,
-      isHorizontal: false,
-    },
-    {
-      condition:
-        Math.abs(bounds.bottom - canvasHeight) <
-        SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ top: canvasHeight - bounds.height }),
-      guideline: () =>
-        createGuideline(
-          [0, canvasHeight, canvasWidth, canvasHeight],
-          GuidelineId.HorizontalBottom,
-          canvas
+        snap: { left: canvasWidth / 2 - movingBounds.width / 2 },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            canvasWidth / 2,
+            false,
+            GuidelineId.VerticalCenter,
+            newGuidelines
+          ),
+      },
+      {
+        condition: checkAlignment(
+          movingBounds.centerY,
+          canvasHeight / 2,
+          snappingDistance
         ),
-      id: GuidelineId.HorizontalBottom,
-      isHorizontal: true,
-    },
-    {
-      condition:
-        Math.abs(bounds.centerX - canvasWidth / 2) <
-        SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ left: canvasWidth / 2 - bounds.width / 2 }),
-      guideline: () =>
-        createGuideline(
-          [canvasWidth / 2, 0, canvasWidth / 2, canvasHeight],
-          GuidelineId.VerticalCenter,
-          canvas
-        ),
-      id: GuidelineId.VerticalCenter,
-      isHorizontal: false,
-    },
-    {
-      condition:
-        Math.abs(bounds.centerY - canvasHeight / 2) <
-        SNAPPING_CONFIG.snappingDistance,
-      snap: () => ({ top: canvasHeight / 2 - bounds.height / 2 }),
-      guideline: () =>
-        createGuideline(
-          [0, canvasHeight / 2, canvasWidth, canvasHeight / 2],
-          GuidelineId.HorizontalCenter,
-          canvas
-        ),
-      id: GuidelineId.HorizontalCenter,
-      isHorizontal: true,
-    },
-  ];
+        snap: { top: canvasHeight / 2 - movingBounds.height / 2 },
+        createGuideline: () =>
+          createAlignmentGuideline(
+            canvas,
+            canvasHeight / 2,
+            true,
+            GuidelineId.HorizontalCenter,
+            newGuidelines
+          ),
+      },
+    ];
 
-  // Snapping noktalarını kontrol et
-  snapPoints.forEach((point) => {
-    if (point.condition) {
-      obj.set(point.snap());
-      if (!guidelineExists(canvas, point.id)) {
-        const line = point.guideline();
-        newGuidelines.push({
-          id: point.id,
-          line,
-          length: point.isHorizontal ? canvasWidth : canvasHeight,
-          position: 0,
-          isHorizontal: point.isHorizontal,
-        });
-        canvas.add(line);
+    snapPoints.forEach((point) => {
+      if (point.condition) {
+        movingObject.set(point.snap);
+        point.createGuideline();
+        hasSnapped = true;
       }
-      snapped = true;
-    }
-  });
+    });
+  };
 
-  // Snapping durumuna göre işlem yap
-  if (!snapped) {
+  // Object-to-object snapping
+  const snapToObjects = () => {
+    if (hasSnapped) return;
+
+    const otherObjects = canvas
+      .getObjects()
+      .filter(
+        (obj): obj is FabricObject =>
+          obj !== movingObject && !(obj instanceof CustomFabricLine)
+      );
+
+    for (const targetObject of otherObjects) {
+      if (hasSnapped) break;
+
+      const targetBounds = calculateObjectBounds(targetObject);
+      const { snappingDistance } = SNAPPING_CONFIG;
+
+      // Vertical alignment
+      if (
+        checkAlignment(
+          movingBounds.centerX,
+          targetBounds.centerX,
+          snappingDistance
+        )
+      ) {
+        movingObject.set({
+          left: targetBounds.centerX - movingBounds.width / 2,
+        });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.centerX,
+          false,
+          GuidelineId.ObjectVerticalCenter,
+          newGuidelines
+        );
+        hasSnapped = true;
+      } else if (
+        checkAlignment(movingBounds.left, targetBounds.left, snappingDistance)
+      ) {
+        movingObject.set({ left: targetBounds.left });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.left,
+          false,
+          GuidelineId.ObjectLeft,
+          newGuidelines
+        );
+        hasSnapped = true;
+      } else if (
+        checkAlignment(movingBounds.right, targetBounds.right, snappingDistance)
+      ) {
+        movingObject.set({ left: targetBounds.right - movingBounds.width });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.right,
+          false,
+          GuidelineId.ObjectRight,
+          newGuidelines
+        );
+        hasSnapped = true;
+      }
+
+      // Horizontal alignment
+      if (
+        checkAlignment(
+          movingBounds.centerY,
+          targetBounds.centerY,
+          snappingDistance
+        )
+      ) {
+        movingObject.set({
+          top: targetBounds.centerY - movingBounds.height / 2,
+        });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.centerY,
+          true,
+          GuidelineId.ObjectHorizontalCenter,
+          newGuidelines
+        );
+        hasSnapped = true;
+      } else if (
+        checkAlignment(movingBounds.top, targetBounds.top, snappingDistance)
+      ) {
+        movingObject.set({ top: targetBounds.top });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.top,
+          true,
+          GuidelineId.ObjectTop,
+          newGuidelines
+        );
+        hasSnapped = true;
+      } else if (
+        checkAlignment(
+          movingBounds.bottom,
+          targetBounds.bottom,
+          snappingDistance
+        )
+      ) {
+        movingObject.set({ top: targetBounds.bottom - movingBounds.height });
+        createAlignmentGuideline(
+          canvas,
+          targetBounds.bottom,
+          true,
+          GuidelineId.ObjectBottom,
+          newGuidelines
+        );
+        hasSnapped = true;
+      }
+    }
+  };
+
+  // Perform snapping
+  snapToCanvasEdges();
+  snapToObjects();
+
+  // Update guidelines
+  if (!hasSnapped) {
     clearGuidelines(canvas, guidelines, setGuidelines);
   } else {
     setGuidelines(newGuidelines);
   }
 
-  // Canvas'ı güncelle
   canvas.requestRenderAll();
 };
 

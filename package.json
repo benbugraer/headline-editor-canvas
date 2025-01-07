@@ -41,6 +41,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.14",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-color": "^3.0.12",

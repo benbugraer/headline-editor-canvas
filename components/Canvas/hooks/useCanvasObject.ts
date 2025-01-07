@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import * as fabric from "fabric"; // v6
+import * as fabric from "fabric";
 import {
   EffectState,
   ShadowState,
@@ -8,13 +8,14 @@ import {
   CornerRadiusState,
 } from "../types/effects.types";
 import { getInitialStates, createShadow } from "../utils/fabricHelpers";
+import { debounce } from "lodash";
 
 export const useCanvasObject = (
   selectedObject: fabric.Object | null,
   canvas: fabric.Canvas | null,
   onObjectUpdate?: () => void
 ) => {
-  // Initialize states
+  // Initialize states with memoized initial values
   const initialStates = useMemo(
     () => getInitialStates(selectedObject),
     [selectedObject]
@@ -32,205 +33,239 @@ export const useCanvasObject = (
     initialStates.background
   );
 
-  // Opacity handlers
+  // Debounced render function for performance
+  const debouncedRender = useMemo(
+    () =>
+      debounce(() => {
+        if (canvas) {
+          canvas.requestRenderAll();
+          onObjectUpdate?.();
+        }
+      }, 16), // ~60fps
+    [canvas, onObjectUpdate]
+  );
+
+  // Cleanup debounced function
+  useEffect(() => {
+    return () => {
+      debouncedRender.cancel();
+    };
+  }, [debouncedRender]);
+
+  // Opacity handlers with error handling
   const handleOpacityChange = useCallback(
     (value: number) => {
       if (!selectedObject || !canvas || !opacity.enabled) return;
-
-      selectedObject.set("opacity", value / 100);
-      setOpacity((prev) => ({ ...prev, value }));
-      canvas.requestRenderAll();
-      onObjectUpdate?.();
+      try {
+        const normalizedValue = Math.max(0, Math.min(100, value));
+        selectedObject.set("opacity", normalizedValue / 100);
+        setOpacity((prev) => ({ ...prev, value: normalizedValue }));
+        debouncedRender();
+      } catch (error) {
+        console.error("Error changing opacity:", error);
+      }
     },
-    [selectedObject, canvas, opacity.enabled, onObjectUpdate]
+    [selectedObject, canvas, opacity.enabled, debouncedRender]
   );
 
   const handleOpacityToggle = useCallback(
     (enabled: boolean) => {
       if (!selectedObject || !canvas) return;
-
-      setOpacity((prev) => {
-        const newOpacity = { ...prev, enabled };
-        selectedObject.set(
-          "opacity",
-          newOpacity.enabled ? newOpacity.value / 100 : 1
-        );
-        canvas.requestRenderAll();
-        onObjectUpdate?.();
-        return newOpacity;
-      });
+      try {
+        setOpacity((prev) => {
+          const newOpacity = { ...prev, enabled };
+          selectedObject.set(
+            "opacity",
+            newOpacity.enabled ? newOpacity.value / 100 : 1
+          );
+          debouncedRender();
+          return newOpacity;
+        });
+      } catch (error) {
+        console.error("Error toggling opacity:", error);
+      }
     },
-    [selectedObject, canvas, onObjectUpdate]
+    [selectedObject, canvas, debouncedRender]
   );
 
-  // Shadow handlers
+  // Shadow handlers with validation
   const handleShadowChange = useCallback(
     (updates: Partial<ShadowState>) => {
       if (!selectedObject || !canvas) return;
+      try {
+        setShadow((prev) => {
+          const currentShadow = selectedObject.shadow as fabric.Shadow;
+          const newShadow = {
+            ...prev,
+            color: currentShadow?.color || "#000000",
+            blur: currentShadow?.blur || 0,
+            offsetX: currentShadow?.offsetX || 0,
+            offsetY: currentShadow?.offsetY || 0,
+            ...updates,
+          };
 
-      setShadow((prev) => {
-        const currentShadow = selectedObject.shadow as fabric.Shadow;
-        const newShadow = {
-          ...prev,
-          color: currentShadow?.color || "#000000",
-          blur: currentShadow?.blur || 0,
-          offsetX: currentShadow?.offsetX || 0,
-          offsetY: currentShadow?.offsetY || 0,
-          ...updates,
-        };
+          // Validate shadow values
+          newShadow.blur = Math.max(0, newShadow.blur);
+          newShadow.offsetX = Math.min(100, Math.max(-100, newShadow.offsetX));
+          newShadow.offsetY = Math.min(100, Math.max(-100, newShadow.offsetY));
 
-        selectedObject.set(
-          "shadow",
-          newShadow.enabled ? createShadow(newShadow) : null
-        );
-        canvas.requestRenderAll();
-        onObjectUpdate?.();
-        return newShadow;
-      });
+          selectedObject.set(
+            "shadow",
+            newShadow.enabled ? createShadow(newShadow) : null
+          );
+          debouncedRender();
+          return newShadow;
+        });
+      } catch (error) {
+        console.error("Error changing shadow:", error);
+      }
     },
-    [selectedObject, canvas, onObjectUpdate]
+    [selectedObject, canvas, debouncedRender]
   );
 
-  // Text stroke handlers
+  // Text stroke handlers with validation
   const handleTextStrokeChange = useCallback(
     (updates: Partial<TextStrokeState>) => {
       if (!selectedObject || !canvas || selectedObject.type !== "i-text")
         return;
+      try {
+        setTextStroke((prev) => {
+          const newStroke = { ...prev, ...updates };
+          const textObject = selectedObject as fabric.IText;
 
-      setTextStroke((prev) => {
-        const newStroke = { ...prev, ...updates };
-        const textObject = selectedObject as fabric.IText;
+          if (!newStroke.enabled) {
+            textObject.set({
+              stroke: undefined,
+              strokeWidth: 0,
+              strokeUniform: false,
+              paintFirst: "fill",
+            });
+          } else {
+            // Validate stroke width
+            newStroke.width = Math.max(0, Math.min(20, newStroke.width));
 
-        if (!newStroke.enabled) {
-          textObject.set({
-            stroke: undefined,
-            strokeWidth: 0,
-            strokeUniform: false,
-            paintFirst: "fill",
-          });
-          // Shadow ayarlarını değiştirmiyoruz, mevcut shadow korunacak
-        } else {
-          // Ana stroke ayarları
-          textObject.set({
-            stroke: newStroke.color,
-            strokeWidth: newStroke.width * 2,
-            strokeUniform: true,
-            paintFirst: "stroke",
-            strokeLineJoin: "round",
-            strokeLineCap: "round",
-          });
+            textObject.set({
+              stroke: newStroke.color,
+              strokeWidth: newStroke.width * 2,
+              strokeUniform: true,
+              paintFirst: "stroke",
+              strokeLineJoin: "round",
+              strokeLineCap: "round",
+            });
 
-          // Sadece stroke width > 2 ise ve stroke aktifse shadow ekle
-          if (newStroke.width > 2) {
-            const currentShadow = textObject.shadow as fabric.Shadow;
-            // Eğer mevcut bir shadow varsa, onu koruyalım
-            if (!currentShadow) {
-              textObject.set({
-                shadow: new fabric.Shadow({
-                  color: newStroke.color,
-                  blur: newStroke.width / 2,
-                  offsetX: 0,
-                  offsetY: 0,
-                }),
-              });
+            if (newStroke.width > 2) {
+              const currentShadow = textObject.shadow as fabric.Shadow;
+              if (!currentShadow) {
+                textObject.set({
+                  shadow: new fabric.Shadow({
+                    color: newStroke.color,
+                    blur: newStroke.width / 2,
+                    offsetX: 0,
+                    offsetY: 0,
+                  }),
+                });
+              }
             }
           }
-        }
 
-        canvas.requestRenderAll();
-        onObjectUpdate?.();
-        return newStroke;
-      });
+          debouncedRender();
+          return newStroke;
+        });
+      } catch (error) {
+        console.error("Error changing text stroke:", error);
+      }
     },
-    [selectedObject, canvas, onObjectUpdate]
+    [selectedObject, canvas, debouncedRender]
   );
 
-  // Shape radius handlers
+  // Shape radius handlers with validation
   const handleCornerRadiusChange = useCallback(
     (updates: Partial<CornerRadiusState>) => {
       if (!selectedObject || !canvas) return;
+      try {
+        setShapeRadius((prev) => {
+          const newCornerRadius = { ...prev, ...updates };
 
-      setShapeRadius((prev) => {
-        const newCornerRadius = { ...prev, ...updates };
+          if (
+            selectedObject.type === "rect" ||
+            selectedObject.type === "image"
+          ) {
+            const fabricObject = selectedObject as fabric.Rect | fabric.Image;
 
-        if (selectedObject.type === "rect" || selectedObject.type === "image") {
-          const fabricObject = selectedObject as fabric.Rect | fabric.Image;
+            const width = fabricObject.width || 0;
+            const height = fabricObject.height || 0;
+            const scaleX = fabricObject.scaleX || 1;
+            const scaleY = fabricObject.scaleY || 1;
 
-          // Nesnenin gerçek boyutlarını al
-          const width = fabricObject.width || 0;
-          const height = fabricObject.height || 0;
-          const scaleX = fabricObject.scaleX || 1;
-          const scaleY = fabricObject.scaleY || 1;
+            const realWidth = width * Math.abs(scaleX);
+            const realHeight = height * Math.abs(scaleY);
 
-          // Gerçek boyutları hesapla (scale faktörünü dahil ederek)
-          const realWidth = width * Math.abs(scaleX);
-          const realHeight = height * Math.abs(scaleY);
+            // Normalize and validate radius
+            const normalizedRadius =
+              Math.max(0, Math.min(140, newCornerRadius.radius)) / 140;
+            const maxRadius = Math.min(realWidth, realHeight) / 2;
+            const effectiveRadius = maxRadius * normalizedRadius;
 
-          // Radius değerini 0-140 aralığında normalize et
-          const normalizedRadius = newCornerRadius.radius / 140;
+            const rx = newCornerRadius.enabled
+              ? effectiveRadius / Math.abs(scaleX)
+              : 0;
+            const ry = newCornerRadius.enabled
+              ? effectiveRadius / Math.abs(scaleY)
+              : 0;
 
-          // Maksimum radius değerini nesne boyutuna göre hesapla
-          const maxRadius = Math.min(realWidth, realHeight) / 2;
+            fabricObject.set({ rx, ry });
+            fabricObject.setCoords();
+          }
 
-          // Normalize edilmiş radius değerini gerçek boyuta çevir
-          const effectiveRadius = maxRadius * normalizedRadius;
-
-          // Scale faktörlerini hesaba katarak rx ve ry değerlerini ayarla
-          const rx = newCornerRadius.enabled
-            ? effectiveRadius / Math.abs(scaleX)
-            : 0;
-          const ry = newCornerRadius.enabled
-            ? effectiveRadius / Math.abs(scaleY)
-            : 0;
-
-          fabricObject.set({
-            rx,
-            ry,
-          });
-
-          // Köşeleri güncelle
-          fabricObject.setCoords();
-        }
-
-        canvas.requestRenderAll();
-        onObjectUpdate?.();
-        return newCornerRadius;
-      });
+          debouncedRender();
+          return newCornerRadius;
+        });
+      } catch (error) {
+        console.error("Error changing corner radius:", error);
+      }
     },
-    [selectedObject, canvas, onObjectUpdate]
+    [selectedObject, canvas, debouncedRender]
   );
 
-  // Background handlers
+  // Background handlers with validation
   const handleBackgroundChange = useCallback(
     (updates: Partial<BackgroundState>) => {
       if (!selectedObject || !canvas) return;
+      try {
+        setBackground((prev) => {
+          const newBackground = { ...prev, ...updates };
 
-      setBackground((prev) => {
-        const newBackground = { ...prev, ...updates };
+          // Validate padding
+          newBackground.padding = Math.max(
+            0,
+            Math.min(50, newBackground.padding)
+          );
 
-        if (selectedObject.type === "i-text") {
-          const textObject = selectedObject as fabric.IText;
-          textObject.set({
-            textBackgroundColor: newBackground.enabled
-              ? newBackground.color
-              : undefined,
-            padding: newBackground.enabled ? newBackground.padding : 0,
-          });
-        } else {
-          selectedObject.set({
-            backgroundColor: newBackground.enabled
-              ? newBackground.color
-              : undefined,
-            padding: newBackground.enabled ? newBackground.padding : 0,
-          });
-        }
+          if (selectedObject.type === "i-text") {
+            const textObject = selectedObject as fabric.IText;
+            textObject.set({
+              textBackgroundColor: newBackground.enabled
+                ? newBackground.color
+                : undefined,
+              padding: newBackground.enabled ? newBackground.padding : 0,
+            });
+          } else {
+            selectedObject.set({
+              backgroundColor: newBackground.enabled
+                ? newBackground.color
+                : undefined,
+              padding: newBackground.enabled ? newBackground.padding : 0,
+            });
+          }
 
-        canvas.requestRenderAll();
-        onObjectUpdate?.();
-        return newBackground;
-      });
+          debouncedRender();
+          return newBackground;
+        });
+      } catch (error) {
+        console.error("Error changing background:", error);
+      }
     },
-    [selectedObject, canvas, onObjectUpdate]
+    [selectedObject, canvas, debouncedRender]
   );
 
   // Reset effects when selected object changes

@@ -43,11 +43,11 @@ export const SNAPPING_CONFIG = {
 } as const;
 
 export const GUIDELINE_STYLES = {
-  stroke: "red",
+  stroke: "blue",
   strokeWidth: 1,
   selectable: false,
   evented: false,
-  strokeDashArray: [5, 5],
+  strokeDashArray: [5, 5] as number[],
   opacity: 0.8,
 } as const;
 
