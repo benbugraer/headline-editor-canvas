@@ -187,7 +187,22 @@ export const useObjectSelection = (canvas: fabric.Canvas | null) => {
       if (!selectedObject || !canvas) return;
 
       if (selectedObject.type === "i-text") {
-        (selectedObject as fabric.IText).set("charSpacing", value);
+        // 0 normal aralık olacak
+        // Negatif değerler (-50'ye kadar) harfleri yakınlaştıracak
+        // Pozitif değerler (250'ye kadar) harfleri uzaklaştıracak
+        let scaledValue;
+        if (value < 0) {
+          // -50 -> -100 (harfler birbirine çok yakın)
+          scaledValue = (value / -50) * -500;
+        } else if (value > 0) {
+          // 0 -> 1000 (harfler birbirinden uzak)
+          scaledValue = value * 25;
+        } else {
+          // 0 -> normal aralık
+          scaledValue = 0;
+        }
+
+        (selectedObject as fabric.IText).set("charSpacing", scaledValue);
         setLetterSpacing(value);
         canvas.renderAll();
       }

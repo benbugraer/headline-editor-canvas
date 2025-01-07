@@ -170,7 +170,7 @@ export default function Settings({ canvas }: SettingsProps) {
               />
               <TextSpacingControls
                 lineHeight={lineHeight}
-                letterSpacing={letterSpacing}
+                letterSpacing={letterSpacing || 0}
                 onLineHeightChange={handleLineHeightChange}
                 onLetterSpacingChange={handleLetterSpacingChange}
               />

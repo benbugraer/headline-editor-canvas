@@ -19,7 +19,7 @@ interface TextSpacingControlsProps {
 
 export function TextSpacingControls({
   lineHeight,
-  letterSpacing,
+  letterSpacing = 0,
   onLineHeightChange,
   onLetterSpacingChange,
 }: TextSpacingControlsProps) {
@@ -27,7 +27,7 @@ export function TextSpacingControls({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value >= -11 && value <= 250) {
+    if (!isNaN(value) && value >= -50 && value <= 250) {
       onLetterSpacingChange(value);
     }
   };
@@ -51,7 +51,7 @@ export function TextSpacingControls({
             <Slider
               value={[lineHeight]}
               min={0.5}
-              max={3}
+              max={12}
               step={0.1}
               onValueChange={(value) => onLineHeightChange(value[0])}
             />
@@ -65,7 +65,7 @@ export function TextSpacingControls({
                   value={letterSpacing}
                   onChange={handleLetterSpacingInputChange}
                   className="w-[70px]"
-                  min={-11}
+                  min={-50}
                   max={250}
                 />
                 <span className="text-sm text-muted-foreground">px</span>
@@ -73,7 +73,7 @@ export function TextSpacingControls({
             </div>
             <Slider
               value={[letterSpacing]}
-              min={-11}
+              min={-50}
               max={250}
               step={1}
               onValueChange={(value) => onLetterSpacingChange(value[0])}
