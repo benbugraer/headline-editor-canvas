@@ -32,11 +32,11 @@ export interface TextStrokeState {
   color: string;
 }
 
-export interface ShapeRadiusState {
+export interface CornerRadiusState {
   enabled: boolean;
   radius: number;
+  cornerStyle?: "rx" | "percentage"; // Yeni eklenen özellik
 }
-
 export interface ControlProps {
   onChange: (value: number) => void;
   onToggle: (enabled: boolean) => void;

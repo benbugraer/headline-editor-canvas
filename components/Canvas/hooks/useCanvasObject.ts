@@ -4,8 +4,8 @@ import {
   EffectState,
   ShadowState,
   TextStrokeState,
-  ShapeRadiusState,
   BackgroundState,
+  CornerRadiusState,
 } from "../types/effects.types";
 import { getInitialStates, createShadow } from "../utils/fabricHelpers";
 
@@ -25,7 +25,7 @@ export const useCanvasObject = (
   const [textStroke, setTextStroke] = useState<TextStrokeState>(
     initialStates.textStroke
   );
-  const [shapeRadius, setShapeRadius] = useState<ShapeRadiusState>(
+  const [shapeRadius, setShapeRadius] = useState<CornerRadiusState>(
     initialStates.shapeRadius
   );
   const [background, setBackground] = useState<BackgroundState>(
@@ -146,30 +146,55 @@ export const useCanvasObject = (
   );
 
   // Shape radius handlers
-  const handleShapeRadiusChange = useCallback(
-    (updates: Partial<ShapeRadiusState>) => {
+  const handleCornerRadiusChange = useCallback(
+    (updates: Partial<CornerRadiusState>) => {
       if (!selectedObject || !canvas) return;
 
       setShapeRadius((prev) => {
-        const newRadius = { ...prev, ...updates };
+        const newCornerRadius = { ...prev, ...updates };
 
-        if (selectedObject.type === "circle") {
-          (selectedObject as fabric.Circle).set({
-            radius: newRadius.enabled ? newRadius.radius : 0,
+        if (selectedObject.type === "rect" || selectedObject.type === "image") {
+          const fabricObject = selectedObject as fabric.Rect | fabric.Image;
+
+          // Nesnenin gerçek boyutlarını al
+          const width = fabricObject.width || 0;
+          const height = fabricObject.height || 0;
+          const scaleX = fabricObject.scaleX || 1;
+          const scaleY = fabricObject.scaleY || 1;
+
+          // Gerçek boyutları hesapla (scale faktörünü dahil ederek)
+          const realWidth = width * Math.abs(scaleX);
+          const realHeight = height * Math.abs(scaleY);
+
+          // Radius değerini 0-140 aralığında normalize et
+          const normalizedRadius = newCornerRadius.radius / 140;
+
+          // Maksimum radius değerini nesne boyutuna göre hesapla
+          const maxRadius = Math.min(realWidth, realHeight) / 2;
+
+          // Normalize edilmiş radius değerini gerçek boyuta çevir
+          const effectiveRadius = maxRadius * normalizedRadius;
+
+          // Scale faktörlerini hesaba katarak rx ve ry değerlerini ayarla
+          const rx = newCornerRadius.enabled
+            ? effectiveRadius / Math.abs(scaleX)
+            : 0;
+          const ry = newCornerRadius.enabled
+            ? effectiveRadius / Math.abs(scaleY)
+            : 0;
+
+          fabricObject.set({
+            rx,
+            ry,
           });
-        } else if (
-          selectedObject.type === "rect" ||
-          selectedObject.type === "image"
-        ) {
-          (selectedObject as fabric.Rect).set({
-            rx: newRadius.enabled ? newRadius.radius : 0,
-            ry: newRadius.enabled ? newRadius.radius : 0,
-          });
+
+          // Köşeleri güncelle
+          fabricObject.setCoords();
         }
 
         canvas.requestRenderAll();
         onObjectUpdate?.();
-        return newRadius;
+        return newCornerRadius;
       });
     },
     [selectedObject, canvas, onObjectUpdate]
@@ -230,7 +255,7 @@ export const useCanvasObject = (
       handleOpacityToggle,
       handleShadowChange,
       handleTextStrokeChange,
-      handleShapeRadiusChange,
+      handleCornerRadiusChange,
       handleBackgroundChange,
     },
   };

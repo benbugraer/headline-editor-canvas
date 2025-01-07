@@ -59,7 +59,7 @@ export const EffectsDrawer: React.FC<EffectsProps> = ({
             selectedObject.type === "circle") && (
             <ShapeRadiusControl
               radius={shapeRadius}
-              onChange={handlers.handleShapeRadiusChange}
+              onChange={handlers.handleCornerRadiusChange}
               isCircle={selectedObject.type === "circle"}
             />
           )}
