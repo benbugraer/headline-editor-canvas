@@ -44,23 +44,50 @@ export const useCanvasInitialization = (
           const blobUrl = URL.createObjectURL(blob);
 
           img.onload = () => {
-            const fabricImage = new FabricImage(img, {
-              left: initCanvas.width! / 2,
-              top: initCanvas.height! / 2,
-              originX: "center",
-              originY: "center",
-            });
-
             const scale = Math.min(
               (initCanvas.width! * 0.8) / img.width,
               (initCanvas.height! * 0.8) / img.height,
               1
             );
-            fabricImage.scale(scale);
+
+            const scaledWidth = img.width * scale;
+            const scaledHeight = img.height * scale;
+
+            const fabricImage = new FabricImage(img, {
+              left: (initCanvas.width! - scaledWidth) / 2,
+              top: (initCanvas.height! - scaledHeight) / 2,
+              originX: "left",
+              originY: "top",
+              scaleX: scale,
+              scaleY: scale,
+              hasControls: true,
+              hasBorders: true,
+              selectable: true,
+              cornerStyle: "circle",
+              transparentCorners: false,
+              cornerSize: 12,
+              padding: 0,
+              strokeWidth: 0,
+              strokeUniform: true,
+              centeredRotation: true,
+            });
+
+            fabricImage.setControlsVisibility({
+              mt: true,
+              mb: true,
+              ml: true,
+              mr: true,
+              bl: true,
+              br: true,
+              tl: true,
+              tr: true,
+              mtr: true,
+            });
 
             initCanvas.add(fabricImage);
             initCanvas.setActiveObject(fabricImage);
-            initCanvas.renderAll();
+            fabricImage.setCoords();
+            initCanvas.requestRenderAll();
 
             URL.revokeObjectURL(blobUrl);
           };
