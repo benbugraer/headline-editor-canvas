@@ -3,7 +3,7 @@ import {
   EffectState,
   ShadowState,
   TextStrokeState,
-  ShapeRadiusState,
+  CornerRadiusState,
   BackgroundState,
 } from "../types/effects.types";
 
@@ -11,7 +11,7 @@ type DefaultStates = {
   opacity: EffectState;
   shadow: ShadowState;
   textStroke: TextStrokeState;
-  shapeRadius: ShapeRadiusState;
+  shapeRadius: CornerRadiusState;
   background: BackgroundState;
 };
 
