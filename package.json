@@ -1,5 +1,5 @@
 {
-  "name": "headline-editor-canvas",
+  "name": "@potapress/headline-editor-canvas",
   "version": "0.1.0",
   "private": true,
   "scripts": {
