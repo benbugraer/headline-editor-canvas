@@ -1,1 +1,1 @@
-export { default as HeadlineEditor } from "./HeadlineEditor";
+export { HeadlineEditor } from "./HeadlineEditor";

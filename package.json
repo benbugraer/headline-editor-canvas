@@ -1,5 +1,5 @@
 {
-  "name": "@bugrakaann/headline-editor",
+  "name": "@benbugraer/canvas-editor",
   "version": "1.0.0",
   "description": "A canvas-based headline editor for news websites",
   "main": "dist/index.js",
@@ -18,9 +18,9 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
+    "next": "^13.0.0 || ^14.0.0 || ^15.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "next": "^13.0.0 || ^14.0.0 || ^15.0.0",
     "tailwindcss": "^3.0.0"
   },
   "dependencies": {
@@ -47,6 +47,7 @@
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
+    "@swc/core": "^1.10.18",
     "@types/fabric": "^5.3.9",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -55,7 +56,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
-    "tsup": "^8.0.2",
+    "tsup": "^8.3.6",
     "typescript": "^5"
   },
   "keywords": [
@@ -71,7 +72,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/headline-editor"
+    "url": "https://github.com/benbugraer/headline-editor-canvas"
   },
   "publishConfig": {
     "access": "public"
