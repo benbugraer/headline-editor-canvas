@@ -10,13 +10,13 @@ import Sidebar from "./Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
 import React from "react";
 
-interface HeadlineEditorProps {
+interface HeadlineEditorCanvasProps {
   width?: number;
   height?: number;
   backgroundColor?: string;
 }
 
-const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
+const HeadlineEditorCanvas: React.FC<HeadlineEditorCanvasProps> = ({
   width = 800,
   height = 600,
   backgroundColor = "#ffffff",
@@ -81,4 +81,4 @@ const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
   );
 };
 
-export default HeadlineEditor;
+export default HeadlineEditorCanvas;
