@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Canvas } from "fabric";
 import { GuidelineType } from "./types/canvas.types";
 import { CANVAS_DEFAULT_CONFIG } from "./utils/constants";
@@ -21,35 +21,45 @@ const HeadlineEditorCanvas: React.FC<HeadlineEditorCanvasProps> = ({
   height = 600,
   backgroundColor = "#ffffff",
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasWrapperRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelineType[]>([]);
 
   useCanvasInitialization(
     canvasRef,
-    { ...CANVAS_DEFAULT_CONFIG },
+    {
+      ...CANVAS_DEFAULT_CONFIG,
+      width,
+      height,
+      backgroundColor,
+    },
     guidelines,
     setGuidelines,
     setCanvas
   );
 
-  useEffect(() => {
-    if (!canvas || !canvasWrapperRef.current) return;
-
-    const handleClick = (e: MouseEvent) => {
+  const handleWrapperClick = useCallback(
+    (e: MouseEvent) => {
+      if (!canvas || !canvasWrapperRef.current) return;
       const target = e.target as HTMLElement;
       if (target === canvasWrapperRef.current) {
         canvas.discardActiveObject();
         canvas.requestRenderAll();
       }
-    };
+    },
+    [canvas]
+  );
 
-    canvasWrapperRef.current.addEventListener("mousedown", handleClick);
+  useEffect(() => {
+    const wrapper = canvasWrapperRef.current;
+    if (!wrapper) return;
+
+    wrapper.addEventListener("mousedown", handleWrapperClick);
     return () => {
-      canvasWrapperRef.current?.removeEventListener("mousedown", handleClick);
+      wrapper.removeEventListener("mousedown", handleWrapperClick);
     };
-  }, [canvas]);
+  }, [handleWrapperClick]);
 
   useEffect(() => {
     if (!canvas) return;

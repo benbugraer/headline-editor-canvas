@@ -1,5 +1,5 @@
 import { useEffect, RefObject } from "react";
-import { Canvas, Image as FabricImage } from "fabric"; // Image'i de import ediyoruz
+import { Canvas, Image as FabricImage } from "fabric";
 import { CanvasConfigType, GuidelineType } from "../types/canvas.types";
 import { handleObjectMoving, clearGuidelines } from "../utils/snapping";
 
@@ -13,35 +13,41 @@ export const useCanvasInitialization = (
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const initCanvas = new Canvas(canvasRef.current, config);
+    // Canvas initialization
+    const initCanvas = new Canvas(canvasRef.current, {
+      ...config,
+      selection: true,
+      preserveObjectStacking: true,
+    });
 
+    // Initial render
     initCanvas.renderAll();
     setCanvas(initCanvas);
 
-    // Event listeners
-    initCanvas.on("object:moving", (event) =>
-      handleObjectMoving(initCanvas, event.target, guidelines, setGuidelines)
-    );
+    // Event handler functions
+    const objectMovingHandler = (event: any) => {
+      if (event.target) {
+        handleObjectMoving(initCanvas, event.target, guidelines, setGuidelines);
+      }
+    };
 
-    initCanvas.on("object:modified", () => {
+    const objectModifiedHandler = () => {
       clearGuidelines(initCanvas, guidelines, setGuidelines);
-    });
+    };
 
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
-
       const clipboardItems = event.clipboardData?.items;
       if (!clipboardItems) return;
 
       for (let i = 0; i < clipboardItems.length; i++) {
         const item = clipboardItems[i];
-
         if (item.type.indexOf("image") !== -1) {
           const blob = item.getAsFile();
           if (!blob) continue;
 
-          const img = new Image();
           const blobUrl = URL.createObjectURL(blob);
+          const img = new Image();
 
           img.onload = () => {
             const scale = Math.min(
@@ -50,46 +56,32 @@ export const useCanvasInitialization = (
               1
             );
 
-            const scaledWidth = img.width * scale;
-            const scaledHeight = img.height * scale;
+            FabricImage.fromURL(blobUrl, (fabricImage) => {
+              fabricImage.set({
+                left: (initCanvas.width! - img.width * scale) / 2,
+                top: (initCanvas.height! - img.height * scale) / 2,
+                scaleX: scale,
+                scaleY: scale,
+              });
 
-            const fabricImage = new FabricImage(img, {
-              left: (initCanvas.width! - scaledWidth) / 2,
-              top: (initCanvas.height! - scaledHeight) / 2,
-              originX: "left",
-              originY: "top",
-              scaleX: scale,
-              scaleY: scale,
-              hasControls: true,
-              hasBorders: true,
-              selectable: true,
-              cornerStyle: "circle",
-              transparentCorners: false,
-              cornerSize: 12,
-              padding: 0,
-              strokeWidth: 0,
-              strokeUniform: true,
-              centeredRotation: true,
+              fabricImage.setControlsVisibility({
+                mt: true,
+                mb: true,
+                ml: true,
+                mr: true,
+                bl: true,
+                br: true,
+                tl: true,
+                tr: true,
+                mtr: true,
+              });
+
+              initCanvas.add(fabricImage);
+              initCanvas.setActiveObject(fabricImage);
+              fabricImage.setCoords();
+              initCanvas.requestRenderAll();
+              URL.revokeObjectURL(blobUrl);
             });
-
-            fabricImage.setControlsVisibility({
-              mt: true,
-              mb: true,
-              ml: true,
-              mr: true,
-              bl: true,
-              br: true,
-              tl: true,
-              tr: true,
-              mtr: true,
-            });
-
-            initCanvas.add(fabricImage);
-            initCanvas.setActiveObject(fabricImage);
-            fabricImage.setCoords();
-            initCanvas.requestRenderAll();
-
-            URL.revokeObjectURL(blobUrl);
           };
 
           img.onerror = () => {
@@ -103,11 +95,24 @@ export const useCanvasInitialization = (
       }
     };
 
+    // Add event listeners
+    initCanvas.on("object:moving", objectMovingHandler);
+    initCanvas.on("object:modified", objectModifiedHandler);
     window.addEventListener("paste", handlePaste);
 
+    // Cleanup function
     return () => {
-      initCanvas.dispose();
+      // Remove event listeners
+      initCanvas.off("object:moving", objectMovingHandler);
+      initCanvas.off("object:modified", objectModifiedHandler);
       window.removeEventListener("paste", handlePaste);
+
+      // Clear all objects and dispose canvas
+      initCanvas.getObjects().forEach((obj) => initCanvas.remove(obj));
+      initCanvas.dispose();
+
+      // Clear canvas reference
+      setCanvas(null);
     };
-  }, []);
+  }, []); // Empty dependency array since we only want to initialize once
 };

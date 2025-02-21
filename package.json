@@ -9,7 +9,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -48,6 +50,7 @@
     "@types/react": "^18",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18",
+    "rimraf": "^5.0.5",
     "typescript": "^5"
   },
   "keywords": [
