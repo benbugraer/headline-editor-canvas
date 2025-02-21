@@ -8,7 +8,6 @@ import { useCanvasInitialization } from "./hooks/useCanvasInitialization";
 import Settings from "./Settings/Settings";
 import Sidebar from "./Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
-import React from "react";
 
 export default function CanvasApp() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

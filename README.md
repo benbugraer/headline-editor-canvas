@@ -1,86 +1,75 @@
-# Headline Editor
+# Canvas Editor Project
 
-A powerful canvas-based headline editor for news websites, built with React, TypeScript, and Fabric.js.
+## Türkçe
 
-## Installation
+Bu proje, Next.js tabanlı bir canvas düzenleme uygulamasıdır. Kullanıcılar, interaktif bir arayüz üzerinden çeşitli nesneleri manipüle edebilir ve özelleştirebilir. Bu uygulama, canvas üzerinde çalışan bir çizim kütüphanesi olan Fabric.js'i kullanmaktadır.
 
-You can install the package using npm:
+## English
+
+This project is a Next.js-based canvas editing application. Users can manipulate and customize various objects through an interactive interface. This application uses Fabric.js, a drawing library that works on canvas.
+
+## Kullanılan Teknolojiler
+
+- **Next.js**: React tabanlı web uygulama çerçevesi
+- **TypeScript**: Tip güvenliği için JavaScript üzerine inşa edilmiş programlama dili
+- **Tailwind CSS**: Hızlı UI geliştirme için utility-first CSS framework
+- **Canvas API**: Dinamik, scriptable çizim için kullanılan web teknolojisi
+- **Fabric.js**: Canvas üzerine inşa edilmiş, JavaScript ile çalışan bir çizim kütüphanesi.
+- **Shadcn UI**: React için bir UI kütüphanesi.
+
+## Technologies Used
+
+- **Next.js**: React-based web application framework
+- **TypeScript**: A programming language built on JavaScript for type safety
+- **Tailwind CSS**: A utility-first CSS framework for rapid UI development
+- **Canvas API**: Web technology used for dynamic, scriptable drawing
+- **Fabric.js**: A JavaScript drawing library built on top of Canvas
+- **Shadcn UI**: A UI library for React
+
+## Başlangıç
+
+Projeyi yerel ortamınızda çalıştırmak için:
 
 ```bash
-npm install @bugrakaann/headline-editor
+npm install
+npm run dev
 ```
 
-Or using yarn:
+Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresini açarak uygulamayı görüntüleyebilirsiniz.
+
+## Getting Started
+
+To run the project in your local environment:
 
 ```bash
-yarn add @bugrakaann/headline-editor
+npm install
+npm run dev
 ```
 
-Or using pnpm:
+You can view the application by opening [http://localhost:3000](http://localhost:3000) in your browser.
 
-```bash
-pnpm add @bugrakaann/headline-editor
-```
+## Özellikler
 
-## Usage
-
-```tsx
-import { HeadlineEditor } from "@bugrakaann/headline-editor";
-
-function MyNewsEditor() {
-  const handleSave = (dataUrl: string) => {
-    // Handle the saved image data URL
-    console.log("Saved image:", dataUrl);
-  };
-
-  return (
-    <HeadlineEditor
-      initialWidth={1200}
-      initialHeight={630}
-      onSave={handleSave}
-      defaultBackgroundColor="#ffffff"
-      defaultFontFamily="Arial"
-      defaultFontSize={48}
-      defaultTextColor="#000000"
-    />
-  );
-}
-
-export default MyNewsEditor;
-```
-
-## Props
-
-| Prop                   | Type                      | Default   | Description                      |
-| ---------------------- | ------------------------- | --------- | -------------------------------- |
-| initialWidth           | number                    | 1200      | Initial canvas width             |
-| initialHeight          | number                    | 630       | Initial canvas height            |
-| onSave                 | (dataUrl: string) => void | -         | Callback when saving the image   |
-| onClose                | () => void                | -         | Callback when closing the editor |
-| defaultBackgroundColor | string                    | '#ffffff' | Default background color         |
-| defaultFontFamily      | string                    | 'Arial'   | Default font family              |
-| defaultFontSize        | number                    | 48        | Default font size                |
-| defaultTextColor       | string                    | '#000000' | Default text color               |
+- İnteraktif canvas düzenleme
+- Nesne seçimi ve manipülasyonu
+- Özelleştirilebilir ayarlar
+- Responsive tasarım
+- Resim yükleme
+- Yazı düzenleme
+- Dikdörtgen, Çember, Yazı, Resim
 
 ## Features
 
-- Canvas-based image editor
-- Text manipulation with various fonts and sizes
-- Background color customization
-- Image export functionality
+- Interactive canvas editing
+- Object selection and manipulation
+- Customizable settings
 - Responsive design
-- TypeScript support
-
-## Development
-
-To start development:
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Start development server: `npm run dev`
+- Image uploading
+- Text editing
+- Rectangle, Circle, Text, Image
 
 ## License
 
-MIT
+[MIT](https://choosealicense.com/licenses/mit/)
 
 ---
