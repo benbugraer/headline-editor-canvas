@@ -21,7 +21,6 @@ var reactColor = require('react-color');
 var PopoverPrimitive = require('@radix-ui/react-popover');
 var SelectPrimitive = require('@radix-ui/react-select');
 var fi = require('react-icons/fi');
-var google = require('next/font/google');
 var SliderPrimitive = require('@radix-ui/react-slider');
 var SwitchPrimitives = require('@radix-ui/react-switch');
 
@@ -6625,51 +6624,8 @@ var SelectSeparator = React18__namespace.forwardRef(({ className, ...props }, re
   }
 ));
 SelectSeparator.displayName = SelectPrimitive__namespace.Separator.displayName;
-var roboto = google.Roboto({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap"
-});
-var openSans = google.Open_Sans({
-  subsets: ["latin"],
-  display: "swap"
-});
-var lato = google.Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap"
-});
-var montserrat = google.Montserrat({
-  subsets: ["latin"],
-  display: "swap"
-});
-var raleway = google.Raleway({
-  subsets: ["latin"],
-  display: "swap"
-});
-var ubuntu = google.Ubuntu({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap"
-});
-var playfairDisplay = google.Playfair_Display({
-  subsets: ["latin"],
-  display: "swap"
-});
-var merriweather = google.Merriweather({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap"
-});
-var sourceSans = google.Source_Sans_3({
-  subsets: ["latin"],
-  display: "swap"
-});
-var poppins = google.Poppins({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap"
-});
+
+// src/components/lib/fonts.ts
 var fontFamilies = [
   {
     name: "Arial",
@@ -6689,43 +6645,43 @@ var fontFamilies = [
   },
   {
     name: "Roboto",
-    family: roboto.style.fontFamily
+    family: "'Roboto', sans-serif"
   },
   {
     name: "Open Sans",
-    family: openSans.style.fontFamily
+    family: "'Open Sans', sans-serif"
   },
   {
     name: "Lato",
-    family: lato.style.fontFamily
+    family: "'Lato', sans-serif"
   },
   {
     name: "Montserrat",
-    family: montserrat.style.fontFamily
+    family: "'Montserrat', sans-serif"
   },
   {
     name: "Raleway",
-    family: raleway.style.fontFamily
+    family: "'Raleway', sans-serif"
   },
   {
     name: "Ubuntu",
-    family: ubuntu.style.fontFamily
+    family: "'Ubuntu', sans-serif"
   },
   {
     name: "Playfair Display",
-    family: playfairDisplay.style.fontFamily
+    family: "'Playfair Display', serif"
   },
   {
     name: "Merriweather",
-    family: merriweather.style.fontFamily
+    family: "'Merriweather', serif"
   },
   {
     name: "Source Sans",
-    family: sourceSans.style.fontFamily
+    family: "'Source Sans 3', sans-serif"
   },
   {
     name: "Poppins",
-    family: poppins.style.fontFamily
+    family: "'Poppins', sans-serif"
   }
 ];
 
