@@ -1,36 +1,19 @@
 {
   "name": "@benbugraer/headline-editor",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "A headline editor canvas component for news websites",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "node": "./dist/index.js",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.js"
-    },
-    "./styles.css": "./dist/styles.css"
-  },
-  "type": "module",
-  "private": false,
-  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup && npm run copy-styles",
-    "dev": "tsup --watch",
-    "copy-styles": "copyfiles -u 1 \"components/**/*.css\" dist",
+    "build": "tsc",
     "prepare": "npm run build"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "next": ">=13.0.0"
+    "react-dom": ">=18.0.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -61,16 +44,10 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@swc/core": "^1.10.18",
     "@types/fabric": "^5.3.9",
-    "@types/lodash": "^4.17.14",
     "@types/react": "^18",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18",
-    "copyfiles": "^2.4.1",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "tsup": "^8.3.6",
     "typescript": "^5"
   },
   "keywords": [
