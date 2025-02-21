@@ -1,8 +1,8 @@
 import React from "react";
-interface HeadlineEditorProps {
+interface HeadlineEditorCanvasProps {
     width?: number;
     height?: number;
     backgroundColor?: string;
 }
-declare const HeadlineEditor: React.FC<HeadlineEditorProps>;
-export default HeadlineEditor;
+declare const HeadlineEditorCanvas: React.FC<HeadlineEditorCanvasProps>;
+export default HeadlineEditorCanvas;
