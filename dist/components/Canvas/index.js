@@ -1,5 +1,4 @@
 "use strict";
-"use client";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -18,9 +17,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Canvas_1 = __importDefault(require("./components/Canvas/Canvas"));
-exports.default = Canvas_1.default;
-__exportStar(require("./components/Canvas/types"), exports);
-__exportStar(require("./components/Canvas/utils"), exports);
-__exportStar(require("./components/Canvas/hooks"), exports);
-__exportStar(require("./components/Canvas/lib"), exports);
+exports.HeadlineEditorCanvas = void 0;
+var Canvas_1 = require("./Canvas");
+Object.defineProperty(exports, "HeadlineEditorCanvas", { enumerable: true, get: function () { return __importDefault(Canvas_1).default; } });
+__exportStar(require("./types"), exports);
+__exportStar(require("./utils"), exports);
+__exportStar(require("./hooks"), exports);
+__exportStar(require("./lib"), exports);
