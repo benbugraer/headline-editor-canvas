@@ -28,23 +28,25 @@ var HeadlineEditorCanvas = function (_a) {
     var canvasWrapperRef = (0, react_1.useRef)(null);
     var _e = (0, react_1.useState)(null), canvas = _e[0], setCanvas = _e[1];
     var _f = (0, react_1.useState)([]), guidelines = _f[0], setGuidelines = _f[1];
-    (0, useCanvasInitialization_1.useCanvasInitialization)(canvasRef, __assign({}, constants_1.CANVAS_DEFAULT_CONFIG), guidelines, setGuidelines, setCanvas);
-    (0, react_1.useEffect)(function () {
+    (0, useCanvasInitialization_1.useCanvasInitialization)(canvasRef, __assign(__assign({}, constants_1.CANVAS_DEFAULT_CONFIG), { width: width, height: height, backgroundColor: backgroundColor }), guidelines, setGuidelines, setCanvas);
+    var handleWrapperClick = (0, react_1.useCallback)(function (e) {
         if (!canvas || !canvasWrapperRef.current)
             return;
-        var handleClick = function (e) {
-            var target = e.target;
-            if (target === canvasWrapperRef.current) {
-                canvas.discardActiveObject();
-                canvas.requestRenderAll();
-            }
-        };
-        canvasWrapperRef.current.addEventListener("mousedown", handleClick);
-        return function () {
-            var _a;
-            (_a = canvasWrapperRef.current) === null || _a === void 0 ? void 0 : _a.removeEventListener("mousedown", handleClick);
-        };
+        var target = e.target;
+        if (target === canvasWrapperRef.current) {
+            canvas.discardActiveObject();
+            canvas.requestRenderAll();
+        }
     }, [canvas]);
+    (0, react_1.useEffect)(function () {
+        var wrapper = canvasWrapperRef.current;
+        if (!wrapper)
+            return;
+        wrapper.addEventListener("mousedown", handleWrapperClick);
+        return function () {
+            wrapper.removeEventListener("mousedown", handleWrapperClick);
+        };
+    }, [handleWrapperClick]);
     (0, react_1.useEffect)(function () {
         if (!canvas)
             return;

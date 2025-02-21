@@ -1,23 +1,38 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useCanvasInitialization = void 0;
 var react_1 = require("react");
-var fabric_1 = require("fabric"); // Image'i de import ediyoruz
+var fabric_1 = require("fabric");
 var snapping_1 = require("../utils/snapping");
 var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidelines, setCanvas) {
     (0, react_1.useEffect)(function () {
         if (!canvasRef.current)
             return;
-        var initCanvas = new fabric_1.Canvas(canvasRef.current, config);
+        // Canvas initialization
+        var initCanvas = new fabric_1.Canvas(canvasRef.current, __assign(__assign({}, config), { selection: true, preserveObjectStacking: true }));
+        // Initial render
         initCanvas.renderAll();
         setCanvas(initCanvas);
-        // Event listeners
-        initCanvas.on("object:moving", function (event) {
-            return (0, snapping_1.handleObjectMoving)(initCanvas, event.target, guidelines, setGuidelines);
-        });
-        initCanvas.on("object:modified", function () {
+        // Event handler functions
+        var objectMovingHandler = function (event) {
+            if (event.target) {
+                (0, snapping_1.handleObjectMoving)(initCanvas, event.target, guidelines, setGuidelines);
+            }
+        };
+        var objectModifiedHandler = function () {
             (0, snapping_1.clearGuidelines)(initCanvas, guidelines, setGuidelines);
-        });
+        };
         var handlePaste = function (event) {
             var _a;
             event.preventDefault();
@@ -30,46 +45,34 @@ var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidel
                     var blob = item.getAsFile();
                     if (!blob)
                         return "continue";
-                    var img_1 = new Image();
                     var blobUrl_1 = URL.createObjectURL(blob);
+                    var img_1 = new Image();
                     img_1.onload = function () {
                         var scale = Math.min((initCanvas.width * 0.8) / img_1.width, (initCanvas.height * 0.8) / img_1.height, 1);
-                        var scaledWidth = img_1.width * scale;
-                        var scaledHeight = img_1.height * scale;
-                        var fabricImage = new fabric_1.Image(img_1, {
-                            left: (initCanvas.width - scaledWidth) / 2,
-                            top: (initCanvas.height - scaledHeight) / 2,
-                            originX: "left",
-                            originY: "top",
-                            scaleX: scale,
-                            scaleY: scale,
-                            hasControls: true,
-                            hasBorders: true,
-                            selectable: true,
-                            cornerStyle: "circle",
-                            transparentCorners: false,
-                            cornerSize: 12,
-                            padding: 0,
-                            strokeWidth: 0,
-                            strokeUniform: true,
-                            centeredRotation: true,
+                        fabric_1.Image.fromURL(blobUrl_1).then(function (fabricImage) {
+                            fabricImage.set({
+                                left: (initCanvas.width - img_1.width * scale) / 2,
+                                top: (initCanvas.height - img_1.height * scale) / 2,
+                                scaleX: scale,
+                                scaleY: scale,
+                            });
+                            fabricImage.setControlsVisibility({
+                                mt: true,
+                                mb: true,
+                                ml: true,
+                                mr: true,
+                                bl: true,
+                                br: true,
+                                tl: true,
+                                tr: true,
+                                mtr: true,
+                            });
+                            initCanvas.add(fabricImage);
+                            initCanvas.setActiveObject(fabricImage);
+                            fabricImage.setCoords();
+                            initCanvas.requestRenderAll();
+                            URL.revokeObjectURL(blobUrl_1);
                         });
-                        fabricImage.setControlsVisibility({
-                            mt: true,
-                            mb: true,
-                            ml: true,
-                            mr: true,
-                            bl: true,
-                            br: true,
-                            tl: true,
-                            tr: true,
-                            mtr: true,
-                        });
-                        initCanvas.add(fabricImage);
-                        initCanvas.setActiveObject(fabricImage);
-                        fabricImage.setCoords();
-                        initCanvas.requestRenderAll();
-                        URL.revokeObjectURL(blobUrl_1);
                     };
                     img_1.onerror = function () {
                         console.error("Error loading image");
@@ -85,11 +88,22 @@ var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidel
                     break;
             }
         };
+        // Add event listeners
+        initCanvas.on("object:moving", objectMovingHandler);
+        initCanvas.on("object:modified", objectModifiedHandler);
         window.addEventListener("paste", handlePaste);
+        // Cleanup function
         return function () {
-            initCanvas.dispose();
+            // Remove event listeners
+            initCanvas.off("object:moving", objectMovingHandler);
+            initCanvas.off("object:modified", objectModifiedHandler);
             window.removeEventListener("paste", handlePaste);
+            // Clear all objects and dispose canvas
+            initCanvas.getObjects().forEach(function (obj) { return initCanvas.remove(obj); });
+            initCanvas.dispose();
+            // Clear canvas reference
+            setCanvas(null);
         };
-    }, []);
+    }, []); // Empty dependency array since we only want to initialize once
 };
 exports.useCanvasInitialization = useCanvasInitialization;

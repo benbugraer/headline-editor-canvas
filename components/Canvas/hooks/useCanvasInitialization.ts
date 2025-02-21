@@ -56,7 +56,7 @@ export const useCanvasInitialization = (
               1
             );
 
-            FabricImage.fromURL(blobUrl, (fabricImage) => {
+            FabricImage.fromURL(blobUrl).then((fabricImage) => {
               fabricImage.set({
                 left: (initCanvas.width! - img.width * scale) / 2,
                 top: (initCanvas.height! - img.height * scale) / 2,
