@@ -13,29 +13,41 @@ export const useCanvasInitialization = (
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // Canvas initialization
+    // Canvas initialization with strict configuration
     const initCanvas = new Canvas(canvasRef.current, {
       ...config,
       selection: true,
       preserveObjectStacking: true,
+      enableRetinaScaling: true,
+      stopContextMenu: true,
+      fireRightClick: true,
     });
 
     // Initial render
     initCanvas.renderAll();
     setCanvas(initCanvas);
 
-    // Event handler functions
-    const objectMovingHandler = (event: any) => {
-      if (event.target) {
-        handleObjectMoving(initCanvas, event.target, guidelines, setGuidelines);
+    // Event handler functions with proper typing
+    function objectMovingHandler(this: Canvas) {
+      const activeObject = this.getActiveObject();
+      if (!activeObject) return;
+
+      try {
+        handleObjectMoving(this, activeObject, guidelines, setGuidelines);
+      } catch (error) {
+        console.error("Error in object moving handler:", error);
       }
-    };
+    }
 
-    const objectModifiedHandler = () => {
-      clearGuidelines(initCanvas, guidelines, setGuidelines);
-    };
+    function objectModifiedHandler(this: Canvas) {
+      try {
+        clearGuidelines(this, guidelines, setGuidelines);
+      } catch (error) {
+        console.error("Error in object modified handler:", error);
+      }
+    }
 
-    const handlePaste = (event: ClipboardEvent) => {
+    const handlePaste = async (event: ClipboardEvent) => {
       event.preventDefault();
       const clipboardItems = event.clipboardData?.items;
       if (!clipboardItems) return;
@@ -43,25 +55,43 @@ export const useCanvasInitialization = (
       for (let i = 0; i < clipboardItems.length; i++) {
         const item = clipboardItems[i];
         if (item.type.indexOf("image") !== -1) {
-          const blob = item.getAsFile();
-          if (!blob) continue;
+          try {
+            const blob = item.getAsFile();
+            if (!blob) continue;
 
-          const blobUrl = URL.createObjectURL(blob);
-          const img = new Image();
+            const blobUrl = URL.createObjectURL(blob);
 
-          img.onload = () => {
-            const scale = Math.min(
-              (initCanvas.width! * 0.8) / img.width,
-              (initCanvas.height! * 0.8) / img.height,
-              1
-            );
+            // Create a promise to handle image loading
+            const loadImage = () => {
+              return new Promise<HTMLImageElement>((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error("Failed to load image"));
+                img.src = blobUrl;
+              });
+            };
 
-            FabricImage.fromURL(blobUrl).then((fabricImage) => {
-              fabricImage.set({
+            try {
+              const img = await loadImage();
+              const scale = Math.min(
+                (initCanvas.width! * 0.8) / img.width,
+                (initCanvas.height! * 0.8) / img.height,
+                1
+              );
+
+              // Create fabric image
+              const fabricImage = new FabricImage(img, {
                 left: (initCanvas.width! - img.width * scale) / 2,
                 top: (initCanvas.height! - img.height * scale) / 2,
                 scaleX: scale,
                 scaleY: scale,
+                cornerStyle: "circle",
+                transparentCorners: false,
+                cornerSize: 12,
+                padding: 0,
+                strokeWidth: 0,
+                strokeUniform: true,
+                centeredRotation: true,
               });
 
               fabricImage.setControlsVisibility({
@@ -80,39 +110,54 @@ export const useCanvasInitialization = (
               initCanvas.setActiveObject(fabricImage);
               fabricImage.setCoords();
               initCanvas.requestRenderAll();
+            } finally {
               URL.revokeObjectURL(blobUrl);
-            });
-          };
-
-          img.onerror = () => {
-            console.error("Error loading image");
-            URL.revokeObjectURL(blobUrl);
-          };
-
-          img.src = blobUrl;
+            }
+          } catch (error) {
+            console.error("Error handling pasted image:", error);
+          }
           break;
         }
       }
     };
 
-    // Add event listeners
-    initCanvas.on("object:moving", objectMovingHandler);
-    initCanvas.on("object:modified", objectModifiedHandler);
-    window.addEventListener("paste", handlePaste);
+    // Add event listeners with error boundaries
+    try {
+      initCanvas.on("object:moving", objectMovingHandler.bind(initCanvas));
+      initCanvas.on("object:modified", objectModifiedHandler.bind(initCanvas));
+      window.addEventListener("paste", handlePaste);
+    } catch (error) {
+      console.error("Error setting up event listeners:", error);
+    }
 
     // Cleanup function
     return () => {
-      // Remove event listeners
-      initCanvas.off("object:moving", objectMovingHandler);
-      initCanvas.off("object:modified", objectModifiedHandler);
-      window.removeEventListener("paste", handlePaste);
+      try {
+        // Remove event listeners
+        initCanvas.off("object:moving", objectMovingHandler.bind(initCanvas));
+        initCanvas.off(
+          "object:modified",
+          objectModifiedHandler.bind(initCanvas)
+        );
+        window.removeEventListener("paste", handlePaste);
 
-      // Clear all objects and dispose canvas
-      initCanvas.getObjects().forEach((obj) => initCanvas.remove(obj));
-      initCanvas.dispose();
+        // Clear all objects
+        initCanvas.getObjects().forEach((obj) => {
+          try {
+            initCanvas.remove(obj);
+          } catch (error) {
+            console.error("Error removing object:", error);
+          }
+        });
 
-      // Clear canvas reference
-      setCanvas(null);
+        // Dispose canvas
+        initCanvas.dispose();
+
+        // Clear canvas reference
+        setCanvas(null);
+      } catch (error) {
+        console.error("Error in cleanup:", error);
+      }
     };
   }, []); // Empty dependency array since we only want to initialize once
 };
