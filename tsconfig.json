@@ -9,8 +9,12 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitThis": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "allowJs": true
   },
-  "include": ["components/**/*", "index.ts"],
+  "include": ["components/**/*", "lib/**/*", "index.ts"],
   "exclude": ["node_modules", "dist"]
 }
