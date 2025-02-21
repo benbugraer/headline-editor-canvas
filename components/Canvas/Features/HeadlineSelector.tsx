@@ -1,3 +1,4 @@
+import React from "react";
 import { HEADLINE_SIZES } from "../utils/constants";
 import { Canvas } from "fabric";
 

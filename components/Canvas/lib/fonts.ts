@@ -1,132 +1,89 @@
-import {
-  Roboto,
-  Open_Sans,
-  Lato,
-  Montserrat,
-  Raleway,
-  Ubuntu,
-  Playfair_Display,
-  Merriweather,
-  Source_Sans_3,
-  Poppins,
-} from "next/font/google";
-
-// Font loader configurations
-export const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-export const openSans = Open_Sans({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-export const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const raleway = Raleway({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const ubuntu = Ubuntu({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-export const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-export const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
 export type FontFamily = {
   name: string;
   family: string;
+  url: string;
 };
 
 export const fontFamilies: FontFamily[] = [
   {
     name: "Arial",
     family: "Arial, sans-serif",
+    url: "",
   },
   {
     name: "Times New Roman",
     family: "Times New Roman, serif",
+    url: "",
   },
   {
     name: "Helvetica",
     family: "Helvetica, sans-serif",
+    url: "",
   },
   {
     name: "Georgia",
     family: "Georgia, serif",
+    url: "",
   },
   {
     name: "Roboto",
-    family: roboto.style.fontFamily,
+    family: "Roboto, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
   },
   {
     name: "Open Sans",
-    family: openSans.style.fontFamily,
+    family: "Open Sans, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap",
   },
   {
     name: "Lato",
-    family: lato.style.fontFamily,
+    family: "Lato, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap",
   },
   {
     name: "Montserrat",
-    family: montserrat.style.fontFamily,
+    family: "Montserrat, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap",
   },
   {
     name: "Raleway",
-    family: raleway.style.fontFamily,
+    family: "Raleway, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap",
   },
   {
     name: "Ubuntu",
-    family: ubuntu.style.fontFamily,
+    family: "Ubuntu, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap",
   },
   {
     name: "Playfair Display",
-    family: playfairDisplay.style.fontFamily,
+    family: "Playfair Display, serif",
+    url: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
   },
   {
     name: "Merriweather",
-    family: merriweather.style.fontFamily,
+    family: "Merriweather, serif",
+    url: "https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap",
   },
   {
     name: "Source Sans",
-    family: sourceSans.style.fontFamily,
+    family: "Source Sans 3, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap",
   },
   {
     name: "Poppins",
-    family: poppins.style.fontFamily,
+    family: "Poppins, sans-serif",
+    url: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
   },
 ];
+
+export function loadFonts() {
+  fontFamilies
+    .filter((font) => font.url)
+    .forEach((font) => {
+      const link = document.createElement("link");
+      link.href = font.url;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    });
+}

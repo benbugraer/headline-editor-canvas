@@ -73,3 +73,69 @@ You can view the application by opening [http://localhost:3000](http://localhost
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ---
+
+# Headline Editor Canvas
+
+A React component for creating and editing news headline images with a canvas-based editor.
+
+## Installation
+
+You can install the package using npm:
+
+```bash
+npm install @bugrakaann/headline-editor-canvas
+```
+
+Or using yarn:
+
+```bash
+yarn add @bugrakaann/headline-editor-canvas
+```
+
+Or using pnpm:
+
+```bash
+pnpm add @bugrakaann/headline-editor-canvas
+```
+
+## Usage
+
+```jsx
+import { HeadlineEditorCanvas } from "@bugrakaann/headline-editor-canvas";
+
+function App() {
+  return (
+    <div>
+      <HeadlineEditorCanvas />
+    </div>
+  );
+}
+```
+
+## Features
+
+- Canvas-based image editor
+- Text manipulation
+- Image upload and manipulation
+- Background color customization
+- Font selection
+- Export functionality
+- Responsive design
+
+## Props
+
+| Prop            | Type   | Default   | Description              |
+| --------------- | ------ | --------- | ------------------------ |
+| width           | number | 800       | Canvas width             |
+| height          | number | 600       | Canvas height            |
+| backgroundColor | string | '#ffffff' | Default background color |
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+---
