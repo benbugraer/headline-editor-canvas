@@ -1,6 +1,6 @@
 {
   "name": "@benbugraer/headline-editor",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A headline editor canvas component for news websites",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
