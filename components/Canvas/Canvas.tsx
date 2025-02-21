@@ -10,7 +10,17 @@ import Sidebar from "./Sidebar/Sidebar";
 import TopBar from "../TopBar/TopBar";
 import React from "react";
 
-export default function CanvasApp() {
+interface HeadlineEditorProps {
+  width?: number;
+  height?: number;
+  backgroundColor?: string;
+}
+
+const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
+  width = 800,
+  height = 600,
+  backgroundColor = "#ffffff",
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const canvasWrapperRef = useRef<HTMLDivElement | null>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -69,4 +79,6 @@ export default function CanvasApp() {
       </div>
     </div>
   );
-}
+};
+
+export default HeadlineEditor;
