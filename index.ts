@@ -1,8 +1,6 @@
-import HeadlineEditorCanvas from "./components/Canvas/Canvas";
+"use client";
 
-export { HeadlineEditorCanvas };
-export default HeadlineEditorCanvas;
-
+export { default as HeadlineEditorCanvas } from "./components/Canvas/Canvas";
 export * from "./components/Canvas/types";
 export * from "./components/Canvas/utils";
 export * from "./components/Canvas/hooks";
