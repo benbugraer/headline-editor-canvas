@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "clean": "rimraf dist",
+    "clean": "del /s /q dist\\* || rm -rf dist/*",
     "prebuild": "npm run clean"
   },
   "peerDependencies": {
