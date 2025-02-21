@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "fabric";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { Settings } from "./Settings";
-import { CanvasState } from "../types";
+import Settings from "./Settings/index";
+import { CanvasState, HeadlineEditorProps } from "../types";
 
 export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
   initialWidth = 1200,
@@ -11,9 +11,6 @@ export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
   onSave,
   onClose,
   defaultBackgroundColor = "#ffffff",
-  defaultFontFamily = "Arial",
-  defaultFontSize = 48,
-  defaultTextColor = "#000000",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
@@ -44,7 +41,7 @@ export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
 
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target === canvasWrapperRef.current) {
+      if (target === canvasWrapperRef.current && canvasState.canvas) {
         canvasState.canvas.discardActiveObject();
         canvasState.canvas.requestRenderAll();
       }

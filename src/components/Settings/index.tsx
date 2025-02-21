@@ -1,115 +1,217 @@
-import React, { useEffect, useState } from "react";
-import { Canvas } from "fabric";
-import { ColorPicker } from "../ui/color-picker";
-import { Input } from "../ui/input";
-import { Select } from "../ui/select";
+import React, { useCallback, useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useObjectSelection } from "../Canvas/hooks/useObjectSelection";
+import { useTextFormatting } from "../Canvas/hooks/useTextFormatting";
+import { DimensionInputs } from "../Canvas/Features/DimensionInputs";
+import { ColorPicker } from "../Canvas/Features/ColorPicker";
+import { TextFormattingControls } from "../Canvas/Features/TextFormattingControls";
+import { FontFamilySelect } from "../Canvas/Features/FontFamilySelect";
+import { fontFamilies } from "../lib/fonts";
+import { FiTrash2 } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
+import { useCanvasEvents } from "../Canvas/hooks/useCanvasEvents";
+import * as fabric from "fabric";
+import { ColorResult } from "react-color";
+import { layerManagement } from "../Canvas/utils/LayerManagement";
+import { LayerControls } from "../Canvas/Features/LayerControls";
+// import TransparencyControl from "../Features/TransparencyControl";
+import EffectsDrawer from "../Canvas/Features/Effects";
+import { TextSpacingControls } from "../Canvas/Features/TextSpacingControls";
 
 interface SettingsProps {
-  canvas: Canvas | null;
+  canvas: fabric.Canvas | null;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ canvas }) => {
-  const [activeObject, setActiveObject] = useState<any>(null);
-  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-  const [textColor, setTextColor] = useState("#000000");
-  const [fontSize, setFontSize] = useState(48);
-  const [fontFamily, setFontFamily] = useState("Arial");
+export default function Settings({ canvas }: SettingsProps) {
+  const {
+    selectedObject,
+    width,
+    height,
+    diameter,
+    color,
+    // opacity,
+    fontSize,
+    fontFamily,
+    handleObjectSelection,
+    handleWidthChange,
+    handleHeightChange,
+    handleDiameterChange,
+    handleColorChange,
+    handleFontSizeChange,
+    handleFontFamilyChange,
+    // handleOpacityChange,
+    lineHeight,
+    letterSpacing,
+    handleLineHeightChange,
+    handleLetterSpacingChange,
+  } = useObjectSelection(canvas);
 
-  useEffect(() => {
+  const { textFormatting, updateTextFormatting } = useTextFormatting(
+    canvas,
+    selectedObject
+  );
+
+  const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
+
+  const clearSettings = useCallback(() => {
+    handleObjectSelection(null);
+  }, [handleObjectSelection]);
+
+  const handleDeleteObject = useCallback(() => {
     if (!canvas) return;
 
-    const updateActiveObject = () => {
-      const active = canvas.getActiveObject();
-      setActiveObject(active);
-      if (active) {
-        if (active.type === "i-text") {
-          setTextColor(active.fill || "#000000");
-          setFontSize(active.fontSize || 48);
-          setFontFamily(active.fontFamily || "Arial");
-        }
+    const activeObjects = canvas.getActiveObjects();
+
+    if (activeObjects.length > 0) {
+      canvas.discardActiveObject();
+      activeObjects.forEach((obj) => {
+        canvas.remove(obj);
+      });
+    } else if (selectedObject) {
+      canvas.remove(selectedObject);
+    }
+
+    canvas.requestRenderAll();
+    clearSettings();
+  }, [canvas, selectedObject, clearSettings]);
+
+  useCanvasEvents(canvas, handleObjectSelection, clearSettings);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Delete") {
+        handleDeleteObject();
       }
     };
 
-    canvas.on("selection:created", updateActiveObject);
-    canvas.on("selection:updated", updateActiveObject);
-    canvas.on("selection:cleared", () => setActiveObject(null));
-
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      canvas.off("selection:created", updateActiveObject);
-      canvas.off("selection:updated", updateActiveObject);
-      canvas.off("selection:cleared", () => setActiveObject(null));
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [canvas]);
+  }, [handleDeleteObject]);
 
-  const handleBackgroundColorChange = (color: string) => {
-    if (!canvas) return;
+  const handleBackgroundColorChange = (colorResult: ColorResult) => {
+    const color = colorResult.hex;
     setBackgroundColor(color);
-    canvas.setBackgroundColor(color, () => canvas.renderAll());
+    if (canvas) {
+      canvas.set("backgroundColor", color); // Doğru yöntem
+      canvas.renderAll(); // Değişiklikleri uygula
+    }
   };
+  const handleAlignChange = useCallback(
+    (align: "left" | "center" | "right" | "top" | "middle" | "bottom") => {
+      if (!canvas || !selectedObject) return;
+      layerManagement.alignObject(canvas, selectedObject, align);
+    },
+    [canvas, selectedObject]
+  );
+  const handleLayerChange = useCallback(
+    (action: "up" | "down" | "top" | "bottom") => {
+      if (!canvas || !selectedObject) return;
 
-  const handleTextColorChange = (color: string) => {
-    if (!activeObject || activeObject.type !== "i-text") return;
-    setTextColor(color);
-    activeObject.set("fill", color);
-    canvas?.renderAll();
-  };
-
-  const handleFontSizeChange = (value: string) => {
-    if (!activeObject || activeObject.type !== "i-text") return;
-    const size = parseInt(value);
-    setFontSize(size);
-    activeObject.set("fontSize", size);
-    canvas?.renderAll();
-  };
-
-  const handleFontFamilyChange = (value: string) => {
-    if (!activeObject || activeObject.type !== "i-text") return;
-    setFontFamily(value);
-    activeObject.set("fontFamily", value);
-    canvas?.renderAll();
-  };
+      switch (action) {
+        case "up":
+          layerManagement.moveObjectUp(canvas, selectedObject);
+          break;
+        case "down":
+          layerManagement.moveObjectDown(canvas, selectedObject);
+          break;
+        case "top":
+          layerManagement.moveObjectToTop(canvas, selectedObject);
+          break;
+        case "bottom":
+          layerManagement.moveObjectToBottom(canvas, selectedObject);
+          break;
+      }
+    },
+    [canvas, selectedObject]
+  );
 
   return (
-    <div className="bg-white border-b border-gray-200 p-4">
-      <div className="flex gap-4 items-center">
-        <div>
-          <label>Arkaplan Rengi</label>
-          <ColorPicker
-            color={backgroundColor}
-            onChange={handleBackgroundColorChange}
+    <div className="w-full overflow-hidden">
+      {selectedObject ? (
+        <div className="min-w-[60px] h-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+          <ColorPicker color={color} onChange={handleColorChange} />
+
+          <DimensionInputs
+            objectType={selectedObject.type}
+            width={width}
+            height={height}
+            diameter={diameter}
+            onWidthChange={handleWidthChange}
+            onHeightChange={handleHeightChange}
+            onDiameterChange={handleDiameterChange}
           />
-        </div>
-        {activeObject?.type === "i-text" && (
-          <>
-            <div>
-              <label>Yazı Rengi</label>
-              <ColorPicker color={textColor} onChange={handleTextColorChange} />
-            </div>
-            <div>
-              <label>Yazı Boyutu</label>
-              <Input
-                type="number"
-                value={fontSize}
-                onChange={(e) => handleFontSizeChange(e.target.value)}
-                min={1}
-                max={200}
-              />
-            </div>
-            <div>
-              <label>Yazı Tipi</label>
-              <Select
+
+          {selectedObject.type === "i-text" && (
+            <>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="fontSize">Yazı Boyutu:</Label>
+                <Input
+                  id="fontSize"
+                  value={fontSize === 0 ? "" : fontSize}
+                  onChange={handleFontSizeChange}
+                  className="w-20"
+                />
+              </div>
+              <FontFamilySelect
                 value={fontFamily}
-                onChange={(e) => handleFontFamilyChange(e.target.value)}
-                options={[
-                  { value: "Arial", label: "Arial" },
-                  { value: "Times New Roman", label: "Times New Roman" },
-                  { value: "Courier New", label: "Courier New" },
-                ]}
+                onValueChange={(newFont) => {
+                  const selectedFontFamily = fontFamilies.find(
+                    (font) => font.name === newFont
+                  )?.family;
+                  handleFontFamilyChange(selectedFontFamily || newFont);
+                }}
               />
-            </div>
-          </>
-        )}
-      </div>
+              <TextFormattingControls
+                textFormatting={textFormatting}
+                updateTextFormatting={updateTextFormatting}
+              />
+              <TextSpacingControls
+                lineHeight={lineHeight}
+                letterSpacing={letterSpacing || 0}
+                onLineHeightChange={handleLineHeightChange}
+                onLetterSpacingChange={handleLetterSpacingChange}
+              />
+            </>
+          )}
+
+          <LayerControls
+            onAlignChange={handleAlignChange}
+            onLayerChange={handleLayerChange}
+          />
+          {/* <TransparencyControl
+            opacity={opacity}
+            onOpacityChange={handleOpacityChange}
+          /> */}
+          <EffectsDrawer
+            selectedObject={selectedObject}
+            canvas={canvas}
+            onObjectUpdate={() => {
+              canvas?.renderAll();
+            }}
+          />
+          <Button
+            onClick={handleDeleteObject}
+            disabled={!selectedObject}
+            className="p-2 rounded-md"
+            variant="destructive"
+            size="icon"
+          >
+            <FiTrash2 />
+          </Button>
+        </div>
+      ) : (
+        <div className="min-w-[60px] h-[60px] border-b bg-secondary border-primary transition-all duration-300 text-primary p-2 flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <ColorPicker
+              color={backgroundColor}
+              onChange={handleBackgroundColorChange}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+}

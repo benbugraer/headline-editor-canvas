@@ -1,4 +1,11 @@
-import { FaFont, FaImage, FaSquare, FaCircle, FaIcons } from "react-icons/fa";
+import {
+  FaFont,
+  FaImage,
+  FaSquare,
+  FaCircle,
+  FaIcons,
+  FaNewspaper,
+} from "react-icons/fa";
 
 export const SIDEBAR_ITEMS = [
   {
@@ -20,5 +27,9 @@ export const SIDEBAR_ITEMS = [
   {
     label: "İkon Ekle",
     icon: FaIcons,
+  },
+  {
+    label: "Manşet Seç",
+    icon: FaNewspaper,
   },
 ] as const;

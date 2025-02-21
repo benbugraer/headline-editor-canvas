@@ -1,6 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as fabric from "fabric";
-import { HeadlineEditorProps, CanvasState } from "../types";
+import React, { useRef, useState, useEffect } from "react";
+import { Canvas } from "fabric";
+import { Sidebar } from "./Sidebar";
+import { TopBar } from "./TopBar";
+import Settings from "./Settings/index";
+import { CanvasState, HeadlineEditorProps } from "../types";
 
 export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
   initialWidth = 1200,
@@ -8,11 +11,9 @@ export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
   onSave,
   onClose,
   defaultBackgroundColor = "#ffffff",
-  defaultFontFamily = "Arial",
-  defaultFontSize = 48,
-  defaultTextColor = "#000000",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
   const [canvasState, setCanvasState] = useState<CanvasState>({
     canvas: null,
     backgroundColor: defaultBackgroundColor,
@@ -21,7 +22,7 @@ export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
 
   useEffect(() => {
     if (canvasRef.current) {
-      const canvas = new fabric.Canvas(canvasRef.current, {
+      const canvas = new Canvas(canvasRef.current, {
         width: initialWidth,
         height: initialHeight,
         backgroundColor: defaultBackgroundColor,
@@ -35,40 +36,36 @@ export const HeadlineEditor: React.FC<HeadlineEditorProps> = ({
     }
   }, [initialWidth, initialHeight, defaultBackgroundColor]);
 
-  const addText = () => {
-    if (canvasState.canvas) {
-      const text = new fabric.IText("Yeni Metin", {
-        left: 100,
-        top: 100,
-        fontFamily: defaultFontFamily,
-        fontSize: defaultFontSize,
-        fill: defaultTextColor,
-      });
-      canvasState.canvas.add(text);
-      canvasState.canvas.setActiveObject(text);
-      canvasState.canvas.renderAll();
-    }
-  };
+  useEffect(() => {
+    if (!canvasState.canvas || !canvasWrapperRef.current) return;
 
-  const handleSave = () => {
-    if (canvasState.canvas && onSave) {
-      const dataUrl = canvasState.canvas.toDataURL({
-        format: "png",
-        quality: 1,
-        multiplier: 2,
-      });
-      onSave(dataUrl);
-    }
-  };
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target === canvasWrapperRef.current && canvasState.canvas) {
+        canvasState.canvas.discardActiveObject();
+        canvasState.canvas.requestRenderAll();
+      }
+    };
+
+    canvasWrapperRef.current.addEventListener("mousedown", handleClick);
+    return () => {
+      canvasWrapperRef.current?.removeEventListener("mousedown", handleClick);
+    };
+  }, [canvasState.canvas]);
 
   return (
-    <div className="headline-editor">
-      <div className="toolbar">
-        <button onClick={addText}>Metin Ekle</button>
-        <button onClick={handleSave}>Kaydet</button>
-        {onClose && <button onClick={onClose}>Kapat</button>}
+    <div className="min-h-screen flex bg-tertiary">
+      <Sidebar canvas={canvasState.canvas} />
+      <div className="flex-grow flex flex-col">
+        <TopBar canvas={canvasState.canvas} onSave={onSave} onClose={onClose} />
+        <Settings canvas={canvasState.canvas} />
+        <div
+          ref={canvasWrapperRef}
+          className="flex-grow flex justify-center items-center overflow-auto p-4 bg-gray-200"
+        >
+          <canvas ref={canvasRef} className="border-2 border-primary" />
+        </div>
       </div>
-      <canvas ref={canvasRef} />
     </div>
   );
 };

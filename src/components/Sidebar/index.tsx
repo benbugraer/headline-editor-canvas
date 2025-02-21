@@ -3,8 +3,8 @@ import { Canvas } from "fabric";
 import { IconDrawer } from "./IconDrawer";
 import { HeadlineDrawer } from "./HeadlineDrawer";
 import { SidebarButton } from "./SidebarButton";
-import { useCanvasShapes } from "../../hooks/useCanvasShapes";
-import { useSidebarState } from "../../hooks/useSidebarState";
+import { useCanvasShapes } from "../Canvas/hooks/useCanvasShapes";
+import { useSidebarState } from "../Canvas/hooks/useSidebarState";
 import { SIDEBAR_ITEMS } from "../../constants";
 
 interface SidebarProps {
@@ -47,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ canvas }) => {
           <IconDrawer
             isOpen={isIconDrawerOpen}
             onOpenChange={setIsIconDrawerOpen}
-            onIconSelect={(icon) => handleAddIcon(icon)}
+            onIconSelect={(icon) => handleAddIcon(icon, "#000000")}
             item={item}
           />
         );
