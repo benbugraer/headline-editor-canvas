@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../ui/select";
 import { fontFamilies, type FontFamily } from "../lib/fonts";
 
 interface FontFamilySelectProps {

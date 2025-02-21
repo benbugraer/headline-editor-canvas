@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EffectsHeader = void 0;
 var react_1 = __importStar(require("react"));
-var sheet_1 = require("@/components/ui/sheet");
+var sheet_1 = require("../../ui/sheet");
 exports.EffectsHeader = (0, react_1.memo)(function (_a) { return (react_1.default.createElement(sheet_1.SheetHeader, { className: "flex items-center justify-between border-b border-gray-200 pb-4" },
     react_1.default.createElement("div", null,
         react_1.default.createElement(sheet_1.SheetTitle, { className: "text-xl font-bold text-gray-800" }, "Nesne Efektleri"),

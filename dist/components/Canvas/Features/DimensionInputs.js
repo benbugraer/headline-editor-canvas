@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DimensionInputs = void 0;
 var react_1 = __importDefault(require("react"));
-var input_1 = require("@/components/ui/input");
-var label_1 = require("@/components/ui/label");
+var input_1 = require("../../ui/input");
+var label_1 = require("../../ui/label");
 var DimensionInputs = function (_a) {
     var objectType = _a.objectType, width = _a.width, height = _a.height, diameter = _a.diameter, onWidthChange = _a.onWidthChange, onHeightChange = _a.onHeightChange, onDiameterChange = _a.onDiameterChange;
     if (objectType === "rect" || objectType === "image") {

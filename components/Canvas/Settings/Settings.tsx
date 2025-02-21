@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { useObjectSelection } from "../hooks/useObjectSelection";
 import { useTextFormatting } from "../hooks/useTextFormatting";
 import { DimensionInputs } from "../Features/DimensionInputs";
@@ -9,7 +9,7 @@ import { TextFormattingControls } from "../Features/TextFormattingControls";
 import { FontFamilySelect } from "../Features/FontFamilySelect";
 import { fontFamilies } from "../lib/fonts";
 import { FiTrash2 } from "react-icons/fi";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../ui/button";
 import { useCanvasEvents } from "../hooks/useCanvasEvents";
 import * as fabric from "fabric";
 import { ColorResult } from "react-color";

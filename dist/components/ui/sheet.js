@@ -60,7 +60,7 @@ exports.SheetDescription = exports.SheetTitle = exports.SheetFooter = exports.Sh
 var React = __importStar(require("react"));
 var SheetPrimitive = __importStar(require("@radix-ui/react-dialog"));
 var class_variance_authority_1 = require("class-variance-authority");
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var react_icons_1 = require("@radix-ui/react-icons");
 var Sheet = SheetPrimitive.Root;
 exports.Sheet = Sheet;

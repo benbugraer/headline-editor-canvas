@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LayerControls = LayerControls;
 var react_1 = __importDefault(require("react"));
-var button_1 = require("@/components/ui/button");
-var popover_1 = require("@/components/ui/popover");
+var button_1 = require("../../ui/button");
+var popover_1 = require("../../ui/popover");
 var lucide_react_1 = require("lucide-react");
 var constants_1 = require("../utils/constants");
 var LayerButton = function (_a) {

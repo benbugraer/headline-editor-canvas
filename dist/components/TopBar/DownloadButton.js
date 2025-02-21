@@ -35,9 +35,9 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var button_1 = require("@/components/ui/button");
-var dropdown_menu_1 = require("@/components/ui/dropdown-menu");
-var slider_1 = require("@/components/ui/slider");
+var button_1 = require("../ui/button");
+var dropdown_menu_1 = require("../ui/dropdown-menu");
+var slider_1 = require("../ui/slider");
 var fa_1 = require("react-icons/fa");
 var DownloadButton = function (_a) {
     var canvas = _a.canvas, fileName = _a.fileName;

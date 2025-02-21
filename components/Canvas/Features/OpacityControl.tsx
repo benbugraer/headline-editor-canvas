@@ -1,8 +1,8 @@
 // OpacityControl.tsx
 import React, { memo } from "react";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Slider } from "../../ui/slider";
+import { Switch } from "../../ui/switch";
+import { Label } from "../../ui/label";
 import type { ControlProps } from "../types/effects.types";
 
 export const OpacityControl = memo(

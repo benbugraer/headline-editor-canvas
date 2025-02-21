@@ -59,7 +59,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Separator = void 0;
 var React = __importStar(require("react"));
 var SeparatorPrimitive = __importStar(require("@radix-ui/react-separator"));
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var Separator = React.forwardRef(function (_a, ref) {
     var className = _a.className, _b = _a.orientation, orientation = _b === void 0 ? "horizontal" : _b, _c = _a.decorative, decorative = _c === void 0 ? true : _c, props = __rest(_a, ["className", "orientation", "decorative"]);
     return (React.createElement(SeparatorPrimitive.Root, __assign({ ref: ref, decorative: decorative, orientation: orientation, className: (0, utils_1.cn)("shrink-0 bg-neutral-200 dark:bg-neutral-800", orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]", className) }, props)));

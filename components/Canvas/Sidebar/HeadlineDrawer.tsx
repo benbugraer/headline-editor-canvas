@@ -6,8 +6,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
+} from "../../ui/sheet";
+import { Separator } from "../../ui/separator";
 import { HeadlineSelector } from "../Features/HeadlineSelector";
 import { SidebarButton } from "./SidebarButton";
 import { Canvas as FabricCanvas } from "fabric";

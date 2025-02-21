@@ -1,11 +1,7 @@
 import React from "react";
 import { SketchPicker, ColorResult } from "react-color";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Label } from "../../ui/label";
 
 interface ColorPickerProps {
   color: string;

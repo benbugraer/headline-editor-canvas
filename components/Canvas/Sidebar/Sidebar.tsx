@@ -3,7 +3,6 @@ import { SIDEBAR_ITEMS } from "../types/canvas.types";
 import { Canvas as FabricCanvas } from "fabric";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { useSidebarState } from "../hooks/useSidebarState";
-import { IconDrawer } from "./IconDrawer";
 import { HeadlineDrawer } from "./HeadlineDrawer";
 import { SidebarButton } from "./SidebarButton";
 
@@ -42,16 +41,6 @@ export default function Sidebar({ canvas }: SidebarProps) {
 
   const renderSidebarItem = (item: (typeof SIDEBAR_ITEMS)[number]) => {
     switch (item.label) {
-      case "İkon Ekle":
-        return (
-          <IconDrawer
-            isOpen={isIconDrawerOpen}
-            onOpenChange={setIsIconDrawerOpen}
-            onIconSelect={(icon) => handleAddIcon(icon, "defaultColor")}
-            item={item}
-          />
-        );
-
       case "Manşet Seç":
         return (
           <HeadlineDrawer

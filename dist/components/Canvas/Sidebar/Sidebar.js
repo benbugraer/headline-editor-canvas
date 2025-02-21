@@ -8,7 +8,6 @@ var react_1 = __importDefault(require("react"));
 var canvas_types_1 = require("../types/canvas.types");
 var useCanvasShapes_1 = require("../hooks/useCanvasShapes");
 var useSidebarState_1 = require("../hooks/useSidebarState");
-var IconDrawer_1 = require("./IconDrawer");
 var HeadlineDrawer_1 = require("./HeadlineDrawer");
 var SidebarButton_1 = require("./SidebarButton");
 function Sidebar(_a) {
@@ -30,8 +29,6 @@ function Sidebar(_a) {
     };
     var renderSidebarItem = function (item) {
         switch (item.label) {
-            case "İkon Ekle":
-                return (react_1.default.createElement(IconDrawer_1.IconDrawer, { isOpen: isIconDrawerOpen, onOpenChange: setIsIconDrawerOpen, onIconSelect: function (icon) { return handleAddIcon(icon, "defaultColor"); }, item: item }));
             case "Manşet Seç":
                 return (react_1.default.createElement(HeadlineDrawer_1.HeadlineDrawer, { isOpen: isHeadlineDrawerOpen, onOpenChange: setIsHeadlineDrawerOpen, canvas: canvas, item: item }));
             default:

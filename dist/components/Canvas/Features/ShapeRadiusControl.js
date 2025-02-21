@@ -35,9 +35,9 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShapeRadiusControl = void 0;
 var react_1 = __importStar(require("react"));
-var slider_1 = require("@/components/ui/slider");
-var switch_1 = require("@/components/ui/switch");
-var label_1 = require("@/components/ui/label");
+var slider_1 = require("../../ui/slider");
+var switch_1 = require("../../ui/switch");
+var label_1 = require("../../ui/label");
 exports.ShapeRadiusControl = (0, react_1.memo)(function (_a) {
     var radius = _a.radius, onChange = _a.onChange, isCircle = _a.isCircle;
     var handleRadiusChange = function (value) {

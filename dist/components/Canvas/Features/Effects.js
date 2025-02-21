@@ -36,8 +36,8 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EffectsDrawer = void 0;
 var react_1 = __importStar(require("react"));
-var sheet_1 = require("@/components/ui/sheet");
-var button_1 = require("@/components/ui/button");
+var sheet_1 = require("../../ui/sheet");
+var button_1 = require("../../ui/button");
 var lucide_react_1 = require("lucide-react");
 var OpacityControl_1 = require("./OpacityControl");
 var ShadowControl_1 = require("./ShadowControl");

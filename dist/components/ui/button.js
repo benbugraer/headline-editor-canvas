@@ -59,7 +59,7 @@ exports.buttonVariants = exports.Button = void 0;
 var React = __importStar(require("react"));
 var react_slot_1 = require("@radix-ui/react-slot");
 var class_variance_authority_1 = require("class-variance-authority");
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var buttonVariants = (0, class_variance_authority_1.cva)("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors  disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-neutral-300", {
     variants: {
         variant: {

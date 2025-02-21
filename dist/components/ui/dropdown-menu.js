@@ -60,7 +60,7 @@ exports.DropdownMenuRadioGroup = exports.DropdownMenuSubTrigger = exports.Dropdo
 var React = __importStar(require("react"));
 var DropdownMenuPrimitive = __importStar(require("@radix-ui/react-dropdown-menu"));
 var react_icons_1 = require("@radix-ui/react-icons");
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var DropdownMenu = DropdownMenuPrimitive.Root;
 exports.DropdownMenu = DropdownMenu;
 var DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;

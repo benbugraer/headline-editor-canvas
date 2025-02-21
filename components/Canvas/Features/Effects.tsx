@@ -1,8 +1,8 @@
 "use client";
 
 import React, { memo } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "../../ui/sheet";
+import { Button } from "../../ui/button";
 import { Sparkles } from "lucide-react";
 import { EffectsProps } from "../types/effects.types";
 import { OpacityControl } from "./OpacityControl";

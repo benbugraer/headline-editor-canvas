@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TextSpacingControls = TextSpacingControls;
 var react_1 = __importDefault(require("react"));
-var popover_1 = require("@/components/ui/popover");
-var label_1 = require("@/components/ui/label");
-var slider_1 = require("@/components/ui/slider");
-var input_1 = require("@/components/ui/input");
+var popover_1 = require("../../ui/popover");
+var label_1 = require("../../ui/label");
+var slider_1 = require("../../ui/slider");
+var input_1 = require("../../ui/input");
 var fa_1 = require("react-icons/fa");
-var button_1 = require("@/components/ui/button");
+var button_1 = require("../../ui/button");
 function TextSpacingControls(_a) {
     var lineHeight = _a.lineHeight, _b = _a.letterSpacing, letterSpacing = _b === void 0 ? 0 : _b, onLineHeightChange = _a.onLineHeightChange, onLetterSpacingChange = _a.onLetterSpacingChange;
     var handleLetterSpacingInputChange = function (e) {

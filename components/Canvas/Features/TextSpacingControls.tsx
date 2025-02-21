@@ -1,14 +1,10 @@
 import React from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Label } from "../../ui/label";
+import { Slider } from "../../ui/slider";
+import { Input } from "../../ui/input";
 import { FaTextHeight } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../ui/button";
 
 interface TextSpacingControlsProps {
   lineHeight: number;

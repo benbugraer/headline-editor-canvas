@@ -1,9 +1,6 @@
 import { useState, useCallback } from "react";
 import * as fabric from "fabric"; // v6
-import {
-  TextFormatting,
-  TextAlignType,
-} from "@/components/Canvas/types/canvas.types";
+import { TextFormatting, TextAlignType } from "../types/canvas.types";
 
 export const useTextFormatting = (
   canvas: fabric.Canvas | null,

@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HeadlineDrawer = void 0;
 var react_1 = __importDefault(require("react"));
-var sheet_1 = require("@/components/ui/sheet");
-var separator_1 = require("@/components/ui/separator");
+var sheet_1 = require("../../ui/sheet");
+var separator_1 = require("../../ui/separator");
 var HeadlineSelector_1 = require("../Features/HeadlineSelector");
 var SidebarButton_1 = require("./SidebarButton");
 var HeadlineDrawer = function (_a) {

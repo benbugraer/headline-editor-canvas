@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Slider } from "@/components/ui/slider";
+} from "../ui/dropdown-menu";
+import { Slider } from "../ui/slider";
 import { FaDownload } from "react-icons/fa";
 import { Canvas } from "fabric";
 

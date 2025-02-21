@@ -1,10 +1,6 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Button } from "../../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Layers } from "lucide-react";
 import { LAYER_ACTIONS, ALIGN_ACTIONS } from "../utils/constants";
 

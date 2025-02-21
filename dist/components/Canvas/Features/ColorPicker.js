@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColorPicker = void 0;
 var react_1 = __importDefault(require("react"));
 var react_color_1 = require("react-color");
-var popover_1 = require("@/components/ui/popover");
-var label_1 = require("@/components/ui/label");
+var popover_1 = require("../../ui/popover");
+var label_1 = require("../../ui/label");
 var ColorPicker = function (_a) {
     var color = _a.color, onChange = _a.onChange;
     return (react_1.default.createElement("div", { className: "flex items-center space-x-2" },

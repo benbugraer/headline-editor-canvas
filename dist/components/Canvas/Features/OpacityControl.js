@@ -36,9 +36,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OpacityControl = void 0;
 // OpacityControl.tsx
 var react_1 = __importStar(require("react"));
-var slider_1 = require("@/components/ui/slider");
-var switch_1 = require("@/components/ui/switch");
-var label_1 = require("@/components/ui/label");
+var slider_1 = require("../../ui/slider");
+var switch_1 = require("../../ui/switch");
+var label_1 = require("../../ui/label");
 exports.OpacityControl = (0, react_1.memo)(function (_a) {
     var value = _a.value, enabled = _a.enabled, onChange = _a.onChange, onToggle = _a.onToggle;
     return (react_1.default.createElement("div", { className: "space-y-4 bg-gray-50 p-4 rounded-lg" },

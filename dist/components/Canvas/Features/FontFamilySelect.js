@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FontFamilySelect = FontFamilySelect;
 var React = __importStar(require("react"));
-var select_1 = require("@/components/ui/select");
+var select_1 = require("../../ui/select");
 var fonts_1 = require("../lib/fonts");
 function FontFamilySelect(_a) {
     var _b;

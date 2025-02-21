@@ -1,9 +1,5 @@
 import React, { memo } from "react";
-import {
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { SheetHeader, SheetTitle, SheetDescription } from "../../ui/sheet";
 
 interface EffectsHeaderProps {
   onClose: () => void;

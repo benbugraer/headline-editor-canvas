@@ -59,7 +59,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Slider = void 0;
 var React = __importStar(require("react"));
 var SliderPrimitive = __importStar(require("@radix-ui/react-slider"));
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var Slider = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return (React.createElement(SliderPrimitive.Root, __assign({ ref: ref, className: (0, utils_1.cn)("relative flex w-full touch-none select-none items-center", className) }, props),

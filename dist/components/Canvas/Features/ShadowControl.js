@@ -36,9 +36,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShadowControl = void 0;
 // ShadowControl.tsx
 var react_1 = __importStar(require("react"));
-var slider_1 = require("@/components/ui/slider");
-var switch_1 = require("@/components/ui/switch");
-var label_1 = require("@/components/ui/label");
+var slider_1 = require("../../ui/slider");
+var switch_1 = require("../../ui/switch");
+var label_1 = require("../../ui/label");
 var ColorPicker_1 = require("./ColorPicker");
 exports.ShadowControl = (0, react_1.memo)(function (_a) {
     var shadow = _a.shadow, onChange = _a.onChange;

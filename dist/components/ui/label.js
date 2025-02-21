@@ -60,7 +60,7 @@ exports.Label = void 0;
 var React = __importStar(require("react"));
 var LabelPrimitive = __importStar(require("@radix-ui/react-label"));
 var class_variance_authority_1 = require("class-variance-authority");
-var utils_1 = require("@/lib/utils");
+var utils_1 = require("../../lib/utils");
 var labelVariants = (0, class_variance_authority_1.cva)("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
 var Label = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);
