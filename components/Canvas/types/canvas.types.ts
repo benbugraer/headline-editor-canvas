@@ -7,30 +7,32 @@ import { IoImageSharp } from "react-icons/io5";
 import { TbLayoutGridFilled } from "react-icons/tb";
 import { IconType } from "react-icons";
 
-export type GuidelineType = {
-  length: number;
+export interface GuidelineType {
   position: number;
-  isHorizontal: boolean;
-  id: string; // GuidelineId enum değerlerinden biri
-  line?: Line;
-};
+  orientation: "horizontal" | "vertical";
+}
 
-export type CanvasConfigType = {
+export interface CanvasConfigType {
   width: number;
   height: number;
   backgroundColor: string;
-};
+}
 
-export type SnappingConfigType = {
+export interface SnappingConfigType {
   snappingDistance: number;
-};
+}
 
-export type CanvasEventHandlers = {
+export interface CanvasEventHandlers {
   onObjectMoving: (canvas: Canvas, target: FabricObject | undefined) => void;
   onObjectModified: () => void;
-};
+}
 
-export type TextAlignType = "left" | "center" | "right" | "justify";
+export interface TextAlignType {
+  left: boolean;
+  center: boolean;
+  right: boolean;
+  justify: boolean;
+}
 
 export interface TextFormatting {
   bold: boolean;
@@ -72,4 +74,12 @@ export const SIDEBAR_ITEMS = [
 export interface SidebarItem {
   icon: IconType;
   label: string;
+}
+
+export interface CanvasContextType {
+  canvas: Canvas | null;
+  setCanvas: (canvas: Canvas | null) => void;
+  guidelines: GuidelineType[];
+  setGuidelines: (guidelines: GuidelineType[]) => void;
+  config: CanvasConfigType;
 }

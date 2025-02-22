@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../../ui/button";
+import { Button } from "../../../components/ui/button";
 import {
   FaBold,
   FaItalic,
@@ -70,10 +70,11 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
           size="icon"
           className={clsx(
             "bg-transparent hover:bg-none",
-            textFormatting.textAlign === align && "bg-tertiary"
+            textFormatting.textAlign === (align as unknown as TextAlignType) &&
+              "bg-tertiary"
           )}
           onClick={() =>
-            updateTextFormatting("textAlign", align as TextAlignType)
+            updateTextFormatting("textAlign", align as unknown as TextAlignType)
           }
         >
           <Icon />

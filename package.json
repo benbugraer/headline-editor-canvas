@@ -1,6 +1,6 @@
 {
   "name": "@benbugraer/headline-editor",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "A headline editor canvas component for news websites",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,7 +46,6 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@types/fabric": "^5.3.9",
     "@types/react": "^18",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18",

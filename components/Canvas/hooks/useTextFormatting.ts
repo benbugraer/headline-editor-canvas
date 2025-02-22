@@ -11,7 +11,7 @@ export const useTextFormatting = (
     italic: false,
     underline: false,
     strikethrough: false,
-    textAlign: "left",
+    textAlign: "left" as unknown as TextAlignType,
   });
 
   const updateTextFormatting = useCallback(
