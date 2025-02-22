@@ -10,6 +10,10 @@ import { IconType } from "react-icons";
 export interface GuidelineType {
   position: number;
   orientation: "horizontal" | "vertical";
+  id?: string;
+  line?: Line;
+  length?: number;
+  isHorizontal: boolean;
 }
 
 export interface CanvasConfigType {

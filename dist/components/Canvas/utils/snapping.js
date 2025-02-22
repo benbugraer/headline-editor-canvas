@@ -148,6 +148,7 @@ var createAlignmentGuideline = function (canvas, position, isHorizontal, guideli
             line: line,
             length: isHorizontal ? canvasWidth : canvasHeight,
             position: position,
+            orientation: isHorizontal ? "horizontal" : "vertical",
             isHorizontal: isHorizontal,
         });
         canvas.add(line);
