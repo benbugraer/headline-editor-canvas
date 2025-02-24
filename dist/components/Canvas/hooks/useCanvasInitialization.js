@@ -2,13 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useCanvasInitialization = void 0;
 var react_1 = require("react");
-var fabric_1 = require("fabric"); // Image'i de import ediyoruz
+var fabric_1 = require("fabric");
 var snapping_1 = require("../utils/snapping");
 var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidelines, setCanvas) {
     (0, react_1.useEffect)(function () {
+        if (typeof window === "undefined")
+            return; // SSR check
         if (!canvasRef.current)
             return;
-        var initCanvas = new fabric_1.Canvas(canvasRef.current, config);
+        var initCanvas = new fabric_1.fabric.Canvas(canvasRef.current, config);
         initCanvas.renderAll();
         setCanvas(initCanvas);
         // Event listeners
@@ -36,7 +38,7 @@ var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidel
                         var scale = Math.min((initCanvas.width * 0.8) / img_1.width, (initCanvas.height * 0.8) / img_1.height, 1);
                         var scaledWidth = img_1.width * scale;
                         var scaledHeight = img_1.height * scale;
-                        var fabricImage = new fabric_1.Image(img_1, {
+                        new fabric_1.fabric.Image(img_1, {
                             left: (initCanvas.width - scaledWidth) / 2,
                             top: (initCanvas.height - scaledHeight) / 2,
                             originX: "left",
@@ -53,22 +55,25 @@ var useCanvasInitialization = function (canvasRef, config, guidelines, setGuidel
                             strokeWidth: 0,
                             strokeUniform: true,
                             centeredRotation: true,
+                        }, function (fabricImage) {
+                            if (!fabricImage)
+                                return;
+                            fabricImage.setControlsVisibility({
+                                mt: true,
+                                mb: true,
+                                ml: true,
+                                mr: true,
+                                bl: true,
+                                br: true,
+                                tl: true,
+                                tr: true,
+                                mtr: true,
+                            });
+                            initCanvas.add(fabricImage);
+                            initCanvas.setActiveObject(fabricImage);
+                            fabricImage.setCoords();
+                            initCanvas.requestRenderAll();
                         });
-                        fabricImage.setControlsVisibility({
-                            mt: true,
-                            mb: true,
-                            ml: true,
-                            mr: true,
-                            bl: true,
-                            br: true,
-                            tl: true,
-                            tr: true,
-                            mtr: true,
-                        });
-                        initCanvas.add(fabricImage);
-                        initCanvas.setActiveObject(fabricImage);
-                        fabricImage.setCoords();
-                        initCanvas.requestRenderAll();
                         URL.revokeObjectURL(blobUrl_1);
                     };
                     img_1.onerror = function () {
