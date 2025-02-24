@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import { fabric } from "fabric";
 export declare const layerManagement: {
     moveObjectUp(canvas: fabric.Canvas, object: fabric.Object): void;
     moveObjectDown(canvas: fabric.Canvas, object: fabric.Object): void;

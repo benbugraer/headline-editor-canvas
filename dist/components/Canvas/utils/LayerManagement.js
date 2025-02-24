@@ -3,51 +3,82 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.layerManagement = void 0;
 exports.layerManagement = {
     moveObjectUp: function (canvas, object) {
-        if (!canvas || !object)
+        if (!canvas || !object || typeof window === "undefined")
             return;
-        canvas.bringObjectForward(object);
+        try {
+            canvas.bringForward(object);
+            canvas.renderAll();
+        }
+        catch (error) {
+            console.error("Error moving object up:", error);
+        }
     },
     moveObjectDown: function (canvas, object) {
-        if (!canvas || !object)
+        if (!canvas || !object || typeof window === "undefined")
             return;
-        canvas.sendObjectBackwards(object);
+        try {
+            canvas.sendBackwards(object);
+            canvas.renderAll();
+        }
+        catch (error) {
+            console.error("Error moving object down:", error);
+        }
     },
     moveObjectToTop: function (canvas, object) {
-        if (!canvas || !object)
+        if (!canvas || !object || typeof window === "undefined")
             return;
-        canvas.bringObjectToFront(object);
+        try {
+            canvas.bringToFront(object);
+            canvas.renderAll();
+        }
+        catch (error) {
+            console.error("Error moving object to top:", error);
+        }
     },
     moveObjectToBottom: function (canvas, object) {
-        if (!canvas || !object)
+        if (!canvas || !object || typeof window === "undefined")
             return;
-        canvas.sendObjectToBack(object);
+        try {
+            canvas.sendToBack(object);
+            canvas.renderAll();
+        }
+        catch (error) {
+            console.error("Error moving object to bottom:", error);
+        }
     },
     alignObject: function (canvas, object, align) {
-        if (!canvas || !object)
+        if (!canvas || !object || typeof window === "undefined")
             return;
-        var canvasWidth = canvas.width || 0;
-        var canvasHeight = canvas.height || 0;
-        switch (align) {
-            case "left":
-                object.set({ left: 0 });
-                break;
-            case "center":
-                object.set({ left: (canvasWidth - object.width) / 2 });
-                break;
-            case "right":
-                object.set({ left: canvasWidth - object.width });
-                break;
-            case "top":
-                object.set({ top: 0 });
-                break;
-            case "middle":
-                object.set({ top: (canvasHeight - object.height) / 2 });
-                break;
-            case "bottom":
-                object.set({ top: canvasHeight - object.height });
-                break;
+        try {
+            var canvasWidth = canvas.getWidth();
+            var canvasHeight = canvas.getHeight();
+            var objectWidth = object.getScaledWidth();
+            var objectHeight = object.getScaledHeight();
+            switch (align) {
+                case "left":
+                    object.set({ left: 0 });
+                    break;
+                case "center":
+                    object.set({ left: (canvasWidth - objectWidth) / 2 });
+                    break;
+                case "right":
+                    object.set({ left: canvasWidth - objectWidth });
+                    break;
+                case "top":
+                    object.set({ top: 0 });
+                    break;
+                case "middle":
+                    object.set({ top: (canvasHeight - objectHeight) / 2 });
+                    break;
+                case "bottom":
+                    object.set({ top: canvasHeight - objectHeight });
+                    break;
+            }
+            object.setCoords();
+            canvas.renderAll();
         }
-        object.setCoords(); // Update object coordinates
-        canvas.renderAll();
+        catch (error) {
+            console.error("Error aligning object:", error);
+        }
     },
 };
