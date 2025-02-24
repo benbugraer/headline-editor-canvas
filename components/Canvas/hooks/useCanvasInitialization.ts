@@ -1,5 +1,5 @@
 import { useEffect, RefObject } from "react";
-import { Canvas, Image as FabricImage } from "fabric"; // Image'i de import ediyoruz
+import { fabric } from "fabric";
 import { CanvasConfigType, GuidelineType } from "../types/canvas.types";
 import { handleObjectMoving, clearGuidelines } from "../utils/snapping";
 
@@ -8,12 +8,13 @@ export const useCanvasInitialization = (
   config: CanvasConfigType,
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void,
-  setCanvas: (canvas: Canvas | null) => void
+  setCanvas: (canvas: fabric.Canvas | null) => void
 ) => {
   useEffect(() => {
+    if (typeof window === "undefined") return; // SSR check
     if (!canvasRef.current) return;
 
-    const initCanvas = new Canvas(canvasRef.current, config);
+    const initCanvas = new fabric.Canvas(canvasRef.current, config);
 
     initCanvas.renderAll();
     setCanvas(initCanvas);
@@ -53,41 +54,47 @@ export const useCanvasInitialization = (
             const scaledWidth = img.width * scale;
             const scaledHeight = img.height * scale;
 
-            const fabricImage = new FabricImage(img, {
-              left: (initCanvas.width! - scaledWidth) / 2,
-              top: (initCanvas.height! - scaledHeight) / 2,
-              originX: "left",
-              originY: "top",
-              scaleX: scale,
-              scaleY: scale,
-              hasControls: true,
-              hasBorders: true,
-              selectable: true,
-              cornerStyle: "circle",
-              transparentCorners: false,
-              cornerSize: 12,
-              padding: 0,
-              strokeWidth: 0,
-              strokeUniform: true,
-              centeredRotation: true,
-            });
+            new fabric.Image(
+              img,
+              {
+                left: (initCanvas.width! - scaledWidth) / 2,
+                top: (initCanvas.height! - scaledHeight) / 2,
+                originX: "left",
+                originY: "top",
+                scaleX: scale,
+                scaleY: scale,
+                hasControls: true,
+                hasBorders: true,
+                selectable: true,
+                cornerStyle: "circle",
+                transparentCorners: false,
+                cornerSize: 12,
+                padding: 0,
+                strokeWidth: 0,
+                strokeUniform: true,
+                centeredRotation: true,
+              },
+              (fabricImage) => {
+                if (!fabricImage) return;
 
-            fabricImage.setControlsVisibility({
-              mt: true,
-              mb: true,
-              ml: true,
-              mr: true,
-              bl: true,
-              br: true,
-              tl: true,
-              tr: true,
-              mtr: true,
-            });
+                fabricImage.setControlsVisibility({
+                  mt: true,
+                  mb: true,
+                  ml: true,
+                  mr: true,
+                  bl: true,
+                  br: true,
+                  tl: true,
+                  tr: true,
+                  mtr: true,
+                });
 
-            initCanvas.add(fabricImage);
-            initCanvas.setActiveObject(fabricImage);
-            fabricImage.setCoords();
-            initCanvas.requestRenderAll();
+                initCanvas.add(fabricImage);
+                initCanvas.setActiveObject(fabricImage);
+                fabricImage.setCoords();
+                initCanvas.requestRenderAll();
+              }
+            );
 
             URL.revokeObjectURL(blobUrl);
           };
