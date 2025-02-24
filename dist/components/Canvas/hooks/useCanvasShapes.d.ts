@@ -1,5 +1,5 @@
-import { Canvas as FabricCanvas } from "fabric";
-export declare function useCanvasShapes(canvas: FabricCanvas | null): {
+import { fabric } from "fabric";
+export declare function useCanvasShapes(canvas: fabric.Canvas | null): {
     handleAddRectangle: () => void;
     handleAddCircle: () => void;
     handleAddText: () => void;
