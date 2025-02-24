@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Canvas as FabricCanvas } from "fabric";
-import * as fabric from "fabric";
+import { fabric } from "fabric";
 import { useCallback } from "react";
 
 const DEFAULT_OBJECT_CONFIG = {
@@ -13,7 +12,7 @@ const DEFAULT_OBJECT_CONFIG = {
   padding: 8,
 } as const;
 
-export function useCanvasShapes(canvas: FabricCanvas | null) {
+export function useCanvasShapes(canvas: fabric.Canvas | null) {
   const centerObject = useCallback(
     (object: fabric.Object) => {
       if (!canvas) return;
@@ -31,7 +30,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
   );
 
   const handleAddRectangle = useCallback(() => {
-    if (!canvas) return;
+    if (!canvas || typeof window === "undefined") return;
     try {
       const rect = new fabric.Rect({
         width: 100,
@@ -49,7 +48,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
   }, [canvas, centerObject]);
 
   const handleAddCircle = useCallback(() => {
-    if (!canvas) return;
+    if (!canvas || typeof window === "undefined") return;
     try {
       const circle = new fabric.Circle({
         radius: 50,
@@ -66,7 +65,7 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
   }, [canvas, centerObject]);
 
   const handleAddText = useCallback(() => {
-    if (!canvas) return;
+    if (!canvas || typeof window === "undefined") return;
     try {
       const text = new fabric.IText("Yeni Metin", {
         fontFamily: "Arial",
@@ -78,8 +77,8 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
       centerObject(text);
 
       // Right click to edit text
-      text.on("mousedown", (e: fabric.TPointerEventInfo<PointerEvent>) => {
-        if (e.e.button !== 2) return;
+      text.on("mousedown", (e: fabric.IEvent) => {
+        if ((e.e as MouseEvent).button !== 2) return;
         text.enterEditing();
         text.selectAll();
         canvas.renderAll();
@@ -95,29 +94,30 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
 
   const handleImageUpload = useCallback(
     (file: File) => {
-      if (!canvas) return;
+      if (!canvas || typeof window === "undefined") return;
 
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           try {
-            const fabricImage = new fabric.Image(img, {
-              ...DEFAULT_OBJECT_CONFIG,
+            fabric.Image.fromURL(e.target?.result as string, (fabricImage) => {
+              if (!fabricImage) return;
+
+              // Scale image to fit canvas while maintaining aspect ratio
+              const scale = Math.min(
+                (canvas.width! * 0.8) / fabricImage.width!,
+                (canvas.height! * 0.8) / fabricImage.height!,
+                1
+              );
+              fabricImage.scale(scale);
+              fabricImage.set(DEFAULT_OBJECT_CONFIG);
+
+              centerObject(fabricImage);
+              canvas.add(fabricImage);
+              canvas.setActiveObject(fabricImage);
+              canvas.renderAll();
             });
-
-            // Scale image to fit canvas while maintaining aspect ratio
-            const scale = Math.min(
-              (canvas.width! * 0.8) / img.width!,
-              (canvas.height! * 0.8) / img.height!,
-              1
-            );
-            fabricImage.scale(scale);
-
-            centerObject(fabricImage);
-            canvas.add(fabricImage);
-            canvas.setActiveObject(fabricImage);
-            canvas.renderAll();
           } catch (error) {
             console.error("Error creating fabric image:", error);
           }
@@ -137,19 +137,22 @@ export function useCanvasShapes(canvas: FabricCanvas | null) {
 
   const handleAddIcon = useCallback(
     (iconPath: string, color: string) => {
-      if (!canvas) return;
+      if (!canvas || typeof window === "undefined") return;
       try {
-        const path = new fabric.Path(iconPath, {
-          fill: color,
-          scaleX: 0.05,
-          scaleY: 0.05,
-          ...DEFAULT_OBJECT_CONFIG,
-        });
+        fabric.loadSVGFromString(iconPath, (objects, options) => {
+          const path = fabric.util.groupSVGElements(objects, options);
+          path.set({
+            fill: color,
+            scaleX: 0.05,
+            scaleY: 0.05,
+            ...DEFAULT_OBJECT_CONFIG,
+          });
 
-        centerObject(path);
-        canvas.add(path);
-        canvas.setActiveObject(path);
-        canvas.renderAll();
+          centerObject(path);
+          canvas.add(path);
+          canvas.setActiveObject(path);
+          canvas.renderAll();
+        });
       } catch (error) {
         console.error("Error adding icon:", error);
       }
