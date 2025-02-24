@@ -55,7 +55,7 @@ var CustomFabricLine = /** @class */ (function (_super) {
         return _this;
     }
     return CustomFabricLine;
-}(fabric_1.Line));
+}(fabric_1.fabric.Line));
 var calculateObjectBounds = function (obj) {
     var _a, _b, _c, _d, _e, _f, _g;
     var left = (_a = obj.left) !== null && _a !== void 0 ? _a : 0;

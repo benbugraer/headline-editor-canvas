@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Canvas, Line, FabricObject } from "fabric";
+import { fabric } from "fabric";
 import { GuidelineType } from "../types/canvas.types";
 import { SNAPPING_CONFIG, GUIDELINE_STYLES } from "./constants";
 
@@ -20,11 +20,11 @@ enum GuidelineId {
 }
 
 // FabricLine sınıfını genişletiyoruz ve data alanını ekliyoruz
-interface CustomFabricLineProps extends Partial<FabricObject> {
+interface CustomFabricLineProps extends Partial<fabric.Object> {
   data?: { id: GuidelineId };
 }
 
-class CustomFabricLine extends Line {
+class CustomFabricLine extends fabric.Line {
   data?: { id: GuidelineId };
 
   constructor(
@@ -47,7 +47,7 @@ interface ObjectBounds {
   height: number;
 }
 
-const calculateObjectBounds = (obj: FabricObject): ObjectBounds => {
+const calculateObjectBounds = (obj: fabric.Object): ObjectBounds => {
   const left = obj.left ?? 0;
   const top = obj.top ?? 0;
   const scaleX = obj.scaleX ?? 1;
@@ -111,7 +111,7 @@ const calculateObjectBounds = (obj: FabricObject): ObjectBounds => {
 const createGuideline = (
   points: [number, number, number, number],
   guidelineId: GuidelineId,
-  canvas: Canvas
+  canvas: fabric.Canvas
 ): CustomFabricLine => {
   return new CustomFabricLine(points, {
     ...GUIDELINE_STYLES,
@@ -119,7 +119,10 @@ const createGuideline = (
   });
 };
 
-const guidelineExists = (canvas: Canvas, guidelineId: GuidelineId): boolean => {
+const guidelineExists = (
+  canvas: fabric.Canvas,
+  guidelineId: GuidelineId
+): boolean => {
   return canvas
     .getObjects()
     .some(
@@ -129,7 +132,7 @@ const guidelineExists = (canvas: Canvas, guidelineId: GuidelineId): boolean => {
 };
 
 export const clearGuidelines = (
-  canvas: Canvas,
+  canvas: fabric.Canvas,
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void
 ): void => {
@@ -157,7 +160,7 @@ const checkAlignment = (
 };
 
 const createAlignmentGuideline = (
-  canvas: Canvas,
+  canvas: fabric.Canvas,
   position: number,
   isHorizontal: boolean,
   guidelineId: GuidelineId,
@@ -184,8 +187,8 @@ const createAlignmentGuideline = (
 };
 
 export const handleObjectMoving = (
-  canvas: Canvas,
-  movingObject: FabricObject,
+  canvas: fabric.Canvas,
+  movingObject: fabric.Object,
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void
 ): void => {
@@ -307,7 +310,7 @@ export const handleObjectMoving = (
     const otherObjects = canvas
       .getObjects()
       .filter(
-        (obj): obj is FabricObject =>
+        (obj): obj is fabric.Object =>
           obj !== movingObject && !(obj instanceof CustomFabricLine)
       );
 
@@ -429,7 +432,7 @@ export const handleObjectMoving = (
 
 // Canvas event'lerini ayarlamak için helper fonksiyon
 export const setupCanvasEvents = (
-  canvas: Canvas,
+  canvas: fabric.Canvas,
   guidelines: GuidelineType[],
   setGuidelines: (guidelines: GuidelineType[]) => void
 ) => {
