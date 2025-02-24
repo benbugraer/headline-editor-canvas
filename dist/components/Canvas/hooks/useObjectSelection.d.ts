@@ -1,7 +1,7 @@
 import * as fabric from "fabric";
 import { ColorResult } from "react-color";
 export declare const useObjectSelection: (canvas: fabric.Canvas | null) => {
-    selectedObject: fabric.FabricObject<Partial<fabric.FabricObjectProps>, fabric.SerializedObjectProps, fabric.ObjectEvents>;
+    selectedObject: any;
     width: string;
     height: string;
     diameter: string;

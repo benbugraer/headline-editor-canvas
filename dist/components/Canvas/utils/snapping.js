@@ -49,6 +49,7 @@ var GuidelineId;
 var CustomFabricLine = /** @class */ (function (_super) {
     __extends(CustomFabricLine, _super);
     function CustomFabricLine(points, options) {
+        if (options === void 0) { options = {}; }
         var _this = _super.call(this, points, options) || this;
         _this.data = options.data;
         return _this;

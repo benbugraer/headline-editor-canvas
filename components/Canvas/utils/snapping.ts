@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Canvas, FabricObject, Line as FabricLine } from "fabric";
+import { Canvas, Line, FabricObject } from "fabric";
 import { GuidelineType } from "../types/canvas.types";
 import { SNAPPING_CONFIG, GUIDELINE_STYLES } from "./constants";
 
@@ -24,12 +24,12 @@ interface CustomFabricLineProps extends Partial<FabricObject> {
   data?: { id: GuidelineId };
 }
 
-class CustomFabricLine extends FabricLine {
+class CustomFabricLine extends Line {
   data?: { id: GuidelineId };
 
   constructor(
     points: [number, number, number, number],
-    options: CustomFabricLineProps
+    options: CustomFabricLineProps = {}
   ) {
     super(points, options);
     this.data = options.data;
