@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import { fabric } from "fabric";
 import {
   EffectState,
   ShadowState,
@@ -46,73 +46,77 @@ const defaultStates: DefaultStates = {
 export const getInitialStates = (
   object: fabric.Object | null
 ): DefaultStates => {
-  if (!object) return defaultStates;
+  if (!object || typeof window === "undefined") return defaultStates;
 
-  const shadow = object.shadow as fabric.Shadow | null;
-  const isText = object.type === "i-text";
-  const isShape = object.type === "rect" || object.type === "image";
-  const isCircle = object.type === "circle";
+  try {
+    const shadow = object.shadow as fabric.Shadow | null;
+    const isText = object instanceof fabric.IText;
+    const isShape =
+      object instanceof fabric.Rect || object instanceof fabric.Image;
+    const isCircle = object instanceof fabric.Circle;
 
-  return {
-    opacity: {
-      enabled: object.opacity !== undefined && object.opacity !== 1,
-      value: Math.round((object.opacity ?? 1) * 100),
-    },
-    shadow: {
-      enabled: !!shadow,
-      blur: shadow?.blur ?? defaultStates.shadow.blur,
-      offsetX: shadow?.offsetX ?? defaultStates.shadow.offsetX,
-      offsetY: shadow?.offsetY ?? defaultStates.shadow.offsetY,
-      color: shadow?.color ?? defaultStates.shadow.color,
-    },
-    textStroke: {
-      enabled: !!(object.stroke && object.strokeWidth),
-      width: object.strokeWidth ?? defaultStates.textStroke.width,
-      color: (object.stroke as string) ?? defaultStates.textStroke.color,
-    },
-    shapeRadius: {
-      ...defaultStates.shapeRadius,
-      ...(isCircle
-        ? {
-            enabled: true,
-            radius:
-              (object as fabric.Circle).radius ??
-              defaultStates.shapeRadius.radius,
-          }
-        : isShape
-        ? {
-            enabled: !!(object as fabric.Rect).rx,
-            radius:
-              (object as fabric.Rect).rx ?? defaultStates.shapeRadius.radius,
-          }
-        : {}),
-    },
-    background: {
-      ...defaultStates.background,
-      ...(isText
-        ? {
-            enabled: !!object.backgroundColor,
-            color:
-              (object.backgroundColor as string) ??
-              defaultStates.background.color,
-            padding: object.padding ?? defaultStates.background.padding,
-          }
-        : {
-            enabled: !!object.backgroundColor,
-            color:
-              (object.backgroundColor as string) ??
-              defaultStates.background.color,
-            padding: object.padding ?? defaultStates.background.padding,
-          }),
-    },
-  };
+    return {
+      opacity: {
+        enabled: object.opacity !== undefined && object.opacity !== 1,
+        value: Math.round((object.opacity ?? 1) * 100),
+      },
+      shadow: {
+        enabled: !!shadow,
+        blur: shadow?.blur ?? defaultStates.shadow.blur,
+        offsetX: shadow?.offsetX ?? defaultStates.shadow.offsetX,
+        offsetY: shadow?.offsetY ?? defaultStates.shadow.offsetY,
+        color: shadow?.color ?? defaultStates.shadow.color,
+      },
+      textStroke: {
+        enabled: !!(object.stroke && object.strokeWidth),
+        width: object.strokeWidth ?? defaultStates.textStroke.width,
+        color: (object.stroke as string) ?? defaultStates.textStroke.color,
+      },
+      shapeRadius: {
+        ...defaultStates.shapeRadius,
+        ...(isCircle
+          ? {
+              enabled: true,
+              radius:
+                (object as fabric.Circle).radius ??
+                defaultStates.shapeRadius.radius,
+            }
+          : isShape && object instanceof fabric.Rect
+          ? {
+              enabled: !!(object as fabric.Rect).rx,
+              radius:
+                (object as fabric.Rect).rx ?? defaultStates.shapeRadius.radius,
+            }
+          : {}),
+      },
+      background: {
+        ...defaultStates.background,
+        enabled: !!object.backgroundColor,
+        color:
+          (object.backgroundColor as string) ?? defaultStates.background.color,
+        padding: object.padding ?? defaultStates.background.padding,
+      },
+    };
+  } catch (error) {
+    console.error("Error getting initial states:", error);
+    return defaultStates;
+  }
 };
 
-export const createShadow = (shadowState: ShadowState): fabric.Shadow => {
-  return new fabric.Shadow({
-    color: shadowState.color,
-    blur: shadowState.blur,
-    offsetX: shadowState.offsetX,
-    offsetY: shadowState.offsetY,
-  });
+export const createShadow = (
+  shadowState: ShadowState
+): fabric.Shadow | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    return new fabric.Shadow({
+      color: shadowState.color,
+      blur: shadowState.blur,
+      offsetX: shadowState.offsetX,
+      offsetY: shadowState.offsetY,
+    });
+  } catch (error) {
+    console.error("Error creating shadow:", error);
+    return null;
+  }
 };
